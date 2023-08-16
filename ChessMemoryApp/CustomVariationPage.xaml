@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChessMemoryApp.CustomVariationPage"
+             xmlns:viewModel="clr-namespace:ChessMemoryApp.ViewModel"
+             x:DataType="viewModel:CustomVariationViewModel"
+             Title="Chess Memory"
+             BackgroundColor="{StaticResource Black}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="200" x:Name="columnChessBoard"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentView Grid.Row="0"
+                     Grid.Column="0"
+                     Grid.ColumnSpan="4"
+                     Margin="0, 0, 0, 10">
+            <Label x:Name="chessableUrl"
+                    HorizontalOptions="Center"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextDecorations="Underline"
+                    Text="{Binding CustomVariation.Course.Name }"/>
+        </ContentView>
+
+        <ScrollView Grid.Row="1"
+                    Grid.Column="0">
+            <Editor x:Name="editorComment"
+                    TextColor="White"
+                    AutoSize="TextChanges"
+                    IsTextPredictionEnabled="False"
+                    Keyboard="Text"
+                    IsEnabled="False"
+                    
+                    Margin="10, 0, 10, 10"
+                    Placeholder="Comment the position here"/>
+        </ScrollView>
+        <Button x:Name="buttonCommentManager"
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="10, 0, 10, 0"
+                Padding="3"
+                VerticalOptions="Start"
+                Text="Edit Comment"/>
+
+        <AbsoluteLayout x:Name="mainChessBoard"
+                        x:DataType="AbsoluteLayout"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="0, 0, 0, 10"/>
+
+        <Grid x:Name="bottomUI"
+              VerticalOptions="Start"
+              Margin="0, 0, 0, 10"
+              Grid.Row="2" 
+              Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="buttonStart"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Padding="0"
+                        Margin="0"
+                        Text="&lt;&lt;"/>
+            <Button x:Name="buttonPrevious"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Padding="0"
+                        Margin="0"
+                        Text="&lt;"/>
+            <Button x:Name="buttonNext"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Padding="0"
+                        Margin="0"
+                        Text=">"/>
+            <Button x:Name="buttonEnd"
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Padding="0"
+                        Margin="0"
+                        Text=">>"/>
+        </Grid>
+
+        <ScrollView x:Name="variationsScrollView"
+                    HorizontalScrollBarVisibility="Never"
+                    VerticalScrollBarVisibility="Always"
+                    Margin="10, 0, 10, 10"
+                    Grid.Row="2"
+                    Grid.Column="3">
+            <VerticalStackLayout x:Name="variationsList" />
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

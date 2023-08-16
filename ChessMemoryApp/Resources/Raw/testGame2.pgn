@@ -1,0 +1,22 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/88lx3wdx"]
+[Date "2023.08.08"]
+[White "DarkGrisen"]
+[Black "shabdswaroop2000"]
+[Result "0-1"]
+[UTCDate "2023.08.08"]
+[UTCTime "14:53:18"]
+[WhiteElo "1884"]
+[BlackElo "1827"]
+[WhiteRatingDiff "-6"]
+[BlackRatingDiff "+7"]
+[Variant "Standard"]
+[TimeControl "300+3"]
+[ECO "B30"]
+[Opening "Sicilian Defense: Nyezhmetdinov-Rossolimo Attack"]
+[Termination "Normal"]
+[StartFen "2b2rk1/p1n1q1pp/2pp1r2/2p1p3/P4P1Q/3PNNP1/1PP4P/R4RK1 w - - 0 20"]
+
+1. Ng5 Rh6 0-1
+
+

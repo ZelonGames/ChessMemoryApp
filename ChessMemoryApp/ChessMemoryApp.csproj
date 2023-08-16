@@ -1,0 +1,129 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+    <TargetFrameworks>net7.0-android;net7.0-maccatalyst;net7.0-ios</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+		<OutputType>Exe</OutputType>
+		<RootNamespace>ChessMemoryApp</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- Display name -->
+		<ApplicationTitle>ChessMemoryApp</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.chessmemoryapp</ApplicationId>
+		<ApplicationIdGuid>a420adb2-295e-462e-9dcb-d0d1d8195335</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+		<GenerateTestArtifacts>True</GenerateTestArtifacts>
+		<AppInstallerUri>C:\dev\Visual Studio\ChessMemoryApp Release</AppInstallerUri>
+		<HoursBetweenUpdateChecks>168</HoursBetweenUpdateChecks>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<PackageCertificateThumbprint>9385E7C1863D2BB7DA79892B9EFBB82ED824BAE0</PackageCertificateThumbprint>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Images\Pieces\bishop_black.png" />
+	  <None Remove="Resources\Images\Pieces\bishop_white.png" />
+	  <None Remove="Resources\Images\Pieces\king_black.png" />
+	  <None Remove="Resources\Images\Pieces\king_white.png" />
+	  <None Remove="Resources\Images\Pieces\knight_black.png" />
+	  <None Remove="Resources\Images\Pieces\knight_white.png" />
+	  <None Remove="Resources\Images\Pieces\pawn_black.png" />
+	  <None Remove="Resources\Images\Pieces\pawn_white.png" />
+	  <None Remove="Resources\Images\Pieces\queen_black.png" />
+	  <None Remove="Resources\Images\Pieces\queen_white.png" />
+	  <None Remove="Resources\Images\Pieces\rook_black.png" />
+	  <None Remove="Resources\Images\Pieces\rook_white.png" />
+	  <None Remove="Resources\Raw\Courses\Lifetime Repertoires Chebanenko Slav.json" />
+	  <None Remove="Resources\Raw\Courses\Lifetime Repertoires Gajewski's 1. e4 − Part 2.json" />
+	  <None Remove="Resources\Raw\Courses\Lifetime Repertoires Kan Sicilian.json" />
+	  <None Remove="Resources\Raw\Courses\Outfox the Stafford Gambit.json" />
+	  <None Remove="Resources\Raw\Courses\Smash the Scandinavian Defense.json" />
+	  <None Remove="Resources\Raw\Courses\The Grand Ruy Lopez.json" />
+	  <None Remove="Resources\Raw\lichess_DarkGrisen_2023-08-12.pgn" />
+	  <None Remove="resources\raw\testGame.pgn" />
+	  <None Remove="resources\raw\testGame2.pgn" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\Pieces\bishop_black.png" />
+	  <MauiImage Include="Resources\Images\Pieces\bishop_white.png" />
+	  <MauiImage Include="Resources\Images\Pieces\king_black.png" />
+	  <MauiImage Include="Resources\Images\Pieces\king_white.png" />
+	  <MauiImage Include="Resources\Images\Pieces\knight_black.png" />
+	  <MauiImage Include="Resources\Images\Pieces\knight_white.png" />
+	  <MauiImage Include="Resources\Images\Pieces\pawn_black.png" />
+	  <MauiImage Include="Resources\Images\Pieces\pawn_white.png" />
+	  <MauiImage Include="Resources\Images\Pieces\queen_black.png" />
+	  <MauiImage Include="Resources\Images\Pieces\queen_white.png" />
+	  <MauiImage Include="Resources\Images\Pieces\rook_black.png" />
+	  <MauiImage Include="Resources\Images\Pieces\rook_white.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.141-beta" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="CourseSelectorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="CustomVariationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="CustomVariationSelectorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="SearchPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="TestPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Resources\Raw\Saved Variations\" />
+	</ItemGroup>
+
+</Project>
