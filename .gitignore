@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ChessMemoryApp/Resources/Raw/Courses/Lifetime Repertoires Chebanenko Slav.json
+/ChessMemoryApp/Resources/Raw/Courses/courses.txt
+/ChessMemoryApp/Resources/Raw/Courses/Lifetime Repertoires Gajewski's 1. e4 − Part 2.json
+/ChessMemoryApp/Resources/Raw/Courses/Lifetime Repertoires Kan Sicilian.json
+/ChessMemoryApp/Resources/Raw/Courses/Outfox the Stafford Gambit.json
+/ChessMemoryApp/Resources/Raw/Courses/Smash the Scandinavian Defense.json
+/ChessMemoryApp/Resources/Raw/Courses/The Grand Ruy Lopez.json
