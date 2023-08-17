@@ -9,10 +9,12 @@ namespace ChessMemoryApp.Model.Chess_Board
 {
     public class FenChessboard : ChessboardGenerator
     {
-        public FenChessboard(AbsoluteLayout chessBoardLayout, Size size, bool playAsBlack) : 
-            base(chessBoardLayout, size)
+        public FenChessboard(AbsoluteLayout chessBoardListLayout, Size size, bool playAsBlack) : 
+            base(chessBoardListLayout, size)
         {
             this.playAsBlack = playAsBlack;
+            chessBoardListLayout.WidthRequest = size.Width;
+            chessBoardListLayout.HeightRequest = size.Height + 10;
         }
     }
 }

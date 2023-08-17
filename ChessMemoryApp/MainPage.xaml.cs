@@ -41,7 +41,7 @@ public partial class MainPage : ContentPage
         chessboard.LoadChessBoard();
         chessboard.LoadFen(selectedCourse.PreviewFen);
 
-        var fenChessBoard = new FenChessboard(savedFensList, new Size(200, 200), chessboard.playAsBlack);
+        var fenChessBoard = new FenChessboard(fenChessBoardLayout, new Size(200, 200), chessboard.playAsBlack);
         fenChessBoard.LoadChessBoard();
         #endregion
 

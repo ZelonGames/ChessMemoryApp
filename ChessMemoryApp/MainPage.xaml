@@ -12,7 +12,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -47,12 +47,13 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <AbsoluteLayout x:Name="savedFensList"
+
+            <AbsoluteLayout x:Name="fenChessBoardLayout"
                             Grid.Row="0"
                             Grid.Column="0"
-                            HorizontalOptions="Center"
                             Padding="0"
-                            Margin="0, 0, 10, 10"/>
+                            HorizontalOptions="Center"
+                            Margin="0, 0, 0, 0"/>
 
             <Button x:Name="buttonSaveVariation"
                     Grid.Row="1"
@@ -80,13 +81,12 @@
                         Margin="0, 0, 0, 10"/>
 
         <Grid x:Name="lichessVariationsUI"
-              VerticalOptions="Start"
               Margin="10, 0, 10, 10"
               Grid.Row="1" 
               Grid.Column="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -95,8 +95,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <HorizontalStackLayout Grid.Row="0"
-                                   Grid.Column="0"
-                                   Grid.ColumnSpan="4">
+                                   Grid.Column="0">
                 <CheckBox x:Name="checkBoxLichessFromPlayer"/>
                 <Label x:Name="labelLichessFromPlayer"
                        FontSize="16"
@@ -115,45 +114,44 @@
                     </Label.Triggers>
                 </Label>
             </HorizontalStackLayout>
-            <Button x:Name="buttonStart"
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        Padding="0"
-                        Margin="0"
-                        Text="&lt;&lt;"/>
-            <Button x:Name="buttonPrevious"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        Padding="0"
-                        Margin="0"
-                        Text="&lt;"/>
-            <Button x:Name="buttonNext"
-                        Grid.Row="1"
-                        Grid.Column="2"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        Padding="0"
-                        Margin="0"
-                        Text=">"/>
-            <Button x:Name="buttonEnd"
-                        Grid.Row="1"
-                        Grid.Column="3"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        Padding="0"
-                        Margin="0"
-                        Text=">>"/>
-        </Grid>
 
+            <Button x:Name="buttonStart"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Padding="0"
+                    Margin="0"
+                    Text="&lt;&lt;"/>
+            <Button x:Name="buttonPrevious"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Padding="0"
+                    Margin="0"
+                    Text="&lt;"/>
+            <Button x:Name="buttonNext"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Padding="0"
+                    Margin="0"
+                    Text=">"/>
+            <Button x:Name="buttonEnd"
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Padding="0"
+                    Margin="0"
+                    Text=">>"/>
+        </Grid>
 
         <ScrollView x:Name="variationsScrollView"
                     HorizontalScrollBarVisibility="Never"
                     VerticalScrollBarVisibility="Always"
-                    VerticalOptions="Start"
                     Margin="10, 0, 10, 10"
                     Grid.Row="2"
                     Grid.Column="3">
