@@ -214,7 +214,7 @@ namespace ChessMemoryApp.Model.CourseMaker
         public static string MakeMove(string currentFen, string moveNotation, Piece.ColorType color)
         {
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
-            string newFEN = currentFen;
+            string newFen = currentFen;
 
             bool isCastling = moveNotation == "O-O" || moveNotation == "O-O-O";
             if (isCastling)
@@ -227,20 +227,20 @@ namespace ChessMemoryApp.Model.CourseMaker
 
                 if (kingSide)
                 {
-                    newFEN = RemovePieceFromFEN(newFEN, "e" + rank);
-                    newFEN = AddPieceToFEN(newFEN, "g" + rank, king);
-                    newFEN = RemovePieceFromFEN(newFEN, "h" + rank);
-                    newFEN = AddPieceToFEN(newFEN, "f" + rank, rook);
+                    newFen = RemovePieceFromFEN(newFen, "e" + rank);
+                    newFen = AddPieceToFEN(newFen, "g" + rank, king);
+                    newFen = RemovePieceFromFEN(newFen, "h" + rank);
+                    newFen = AddPieceToFEN(newFen, "f" + rank, rook);
                 }
                 else
                 {
-                    newFEN = RemovePieceFromFEN(newFEN, "e" + rank);
-                    newFEN = AddPieceToFEN(newFEN, "c" + rank, king);
-                    newFEN = RemovePieceFromFEN(newFEN, "a" + rank);
-                    newFEN = AddPieceToFEN(newFEN, "d" + rank, rook);
+                    newFen = RemovePieceFromFEN(newFen, "e" + rank);
+                    newFen = AddPieceToFEN(newFen, "c" + rank, king);
+                    newFen = RemovePieceFromFEN(newFen, "a" + rank);
+                    newFen = AddPieceToFEN(newFen, "d" + rank, rook);
                 }
 
-                return newFEN;
+                return newFen;
                 #endregion
             }
             else
@@ -265,24 +265,24 @@ namespace ChessMemoryApp.Model.CourseMaker
                         // Remove pawn from behind
                         Piece.Coordinates<int> numberToCoordinates = BoardHelper.GetNumberCoordinates(toCoordinates);
                         numberToCoordinates.Y += color.Equals(Piece.ColorType.White) ? -1 : 1;
-                        newFEN = RemovePieceFromFEN(newFEN, BoardHelper.GetLetterCoordinates(numberToCoordinates));
+                        newFen = RemovePieceFromFEN(newFen, BoardHelper.GetLetterCoordinates(numberToCoordinates));
                     }
                     else
-                        newFEN = RemovePieceFromFEN(newFEN, toCoordinates);
+                        newFen = RemovePieceFromFEN(newFen, toCoordinates);
                 }
 
-                newFEN = RemovePieceFromFEN(newFEN, fromCoordinates);
+                newFen = RemovePieceFromFEN(newFen, fromCoordinates);
                 if (promotion)
                 {
                     char promotedPiece = color.Equals(Piece.ColorType.White) ? Char.ToUpper(promotionComponents[1][0]) : Char.ToLower(promotionComponents[1][0]);
-                    newFEN = AddPieceToFEN(newFEN, toCoordinates, promotedPiece);
+                    newFen = AddPieceToFEN(newFen, toCoordinates, promotedPiece);
                 }
                 else
-                    newFEN = AddPieceToFEN(newFEN, toCoordinates, piece.Value);
+                    newFen = AddPieceToFEN(newFen, toCoordinates, piece.Value);
             }
 
 
-            return newFEN;
+            return UpdateFenColorToPlay(newFen);
         }
 
         public static string MakeMove(string currentFen, string moveNotationCoordinates)
@@ -295,7 +295,17 @@ namespace ChessMemoryApp.Model.CourseMaker
             string toCoordinates = moveNotationCoordinates.Substring(moveNotationCoordinates.Length - 2);
 
             string newFen = RemovePieceFromFEN(currentFen, fromCoordinates);
-            return AddPieceToFEN(newFen, toCoordinates, pieceChar.Value);
+            return AddPieceToFEN(UpdateFenColorToPlay(newFen), toCoordinates, pieceChar.Value);
+        }
+
+        private static string UpdateFenColorToPlay(string fen)
+        {
+            if (fen.Split(' ').Any(x => x == "w"))
+                fen = fen.Replace(" w ", " b ");
+            else
+                fen = fen.Replace(" b ", " w ");
+
+            return fen;
         }
 
         public static int GetXCoordinateFromFenRow(string fenRow)

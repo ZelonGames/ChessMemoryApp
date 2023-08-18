@@ -29,7 +29,7 @@ public partial class CourseSelectorPage : ContentPage
 
     public async void Appeared(object sender, EventArgs e)
     {
-        //var stockfish = new StockfishAnalyser(25);
+        var stockfish = new StockfishAnalyser(25);
 
         #region Reset Page
         customVariationBoards.ForEach(x => x.ClearBoard());

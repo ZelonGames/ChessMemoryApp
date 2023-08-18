@@ -24,6 +24,8 @@ namespace ChessMemoryApp.Model.Game_Analysing
         private string currentFen;
         private string latestCommand;
         private string[] blunderMovesLine;
+        private List<string[]> linesForEachDepth;
+        private List<float> evaluationsForEachDepth;
         private float currentEvaluation;
         private readonly int depth;
         private readonly int blunderDepth = 3;
@@ -41,7 +43,7 @@ namespace ChessMemoryApp.Model.Game_Analysing
             this.depth = depth;
             commandEval = "go depth " + depth;
             tasks.Add(commandGetFen, SetFen);
-            tasks.Add(commandEval, SetEvaluation);
+            tasks.Add(commandEval, AnalysePosition);
 
             process = new Process
             {
@@ -62,6 +64,34 @@ namespace ChessMemoryApp.Model.Game_Analysing
             streamWriter = process.StandardInput;
 
             Test();
+        }
+
+        public async void Test()
+        {
+            await GetBlunderAnalysis(
+                "2r5/p1r2kpp/1p3p2/2PPp3/3pP3/NP5P/P2n2P1/2R1R2K w - - 3 29",
+                "c5b6");
+        }
+
+        public async Task<bool> GetBlunderAnalysis(string fen, string moveNotationCoordinates)
+        {
+            string colorToPlay = fen.Split(' ')[1];
+            string playerColor = colorToPlay == "w" ? "b" : "w";
+
+            // Change the fen to what it would be if we made this move
+            // because we are asking if the move is a blunder.
+            fen = FenHelper.MakeMove(fen, moveNotationCoordinates);
+
+            dataReceivedTaskCompletionSource = new TaskCompletionSource<bool>();
+            RunCommand($"position fen {fen} moves {moveNotationCoordinates}");
+            RunCommand(commandGetFen);
+            await dataReceivedTaskCompletionSource.Task;
+
+            dataReceivedTaskCompletionSource = new TaskCompletionSource<bool>();
+            RunCommand(commandEval);
+            await dataReceivedTaskCompletionSource.Task;
+
+            return true;
         }
 
         public async Task AnalyseGames(string pgnFile)
@@ -111,7 +141,7 @@ namespace ChessMemoryApp.Model.Game_Analysing
 
                                 if (piece.HasValue)
                                 {
-                                    bool isYourOwnPieceCaptured = 
+                                    bool isYourOwnPieceCaptured =
                                         char.IsLower(piece.Value) && game.playerName == game.Black ||
                                         char.IsUpper(piece.Value) && game.playerName == game.White;
 
@@ -131,10 +161,6 @@ namespace ChessMemoryApp.Model.Game_Analysing
             }
         }
 
-        public async void Test()
-        {
-            await AnalyseGames("testGame.pgn");
-        }
 
         private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
@@ -166,20 +192,28 @@ namespace ChessMemoryApp.Model.Game_Analysing
                 method.Invoke(this, arguments);
         }
 
-        private void SetEvaluation(DataReceivedEventArgs e)
+        private void AnalysePosition(DataReceivedEventArgs e)
         {
             int currentDepth = GetDepth(e.Data);
+            if (currentDepth == 0)
+                return;
 
-            if (currentDepth >= blunderDepth)
+            if (currentDepth == 1)
             {
-                string[] moves = GetMainLine(e.Data);
-                if (moves.Length == blunderDepth)
-                    blunderMovesLine = moves;
+                linesForEachDepth = new List<string[]>();
+                evaluationsForEachDepth = new List<float>();
             }
+
+            string[] line = GetLine(e.Data);
+            linesForEachDepth.Add(line);
+
+            int centiPawns = GetCentiPawns(e.Data);
+            float evaluation = ConvertCentipawnsToEvaluation(currentFen, centiPawns);
+            evaluationsForEachDepth.Add(evaluation);
+
             if (currentDepth == depth)
             {
-                int centiPawns = GetCentiPawns(e.Data);
-                currentEvaluation = ConvertCentipawnsToEvaluation(currentFen, centiPawns);
+                currentEvaluation = evaluation;
                 SetTaskCompleted();
             }
         }
@@ -203,7 +237,7 @@ namespace ChessMemoryApp.Model.Game_Analysing
             }
         }
 
-        private string[] GetMainLine(string line)
+        private string[] GetLine(string line)
         {
             if (!line.Contains(" pv "))
                 return null;
