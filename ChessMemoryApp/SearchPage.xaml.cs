@@ -72,8 +72,7 @@ public partial class SearchPage : ContentPage
 
             var customVariationBoard = new ChessableChessboard(coursesLayout, boardSize);
             customVariationBoard.fen = filteredVariations[i].lastSearchMove.Fen;
-            customVariationBoard.LoadChessBoard();
-            customVariationBoard.LoadPieces(customVariationBoard.fen);
+            customVariationBoard.LoadChessBoardFromFen(customVariationBoard.fen);
             customVariationBoard.playAsBlack = searchViewModel.Course.PlayAsBlack;
             customVariationBoard.Clicked += OnBoardClicked;
             customVariationBoards.Add(customVariationBoard);

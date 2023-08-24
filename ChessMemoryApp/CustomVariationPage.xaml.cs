@@ -33,8 +33,8 @@ public partial class CustomVariationPage : ContentPage
         var commentManager = new CommentManager(editorComment, chessboard);
 
         chessboard.SetMoveNotationHelper(moveNotationHelper);
-        chessboard.LoadChessBoard();
-        chessboard.LoadFen(customVariation.GetStartingFen());
+        chessboard.LoadSquares();
+        chessboard.LoadChessBoardFromFen(customVariation.GetStartingFen());
 
         customVariationMoveNavigator.SubscribeToEvents(moveNotationHelper, buttonStart, buttonPrevious, buttonNext, buttonEnd);
         moveNotationHelper.SubscribeToEvents(customVariationMoveNavigator);

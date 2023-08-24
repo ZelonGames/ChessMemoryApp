@@ -1,5 +1,7 @@
 ﻿using ChessMemoryApp.Model.ChessMoveLogic;
+using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Model.UI_Helpers.Main_Page;
+using Microsoft.Maui.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,17 +69,28 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
                 Source = ImageSource.FromFile(value + ".png"),
             };
         }
-        public Piece(ChessboardGenerator chessBoard, char pieceChar, ImageSource source, bool isClickable = true)
+        public Piece(ChessboardGenerator chessBoard, char pieceChar, bool isClickable = true)
         {
             this.chessBoard = chessBoard;
             this.pieceChar = pieceChar;
+
+            pieceFileNames.TryGetValue(pieceChar, out string fileName);
             image = new Image()
             {
-                Source = source,
+                Source = ImageSource.FromFile(fileName + ".png"),
             };
 
             if (isClickable)
                 UIEventHelper.ImageClickSubscribe(this.image, OnPieceClicked);
+        }
+
+        public static ColorType GetColorOfPieceFromFen(string fen, string coordinates)
+        {
+            char? piece = FenHelper.GetPieceOnSquare(fen, coordinates);
+            if (!piece.HasValue)
+                return ColorType.Empty;
+
+            return char.IsUpper(piece.Value) ? ColorType.White : ColorType.Black;
         }
 
         public void ResetEvents()
@@ -115,15 +128,22 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             return colorType == ColorType.White ? ColorType.Black : ColorType.White;
         }
 
-        public static bool IsFriendlyPieceOnSquare(HashSet<string> availableMoves, string fen, string nextPositionNotation, ColorType color)
+        public static ColorType GetColorOfPiece(char piece)
         {
-            char? pieceType = CourseMaker.FenHelper.GetPieceOnSquare(fen, nextPositionNotation);
+            return char.IsUpper(piece) ? ColorType.White : ColorType.Black;
+        }
+
+        public static bool IsPieceByColorOnSquare(string fen, string squareCoordinates, ColorType pieceColor)
+        {
+            char? pieceType = FenHelper.GetPieceOnSquare(fen, squareCoordinates);
             if (pieceType.HasValue)
             {
-                if (color.Equals(ColorType.White) && char.IsUpper(pieceType.Value) ||
-                    color.Equals(ColorType.Black) && char.IsLower(pieceType.Value))
-                    availableMoves.Add(nextPositionNotation);
-                return true;
+                // Uppercase = white | Lowercase = black
+                bool isPieceSameAsGivenColor = 
+                    pieceColor.Equals(ColorType.White) && char.IsUpper(pieceType.Value) ||
+                    pieceColor.Equals(ColorType.Black) && char.IsLower(pieceType.Value);
+                if (isPieceSameAsGivenColor)
+                    return true;
             }
 
             return false;
@@ -132,28 +152,62 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         public static bool AddVerticalMove(HashSet<string> availableMoves, string fen, Coordinates<int> currentCoordinate, int value, ColorType color)
         {
             string nextPositionNotation = GetNextPositionNotation(currentCoordinate.X, value);
-            return AddMove(availableMoves, fen, nextPositionNotation, color);
+            return TryAddMove(availableMoves, fen, nextPositionNotation);
         }
 
         public static bool AddHorizontalMove(HashSet<string> availableMoves, string fen, Coordinates<int> currentCoordinate, int value, ColorType color)
         {
             string nextPositionNotation = GetNextPositionNotation(value, currentCoordinate.Y);
-            return AddMove(availableMoves, fen, nextPositionNotation, color);
+            return TryAddMove(availableMoves, fen, nextPositionNotation);
         }
 
         public static bool AddDiagonalMove(HashSet<string> availableMoves, string fen, int x, int y, ColorType color)
         {
             string nextPositionNotation = GetNextPositionNotation(x, y);
-            return AddMove(availableMoves, fen, nextPositionNotation, color);
+            return TryAddMove(availableMoves, fen, nextPositionNotation);
         }
 
-        private static bool AddMove(HashSet<string> availableMoves, string fen, string nextPositionNotation, ColorType color)
-        {
-            if (IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
-                return true;
 
-            availableMoves.Add(nextPositionNotation);
-            return false;
+        public static bool TryAddMove(HashSet<string> availableMoves, string fen, string squareCoordinates)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Adds coordinates of a square that the chess piece can go to
+        /// It fails to add a move if there is a friendly piece on that square
+        /// It succeeds to add a move if there is no piece or an enemy piece on that square
+        /// </summary>
+        /// <param name="availableMoves">The list to add the squares to</param>
+        /// <param name="fen">Used to know where the pieces are</param>
+        /// <param name="pieceCoordinates">The square that the piece is on</param>
+        /// <param name="squareCoordinates">The square to add a move on</param>
+        /// <returns>returns false if there is a piece on the given 
+        /// squareCoordinates according to the fen</returns>
+        protected static bool TryAddMove(HashSet<string> availableMoves, string fen, string pieceCoordinates, string squareCoordinates)
+        {
+            if (squareCoordinates == "g4")
+            {
+
+            }
+
+            char? piece = FenHelper.GetPieceOnSquare(fen, pieceCoordinates).Value;
+            if (!piece.HasValue)
+                return false;
+
+            ColorType pieceColor = GetColorOfPiece(piece.Value);
+            ColorType enemyPieceColor = GetOppositeColor(pieceColor);
+            if (IsPieceByColorOnSquare(fen, squareCoordinates, enemyPieceColor))
+            {
+                availableMoves.Add(squareCoordinates);
+                return false;
+            }
+
+            if (IsPieceByColorOnSquare(fen, squareCoordinates, pieceColor))
+                return false;
+
+            availableMoves.Add(squareCoordinates);
+            return true;
         }
 
         private static string GetNextPositionNotation(int x, int y)

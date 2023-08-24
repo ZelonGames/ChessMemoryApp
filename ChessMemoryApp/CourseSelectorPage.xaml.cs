@@ -29,7 +29,7 @@ public partial class CourseSelectorPage : ContentPage
 
     public async void Appeared(object sender, EventArgs e)
     {
-        var stockfish = new StockfishAnalyser(25);
+        //var stockfish = new StockfishAnalyser(25);
 
         #region Reset Page
         customVariationBoards.ForEach(x => x.ClearBoard());
@@ -54,8 +54,7 @@ public partial class CourseSelectorPage : ContentPage
             var courseBoard = new CourseChessboard(course.Value, coursesLayout, boardSize);
             courseBoard.Clicked += CourseBoard_Clicked;
             courseBoard.playAsBlack = course.Value.PlayAsBlack;
-            courseBoard.LoadChessBoard();
-            courseBoard.LoadPieces(course.Value.PreviewFen);
+            courseBoard.LoadChessBoardFromFen(course.Value.PreviewFen);
             customVariationBoards.Add(courseBoard);
             if (startingCourseCount == 0)
                 await CourseService.Add(course.Value);

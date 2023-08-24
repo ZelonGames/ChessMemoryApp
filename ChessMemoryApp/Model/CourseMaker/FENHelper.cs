@@ -14,6 +14,12 @@ namespace ChessMemoryApp.Model.CourseMaker
     {
         public const string STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+        public static Piece.ColorType GetColorFromFen(string fen)
+        {
+            string colorFromFen = fen.Split(' ')[1];
+            return colorFromFen == "w" ? Piece.ColorType.White : Piece.ColorType.Black;
+        }
+
         public static string ConvertFenToChessableUrl(string fen, string courseID)
         {
             if (fen == null)
@@ -49,34 +55,35 @@ namespace ChessMemoryApp.Model.CourseMaker
             return squares;
         }
 
-        public static List<char> GetPiecesOnBoardByColor(string fen, Piece.ColorType color)
-        {
-            var pieces = new List<char>();
-
-            char[,] board = GetBoardFromFEN(fen);
-
-
-
-            return pieces;
-        }
-
         public static char? GetPieceOnSquare(string fen, string coordinate)
         {
-            // Get the rank and file from the coordinates string
             int column = coordinate[0] - 'a';
             int row = 8 - (coordinate[1] - '0');
 
-            // Get the board from the FEN string
             char[,] board = GetBoardFromFEN(fen);
-
-            // Get the piece at the specified square
             char piece = board[row, column];
 
-            // Return empty character if there is no piece on the square
+            // Empty character \0 means there is no piece there
             if (piece == '\0')
                 return null;
 
             return piece;
+        }
+
+        public static Dictionary<string, char?> GetPiecesFromFen(string fen)
+        {
+            var pieces = new Dictionary<string, char?>();
+
+            for (char row = '1'; row <= '8'; row++)
+            {
+                for (char column = 'a'; column <= 'h'; column++)
+                {
+                    string coordinate = column.ToString() + row.ToString();
+                    pieces.Add(coordinate, GetPieceOnSquare(fen, coordinate));
+                }
+            }
+
+            return pieces;
         }
 
         public static string AddPieceToFEN(string fen, string coordinates, char piece)
@@ -127,8 +134,9 @@ namespace ChessMemoryApp.Model.CourseMaker
             return board;
         }
 
-        private static string GetLetterFromCoordinates(string fen, string moveNotation, Piece.ColorType color)
+        public static string GetLetterFromCoordinates(string fen, string moveNotation)
         {
+            Piece.ColorType color = GetColorFromFen(fen);
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
             bool isPawn = false;
             bool isCapture = moveNotation.Contains('x');
@@ -158,7 +166,7 @@ namespace ChessMemoryApp.Model.CourseMaker
                     possibleMoves = Knight.GetAvailableMoves(numberToCoordinates, color, fen);
                     break;
                 case 'b':
-                    possibleMoves = Bishop.GetAvailableMoves(numberToCoordinates, color, fen);
+                    possibleMoves = Bishop.GetAvailableMoves(letterToCoordinates, fen);
                     break;
                 case 'q':
                     possibleMoves = Queen.GetAvailableMoves(numberToCoordinates, color, fen);
@@ -211,8 +219,9 @@ namespace ChessMemoryApp.Model.CourseMaker
         /// <param name="moveNotation"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        public static string MakeMove(string currentFen, string moveNotation, Piece.ColorType color)
+        public static string MakeMove(string currentFen, string moveNotation)
         {
+            Piece.ColorType color = GetColorFromFen(currentFen);
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
             string newFen = currentFen;
 
@@ -248,7 +257,7 @@ namespace ChessMemoryApp.Model.CourseMaker
                 string[] promotionComponents = moveNotation.Split('=');
                 bool promotion = promotionComponents.Length == 2;
                 string toCoordinates = promotionComponents[0][^2..];
-                string fromCoordinates = GetLetterFromCoordinates(currentFen, promotionComponents[0], color);
+                string fromCoordinates = GetLetterFromCoordinates(currentFen, promotionComponents[0]);
 
                 if (fromCoordinates == "")
                     return currentFen;
@@ -285,7 +294,7 @@ namespace ChessMemoryApp.Model.CourseMaker
             return UpdateFenColorToPlay(newFen);
         }
 
-        public static string MakeMove(string currentFen, string moveNotationCoordinates)
+        public static string MakeMoveWithCoordinates(string currentFen, string moveNotationCoordinates)
         {
             string fromCoordinates = moveNotationCoordinates[..2];
             char? pieceChar = GetPieceOnSquare(currentFen, fromCoordinates);
@@ -296,6 +305,16 @@ namespace ChessMemoryApp.Model.CourseMaker
 
             string newFen = RemovePieceFromFEN(currentFen, fromCoordinates);
             return AddPieceToFEN(UpdateFenColorToPlay(newFen), toCoordinates, pieceChar.Value);
+        }
+
+        public static string GetColorToPlayFromFen(string fen)
+        {
+            return fen.Split(' ')[1];
+        }
+
+        public static string GetOppositeColor(string color)
+        {
+            return color == "w" ? "b" : "w";
         }
 
         private static string UpdateFenColorToPlay(string fen)
@@ -330,8 +349,9 @@ namespace ChessMemoryApp.Model.CourseMaker
         /// <param name="moveNotation"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        public static string ConvertToMoveNotationCoordinates(string fen, string moveNotation, Piece.ColorType color)
+        public static string ConvertToMoveNotationCoordinates(string fen, string moveNotation)
         {
+            Piece.ColorType color = GetColorFromFen(fen);
             if (moveNotation == "0-0" || moveNotation == "O-O")
             {
                 if (color == Piece.ColorType.Black)
@@ -348,7 +368,7 @@ namespace ChessMemoryApp.Model.CourseMaker
             }
 
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
-            string fromCoordinates = GetLetterFromCoordinates(fen, moveNotation, color);
+            string fromCoordinates = GetLetterFromCoordinates(fen, moveNotation);
             string toCoordinates = BoardHelper.GetToCoordinatesString(moveNotation);
 
             return fromCoordinates + toCoordinates;
@@ -444,17 +464,12 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         private static char[,] GetBoardFromFEN(string fen, bool flipped = false)
         {
-            // Split the FEN string into its components
             string[] fenComponents = fen.Split(' ');
-
-            // Initialize the board
             char[,] board = new char[8, 8];
 
-            // Initialize the row and column indices
             int row = 0;
             int col = 0;
 
-            // Parse the FEN string to populate the board
             foreach (char c in fenComponents[0])
             {
                 if (c == '/')

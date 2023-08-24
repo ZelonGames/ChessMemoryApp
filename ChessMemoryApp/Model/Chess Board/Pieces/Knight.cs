@@ -35,7 +35,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
                 nextPosition = new Coordinates<int>(newX, newY);
                 nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
 
-                if (IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
+                //if (IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
                     continue;
 
                 availableMoves.Add(nextPositionNotation);

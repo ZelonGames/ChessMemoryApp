@@ -62,7 +62,7 @@ namespace ChessMemoryApp.Model.UI_Components
 
         public void RequestNewFen(object sender, EventArgs e)
         {
-            chessBoard.LoadFen(initialFen);
+            chessBoard.LoadChessBoardFromFen(initialFen);
             isClickingButton = true;
             string newFen = GetNewFenFromMoveNotationCoordinates(move.MoveNotationCoordinates);
             RequestedNewFen?.Invoke(newFen, move);
@@ -74,29 +74,29 @@ namespace ChessMemoryApp.Model.UI_Components
             if (moveNotationCoordinates == "e1h1")
             {
                 // White king side castle
-                newFen = FenHelper.MakeMove(initialFen, "e1g1");
-                newFen = FenHelper.MakeMove(newFen, "h1f1");
+                newFen = FenHelper.MakeMoveWithCoordinates(initialFen, "e1g1");
+                newFen = FenHelper.MakeMoveWithCoordinates(newFen, "h1f1");
             }
             else if (moveNotationCoordinates == "e1a1")
             {
                 // White queen side castle
-                newFen = FenHelper.MakeMove(initialFen, "e1c1");
-                newFen = FenHelper.MakeMove(newFen, "a1d1");
+                newFen = FenHelper.MakeMoveWithCoordinates(initialFen, "e1c1");
+                newFen = FenHelper.MakeMoveWithCoordinates(newFen, "a1d1");
             }
             else if (moveNotationCoordinates == "e8h8")
             {
                 // Black king side castle
-                newFen = FenHelper.MakeMove(initialFen, "e8g8");
-                newFen = FenHelper.MakeMove(newFen, "h8f8");
+                newFen = FenHelper.MakeMoveWithCoordinates(initialFen, "e8g8");
+                newFen = FenHelper.MakeMoveWithCoordinates(newFen, "h8f8");
             }
             else if (moveNotationCoordinates == "e8a8")
             {
                 // Black queen side castle
-                newFen = FenHelper.MakeMove(initialFen, "e8c8");
-                newFen = FenHelper.MakeMove(newFen, "a8d8");
+                newFen = FenHelper.MakeMoveWithCoordinates(initialFen, "e8c8");
+                newFen = FenHelper.MakeMoveWithCoordinates(newFen, "a8d8");
             }
             else
-                newFen = FenHelper.MakeMove(initialFen, moveNotationCoordinates);
+                newFen = FenHelper.MakeMoveWithCoordinates(initialFen, moveNotationCoordinates);
 
             return newFen;
         }

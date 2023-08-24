@@ -116,7 +116,7 @@ namespace ChessMemoryApp.Model.Variations
 
         private void ListButton_CustomVariationButtonClicked(string fen)
         {
-            chessBoard.LoadFen(fen);
+            chessBoard.LoadChessBoardFromFen(fen);
             PreviewFen = fen;
         }
 

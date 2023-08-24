@@ -41,8 +41,7 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         public string UpdateFenAndColor(string fen, int currentMove)
         {
-            Color = currentMove % 2 == 0 ? Piece.ColorType.White : Piece.ColorType.Black;
-            return Fen = FenHelper.MakeMove(fen, MoveNotation.Replace("+", "").Replace("#", ""), Color);
+            return Fen = FenHelper.MakeMove(fen, MoveNotation.Replace("+", "").Replace("#", ""));
         }
     }
 }

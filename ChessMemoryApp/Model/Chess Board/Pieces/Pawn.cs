@@ -23,14 +23,15 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             {
                 // Forward
                 nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
-                if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
+                //if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
                 {
                     availableMoves.Add(nextPositionNotation);
 
                     nextPosition = GetNextPosition(whiteDirection, currentCoordinate, new Coordinates<int>(0, 2));
                     nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
 
-                    if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color)) availableMoves.Add(nextPositionNotation);
+                    //if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color)) 
+                        availableMoves.Add(nextPositionNotation);
                 }
             }
             else
@@ -38,13 +39,13 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
                 // Diagonal Right Capture
                 nextPosition = GetNextPosition(whiteDirection, currentCoordinate, new Coordinates<int>(1, 1));
                 nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
-                if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
+                //if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
                     availableMoves.Add(BoardHelper.GetLetterCoordinates(nextPosition));
 
                 // Diagonal Left Capture
                 nextPosition = GetNextPosition(whiteDirection, currentCoordinate, new Coordinates<int>(-1, 1));
                 nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
-                if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
+                //if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
                     availableMoves.Add(BoardHelper.GetLetterCoordinates(nextPosition));
             }
 

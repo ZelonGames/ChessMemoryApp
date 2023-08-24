@@ -67,8 +67,7 @@ public partial class CustomVariationSelectorPage : ContentPage
             customVariationBoard.DeleteClicked += CustomVariationBoard_DeleteClicked;
             customVariationBoard.EditClicked += CustomVariationBoard_EditClicked;
             customVariationBoard.playAsBlack = course.PlayAsBlack;
-            customVariationBoard.LoadChessBoard();
-            customVariationBoard.LoadPieces(customVariation.Value.PreviewFen);
+            customVariationBoard.LoadChessBoardFromFen(customVariation.Value.PreviewFen);
             customVariationBoards.Add(customVariationBoard);
         }
 
@@ -82,7 +81,7 @@ public partial class CustomVariationSelectorPage : ContentPage
     {
         customVariationBoard = new CustomVariationChessboard(coursesLayout, boardSize);
         customVariationBoard.playAsBlack = playAsBlack;
-        customVariationBoard.LoadChessBoard();
+        customVariationBoard.LoadSquares();
         customVariationBoards.Add(customVariationBoard);
         customVariationBoard.Clicked += AddCustomVariation_Clicked;
     }

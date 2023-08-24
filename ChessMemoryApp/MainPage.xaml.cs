@@ -38,11 +38,11 @@ public partial class MainPage : ContentPage
 
         #region Create Chessboards
         chessboard = new ChessboardGenerator(mainChessBoard, columnChessBoard, selectedCourse.PlayAsBlack);
-        chessboard.LoadChessBoard();
-        chessboard.LoadFen(selectedCourse.PreviewFen);
+        chessboard.LoadSquares();
+        chessboard.LoadChessBoardFromFen(selectedCourse.PreviewFen);
 
         var fenChessBoard = new FenChessboard(fenChessBoardLayout, new Size(200, 200), chessboard.playAsBlack);
-        fenChessBoard.LoadChessBoard();
+        fenChessBoard.LoadSquares();
         #endregion
 
         #region Initialize Chess Logic Objects
@@ -82,14 +82,14 @@ public partial class MainPage : ContentPage
         {
             editingVariation.Initialize(fenChessBoard, customVariationMovesList);
             editingVariation.ReloadListButtons();
-            chessboard.LoadFen(editingVariation.GetLastFen());
+            chessboard.LoadChessBoardFromFen(editingVariation.GetLastFen());
             chessboard.fenSettings = editingVariation.GetLastFenSettings();
             lichessFenLabel.FenSettingsUpdater_UpdatedFen(editingVariation.GetLastFenSettings().GetLichessFen(chessboard.currentFen));
             var backupMoves = new List<MoveHistory.Move>(editingVariation.moves);
             editingVariation.moves.Clear();
             foreach (var move in backupMoves)
                 moveHistory.AddMove(move);
-            fenChessBoard.LoadFen(editingVariation.PreviewFen);
+            fenChessBoard.LoadChessBoardFromFen(editingVariation.PreviewFen);
         }
 
         lichessMoveExplorer.GetLichessMoves(chessboard.currentFen);

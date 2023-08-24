@@ -49,7 +49,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void CustomVariationMoveNavigator_RevealedMove(string fen)
         {
-            GetChessboard().LoadFen(fen);
+            GetChessboard().LoadChessBoardFromFen(fen);
         }
 
         public void SubscribeToEvents(params object[] subscribers)
@@ -81,7 +81,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         private void OnNextChessableMove(Move move)
         {
             string previousFen = GetChessboard().currentFen;
-            GetChessboard().LoadFen(move.Fen);
+            GetChessboard().LoadChessBoardFromFen(move.Fen);
             MadeChessableMove?.Invoke(move);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, previousFen, move.Fen);
         }
@@ -89,7 +89,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         private void OnNextLichessMove(string fen, ExplorerMove move)
         {
             string previousFen = GetChessboard().currentFen;
-            GetChessboard().LoadFen(fen);
+            GetChessboard().LoadChessBoardFromFen(fen);
             MadeLichessMove?.Invoke(fen, move);
             Piece.ColorType color = Piece.GetColorFromChessboard(GetChessboard());
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Lichess, color, move.MoveNotation, previousFen, GetChessboard().currentFen);
@@ -97,7 +97,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         public void OnPreviousMove(MoveHistory.Move historyMove)
         {
-            GetChessboard().LoadFen(historyMove.fen);
+            GetChessboard().LoadChessBoardFromFen(historyMove.fen);
         }
 
         private void MakeTeleportMove(string fromCoordinates, string toCoordinates)
@@ -107,7 +107,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             if (!removedPiece.HasValue)
                 return;
             moveNotationHelper.chessBoard.currentFen = FenHelper.AddPieceToFEN(newFen, toCoordinates, removedPiece.Value);
-            moveNotationHelper.chessBoard.LoadFen(moveNotationHelper.chessBoard.currentFen);
+            moveNotationHelper.chessBoard.LoadChessBoardFromFen(moveNotationHelper.chessBoard.currentFen);
         }
 
         /// <summary>

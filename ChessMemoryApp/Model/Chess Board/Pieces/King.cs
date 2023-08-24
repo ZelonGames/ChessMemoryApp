@@ -39,8 +39,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
                 if (nextPosition.X >= 1 && nextPosition.X <= 8 && nextPosition.Y >= 1 && nextPosition.Y <= 8)
                 {
-                    if (IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
-                        continue;
+                    //if (IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
+                      //  continue;
 
                     availableMoves.Add(nextPositionNotation);
                 }

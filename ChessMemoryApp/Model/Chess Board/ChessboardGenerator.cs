@@ -13,6 +13,7 @@ using Microsoft.Maui.Controls;
 using ChessMemoryApp.Model.Lichess.Lichess_API;
 using ChessMemoryApp.Model.ChessMoveLogic;
 using static SQLite.TableMapping;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace ChessMemoryApp.Model.Chess_Board
 {
@@ -52,6 +53,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             fenSettings.SetColorToPlay(playAsBlack ? FenSettings.FenColor.WHITE : FenSettings.FenColor.BLACK);
             arePiecesAndSquaresClickable = true;
             this.chessBoardListLayout = chessBoardListLayout;
+
         }
 
         public ChessboardGenerator(AbsoluteLayout chessBoardListLayout, Size size)
@@ -110,13 +112,17 @@ namespace ChessMemoryApp.Model.Chess_Board
             SizeChanged?.Invoke(chessBoardSize, chessBoardListLayout.Bounds);
         }
 
-        public void LoadFen(string fen)
+        public void LoadChessBoardFromFen(string fen)
         {
             if (!FenHelper.IsValidFen(fen))
                 return;
 
-            currentFen = fen;
             LoadTemporaryFen(fen);
+
+            currentFen = fen;
+
+            if (squares.Count == 0)
+                LoadSquares();
         }
 
         public void LoadTemporaryFen(string fen)
@@ -124,30 +130,95 @@ namespace ChessMemoryApp.Model.Chess_Board
             if (!FenHelper.IsValidFen(fen))
                 return;
 
-            ClearPieces();
-            LoadPieces(fen);
+            if (squares.Count == 0)
+                LoadSquares();
+
+            if (currentFen == null)
+                LoadPieces(fen, fen);
+            else
+                LoadPieces(currentFen, fen);
 
             Loaded?.Invoke(fen);
         }
 
-        public void LoadPieces(string fen)
+        public void LoadPieces(string oldFen, string newFen)
         {
+            var piecesToRemove = new List<Piece>();
+            var piecesToAdd = new Dictionary<string, char>();
+            Dictionary<string, char?> newPieces = FenHelper.GetPiecesFromFen(newFen);
+            Dictionary<string, char?> oldPieces = FenHelper.GetPiecesFromFen(oldFen);
+
+            if (oldFen == newFen && pieces.Count > 0)
+            {
+                foreach (var oldPiece in oldPieces)
+                {
+                    if (oldPiece.Key == "a7")
+                    {
+
+                    }
+
+                    if (oldPiece.Value.HasValue && !pieces.ContainsKey(oldPiece.Key))
+                        piecesToAdd.Add(oldPiece.Key, oldPiece.Value.Value);
+                }
+
+                foreach (var piece in pieces)
+                {
+                    if (!oldPieces[piece.Key].HasValue)
+                        piecesToRemove.Add(piece.Value);
+                }
+            }
+            else
+            {
+                if (pieces.Count > 0)
+                {
+                    foreach (var piece in oldPieces)
+                    {
+                        if (!piece.Value.HasValue)
+                            continue;
+
+                        if (!newPieces[piece.Key].HasValue)
+                            piecesToRemove.Add(pieces[piece.Key]);
+                    }
+                }
+
+                foreach (var newPiece in newPieces)
+                {
+                    if (!pieces.ContainsKey(newPiece.Key) && newPiece.Value.HasValue)
+                        piecesToAdd.Add(newPiece.Key, newPiece.Value.Value);
+                }
+            }
+
+            foreach (var pieceToRemove in piecesToRemove)
+                RemovePiece(pieceToRemove);
+
+            foreach (var pieceToAdd in piecesToAdd)
+            {
+                Square square = squares[pieceToAdd.Key];
+                AddPieceToSquare(pieceToAdd.Value, square);
+            }
+
+            /*
             foreach (var square in squares)
             {
                 Piece.Coordinates<int> coordinates = BoardHelper.GetNumberCoordinates(square.Key);
                 TryAddPieceFromFEN(square.Value, fen);
-            }
+            }*/
         }
 
         public void ClearPieces()
         {
             foreach (var piece in pieces.Values)
-            {
-                piece.ResetEvents();
-                UILogicHelper.RemovePieceFromSquare(this, piece);
-            }
+                RemovePiece(piece);
 
             pieces.Clear();
+        }
+
+        public void RemovePiece(Piece piece)
+        {
+            piece.ResetEvents();
+            UILogicHelper.RemovePieceFromSquare(this, piece);
+            string coordinates = BoardHelper.GetLetterCoordinates(piece.currentCoordinate);
+            pieces.Remove(coordinates);
         }
 
         public void ClearSquares()
@@ -168,7 +239,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             ClearSquares();
         }
 
-        public void LoadChessBoard()
+        public void LoadSquares()
         {
             for (int row = 0; row < 8; row++)
             {
@@ -228,16 +299,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             if (!pieceChar.HasValue)
                 return null;
 
-            bool pieceImageFileExists = Piece.pieceFileNames.TryGetValue(pieceChar.Value, out string fileName);
-
-            if (pieceImageFileExists)
-            {
-                piece = new Piece(this, pieceChar.Value, ImageSource.FromFile(fileName + ".png"), arePiecesAndSquaresClickable);
-                piece.currentCoordinate = new Piece.Coordinates<int>(square.coordinate.X, square.coordinate.Y);
-
-                pieces.Add(BoardHelper.GetLetterCoordinates(piece.currentCoordinate), piece);
-                square.contentView.Content = piece.image;
-            }
+            AddPieceToSquare(pieceChar.Value, square);
 
             return piece;
         }
@@ -245,6 +307,24 @@ namespace ChessMemoryApp.Model.Chess_Board
         public Square GetSquare(string coordinates)
         {
             return squares[coordinates];
+        }
+
+        public Piece AddPieceToSquare(char pieceChar, Square square)
+        {
+            bool pieceImageFileExists = Piece.pieceFileNames.TryGetValue(pieceChar, out string fileName);
+
+            if (pieceImageFileExists)
+            {
+                var piece = new Piece(this, pieceChar, arePiecesAndSquaresClickable);
+                piece.currentCoordinate = new Piece.Coordinates<int>(square.coordinate.X, square.coordinate.Y);
+
+                pieces.Add(BoardHelper.GetLetterCoordinates(piece.currentCoordinate), piece);
+                square.contentView.Content = piece.image;
+
+                return piece;
+            }
+
+            return null;
         }
 
         public Piece GetPiece(string coordinates)
