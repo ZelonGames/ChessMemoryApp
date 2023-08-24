@@ -152,13 +152,25 @@ namespace ChessMemoryApp.Model.Chess_Board
             {
                 foreach (var oldPiece in oldPieces)
                 {
-                    if (oldPiece.Value.HasValue && !pieces.ContainsKey(oldPiece.Key))
+                    if (!oldPiece.Value.HasValue)
+                        continue;
+
+                    bool isCaptured =
+                        pieces.ContainsKey(oldPiece.Key) &&
+                        pieces[oldPiece.Key].pieceChar != oldPiece.Value;
+
+                    if (oldPiece.Value.HasValue && !pieces.ContainsKey(oldPiece.Key) ||
+                        isCaptured)
                         piecesToAdd.Add(oldPiece.Key, oldPiece.Value.Value);
                 }
 
                 foreach (var piece in pieces)
                 {
-                    if (!oldPieces[piece.Key].HasValue)
+                    bool isCaptured = 
+                        oldPieces[piece.Key].HasValue && 
+                        oldPieces[piece.Key].Value != piece.Value.pieceChar;
+
+                    if (!oldPieces[piece.Key].HasValue || isCaptured)
                         piecesToRemove.Add(piece.Value);
                 }
             }
@@ -168,27 +180,27 @@ namespace ChessMemoryApp.Model.Chess_Board
                 {
                     foreach (var piece in oldPieces)
                     {
-                        if (piece.Key == "e4")
-                        {
-
-                        }
-
                         if (!piece.Value.HasValue)
                             continue;
 
-                        if (!newPieces[piece.Key].HasValue)
+                        bool isPieceCaptured =
+                            newPieces[piece.Key].HasValue && piece.Value.HasValue &&
+                            newPieces[piece.Key].Value != piece.Value.Value;
+
+                        if (!newPieces[piece.Key].HasValue || isPieceCaptured)
                             piecesToRemove.Add(pieces[piece.Key]);
                     }
                 }
 
                 foreach (var newPiece in newPieces)
                 {
-                    if (newPiece.Key == "f5")
-                    {
+                    bool isPieceCaptured = 
+                        pieces.ContainsKey(newPiece.Key) && 
+                        newPiece.Value.HasValue &&
+                        pieces[newPiece.Key].pieceChar != newPiece.Value.Value;
 
-                    }
-
-                    if (!pieces.ContainsKey(newPiece.Key) && newPiece.Value.HasValue)
+                    if (!pieces.ContainsKey(newPiece.Key) && newPiece.Value.HasValue ||
+                        isPieceCaptured)
                         piecesToAdd.Add(newPiece.Key, newPiece.Value.Value);
                 }
             }
@@ -201,13 +213,6 @@ namespace ChessMemoryApp.Model.Chess_Board
                 Square square = squares[pieceToAdd.Key];
                 AddPieceToSquare(pieceToAdd.Value, square);
             }
-
-            /*
-            foreach (var square in squares)
-            {
-                Piece.Coordinates<int> coordinates = BoardHelper.GetNumberCoordinates(square.Key);
-                TryAddPieceFromFEN(square.Value, fen);
-            }*/
         }
 
         public void ClearPieces()
