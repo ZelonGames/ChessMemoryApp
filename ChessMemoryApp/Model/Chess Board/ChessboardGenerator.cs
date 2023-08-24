@@ -152,11 +152,6 @@ namespace ChessMemoryApp.Model.Chess_Board
             {
                 foreach (var oldPiece in oldPieces)
                 {
-                    if (oldPiece.Key == "a7")
-                    {
-
-                    }
-
                     if (oldPiece.Value.HasValue && !pieces.ContainsKey(oldPiece.Key))
                         piecesToAdd.Add(oldPiece.Key, oldPiece.Value.Value);
                 }
@@ -173,6 +168,11 @@ namespace ChessMemoryApp.Model.Chess_Board
                 {
                     foreach (var piece in oldPieces)
                     {
+                        if (piece.Key == "e4")
+                        {
+
+                        }
+
                         if (!piece.Value.HasValue)
                             continue;
 
@@ -183,6 +183,11 @@ namespace ChessMemoryApp.Model.Chess_Board
 
                 foreach (var newPiece in newPieces)
                 {
+                    if (newPiece.Key == "f5")
+                    {
+
+                    }
+
                     if (!pieces.ContainsKey(newPiece.Key) && newPiece.Value.HasValue)
                         piecesToAdd.Add(newPiece.Key, newPiece.Value.Value);
                 }

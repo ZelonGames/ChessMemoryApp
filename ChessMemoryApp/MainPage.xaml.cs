@@ -66,7 +66,7 @@ public partial class MainPage : ContentPage
         moveHistory.AddFirstHistoryMove(courseMoveNavigator);
 
         #region Event Subscriptions
-        courseMoveNavigator.SubscribeToEvents(buttonNext);
+        courseMoveNavigator.SubscribeToEvents(buttonStart, buttonNext);
         pieceMover.SubscribeToEvents(courseMoveNavigator);
         moveHistory.SubscribeToEvents(pieceMover, buttonPrevious);
         fenSettingsUpdater.SubscribeToEvents(pieceMover, moveHistory);

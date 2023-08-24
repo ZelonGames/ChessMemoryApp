@@ -35,7 +35,11 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         public void OnButtonStartClicked(object sender, EventArgs args)
         {
-            GetRelativeMove(Course.MoveNavigation.Start, chessboard.currentFen);
+            Move move = GetRelativeMove(Course.MoveNavigation.Start, course.PreviewFen);
+            if (move != null)
+            {
+                RequestedNextChessableMove?.Invoke(move);
+            }
         }
 
         public void OnButtonNextClicked(object sender, EventArgs args)
@@ -63,7 +67,17 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         public void SubscribeToEvents(params object[] subscribers)
         {
-            (subscribers.First() as Button).Clicked += OnButtonNextClicked;
+            foreach (var subscriber in subscribers)
+            {
+                if (subscriber is Button)
+                {
+                    var button = (subscriber as Button);
+                    if (button.Text == ">")
+                        button.Clicked += OnButtonNextClicked;
+                    else if (button.Text == "<<")
+                        button.Clicked += OnButtonStartClicked;
+                }
+            }
         }
     }
 }

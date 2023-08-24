@@ -82,7 +82,7 @@ namespace ChessMemoryApp.Model.CourseMaker
             switch (moveNavigation)
             {
                 case MoveNavigation.Start:
-                    moveIndex = 0;
+                    //moveIndex = 0;
                     break;
                 case MoveNavigation.Next:
                     moveIndex++;
