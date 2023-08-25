@@ -34,6 +34,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         public Piece.Coordinates<double> offset = new();
         public Size BoardSize { get; private set; }
 
+        public bool IsEmpty => pieces.Count == 0;
         public bool playAsBlack;
 
         public string currentFen;
@@ -145,64 +146,36 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             var piecesToRemove = new List<Piece>();
             var piecesToAdd = new Dictionary<string, char>();
+
             Dictionary<string, char?> newPieces = FenHelper.GetPiecesFromFen(newFen);
             Dictionary<string, char?> oldPieces = FenHelper.GetPiecesFromFen(oldFen);
 
-            if (oldFen == newFen && pieces.Count > 0)
+            if (!IsEmpty)
             {
-                foreach (var oldPiece in oldPieces)
+                foreach (var piece in oldPieces)
                 {
-                    if (!oldPiece.Value.HasValue)
+                    if (!piece.Value.HasValue)
                         continue;
 
-                    bool isCaptured =
-                        pieces.ContainsKey(oldPiece.Key) &&
-                        pieces[oldPiece.Key].pieceChar != oldPiece.Value;
+                    bool isPieceCaptured =
+                        newPieces[piece.Key].HasValue && piece.Value.HasValue &&
+                        newPieces[piece.Key].Value != piece.Value.Value;
 
-                    if (oldPiece.Value.HasValue && !pieces.ContainsKey(oldPiece.Key) ||
-                        isCaptured)
-                        piecesToAdd.Add(oldPiece.Key, oldPiece.Value.Value);
-                }
-
-                foreach (var piece in pieces)
-                {
-                    bool isCaptured = 
-                        oldPieces[piece.Key].HasValue && 
-                        oldPieces[piece.Key].Value != piece.Value.pieceChar;
-
-                    if (!oldPieces[piece.Key].HasValue || isCaptured)
-                        piecesToRemove.Add(piece.Value);
+                    if (!newPieces[piece.Key].HasValue || isPieceCaptured)
+                        piecesToRemove.Add(pieces[piece.Key]);
                 }
             }
-            else
+
+            foreach (var newPiece in newPieces)
             {
-                if (pieces.Count > 0)
-                {
-                    foreach (var piece in oldPieces)
-                    {
-                        if (!piece.Value.HasValue)
-                            continue;
+                bool isPieceCaptured =
+                    pieces.ContainsKey(newPiece.Key) &&
+                    newPiece.Value.HasValue &&
+                    pieces[newPiece.Key].pieceChar != newPiece.Value.Value;
 
-                        bool isPieceCaptured =
-                            newPieces[piece.Key].HasValue && piece.Value.HasValue &&
-                            newPieces[piece.Key].Value != piece.Value.Value;
-
-                        if (!newPieces[piece.Key].HasValue || isPieceCaptured)
-                            piecesToRemove.Add(pieces[piece.Key]);
-                    }
-                }
-
-                foreach (var newPiece in newPieces)
-                {
-                    bool isPieceCaptured = 
-                        pieces.ContainsKey(newPiece.Key) && 
-                        newPiece.Value.HasValue &&
-                        pieces[newPiece.Key].pieceChar != newPiece.Value.Value;
-
-                    if (!pieces.ContainsKey(newPiece.Key) && newPiece.Value.HasValue ||
-                        isPieceCaptured)
-                        piecesToAdd.Add(newPiece.Key, newPiece.Value.Value);
-                }
+                if (!pieces.ContainsKey(newPiece.Key) && newPiece.Value.HasValue ||
+                    isPieceCaptured)
+                    piecesToAdd.Add(newPiece.Key, newPiece.Value.Value);
             }
 
             foreach (var pieceToRemove in piecesToRemove)

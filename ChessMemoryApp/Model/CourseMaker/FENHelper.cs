@@ -296,6 +296,39 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         public static string MakeMoveWithCoordinates(string currentFen, string moveNotationCoordinates)
         {
+            string newFen;
+            if (moveNotationCoordinates == "e1h1")
+            {
+                // White king side castle
+                newFen = TeleportPiece(currentFen, "e1g1");
+                newFen = TeleportPiece(newFen, "h1f1");
+            }
+            else if (moveNotationCoordinates == "e1a1")
+            {
+                // White queen side castle
+                newFen = TeleportPiece(currentFen, "e1c1");
+                newFen = TeleportPiece(newFen, "a1d1");
+            }
+            else if (moveNotationCoordinates == "e8h8")
+            {
+                // Black king side castle
+                newFen = TeleportPiece(currentFen, "e8g8");
+                newFen = TeleportPiece(newFen, "h8f8");
+            }
+            else if (moveNotationCoordinates == "e8a8")
+            {
+                // Black queen side castle
+                newFen = TeleportPiece(currentFen, "e8c8");
+                newFen = TeleportPiece(newFen, "a8d8");
+            }
+            else
+                newFen = TeleportPiece(currentFen, moveNotationCoordinates);
+
+            return newFen;
+        }
+
+        public static string TeleportPiece(string currentFen, string moveNotationCoordinates)
+        {
             string fromCoordinates = moveNotationCoordinates[..2];
             char? pieceChar = GetPieceOnSquare(currentFen, fromCoordinates);
             if (!pieceChar.HasValue)
@@ -346,9 +379,8 @@ namespace ChessMemoryApp.Model.CourseMaker
         /// Converts for example Nf3 to g2f3 based on the given fen
         /// </summary>
         /// <param name="fen"></param>
-        /// <param name="moveNotation"></param>
-        /// <param name="color"></param>
-        /// <returns></returns>
+        /// <param name="moveNotation">Nf3</param>
+        /// <returns>"g2f3"</returns>
         public static string ConvertToMoveNotationCoordinates(string fen, string moveNotation)
         {
             Piece.ColorType color = GetColorFromFen(fen);
@@ -372,6 +404,46 @@ namespace ChessMemoryApp.Model.CourseMaker
             string toCoordinates = BoardHelper.GetToCoordinatesString(moveNotation);
 
             return fromCoordinates + toCoordinates;
+        }
+
+        /// <summary>
+        /// Converts for example g2f3 to Nf3 based on the given fen
+        /// </summary>
+        /// <param name="fen"></param>
+        /// <param name="moveNotationCoordinates">g2f3</param>
+        /// <returns>"Nf3"</returns>
+        public static string ConvertCoordinatesToMoveNotation(string fen, string moveNotationCoordinates)
+        {
+            string fromCoordinates = moveNotationCoordinates[2..];
+            string toCoordinates = moveNotationCoordinates[..2];
+
+            if (fromCoordinates == "e1" && toCoordinates == "h1" ||
+                fromCoordinates == "e8" && toCoordinates == "h8")
+                return "O-O";
+
+            if (fromCoordinates == "e1" && toCoordinates == "c1" ||
+                fromCoordinates == "e8" && toCoordinates == "c8")
+                return "O-O-O";
+
+            char? piece = GetPieceOnSquare(fen, fromCoordinates);
+            if (!piece.HasValue)
+                return null;
+
+            char? capturedPiece = GetPieceOnSquare(fen, toCoordinates);
+
+            string moveNotation;
+
+            if (Char.ToUpper(piece.Value) != 'P')
+                moveNotation = Char.ToUpper(piece.Value).ToString();
+            else
+                moveNotation = fromCoordinates[0].ToString();
+
+            if (capturedPiece.HasValue)
+                moveNotation += "x";
+
+            moveNotation += toCoordinates;
+
+            return moveNotation;
         }
 
         public static string GetMoveNotationCoordinates(string previousFen, string nextFen, Piece.ColorType color)
