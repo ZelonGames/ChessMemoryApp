@@ -22,15 +22,21 @@ namespace ChessMemoryApp.Services
                 await DB.InsertAsync(jsonObject);
         }
 
-        public static async Task<Dictionary<string, CustomVariation>> GetAll(Course course)
+        public static async Task Update(CustomVariation customVariation)
+        {
+            await CreateDatabase();
+            customVariation.JsonData = JsonConvert.SerializeObject(customVariation);
+            await DB.UpdateAsync(customVariation);
+        }
+
+        public static async Task<Dictionary<string, CustomVariation>> GetAllFromCourse(Course course)
         {
             await CreateDatabase();
 
             var jsonObjects = new Dictionary<string, CustomVariation>();
-            var objects = await DB.Table<CustomVariation>()
-                .Where(x => x.CourseName == course.Name).ToListAsync();
+            var objects = await DB.Table<CustomVariation>().ToListAsync();
 
-            foreach (var _object in objects)
+            foreach (var _object in objects.Where(x => x.CourseName == course.Name))
             {
                 if (_object.JsonData == null)
                     continue;

@@ -14,6 +14,8 @@ namespace ChessMemoryApp.Model.UI_Components
         private readonly Label labelTextName;
         private readonly ContentView clickView = new();
 
+        private bool IsUsingTitle => labelTextName.Text.Length > 0;
+
         public UICourseChessBoard(Size size, AbsoluteLayout chessBoardLayout, string text)
         {
             labelTextName = new()
@@ -37,6 +39,12 @@ namespace ChessMemoryApp.Model.UI_Components
             }
         }
 
+        public void DisableTitle()
+        {
+            labelTextName.Text = "";
+            HideUI();
+        }
+
         public void AddGestureRecognizers(
             TapGestureRecognizer tapGestureRecognizer,
             EventHandler<PointerEventArgs> OnBoardEntered,
@@ -58,7 +66,7 @@ namespace ChessMemoryApp.Model.UI_Components
         public void ShowUI()
         {
             clickView.BackgroundColor = Color.FromRgba(0, 0, 0, 60);
-            if (labelTextName.Text.Length > 0)
+            if (IsUsingTitle)
                 labelTextName.BackgroundColor = Color.FromRgba(255, 255, 255, 200);
             labelTextName.TextColor = Color.FromRgba("000");
         }
@@ -66,8 +74,7 @@ namespace ChessMemoryApp.Model.UI_Components
         public void HideUI()
         {
             clickView.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
-            if (labelTextName.Text.Length > 0)
-                labelTextName.BackgroundColor = Color.FromRgba(255, 255, 255, 0);
+            labelTextName.BackgroundColor = Color.FromRgba(255, 255, 255, 0);
             labelTextName.TextColor = Color.FromRgba(255, 255, 255, 0);
         }
 

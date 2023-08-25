@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Model.UI_Helpers;
-using System.Data.Common;
-using ChessMemoryApp.Model.UI_Helpers.Main_Page;
-using Microsoft.Maui.Controls;
 using ChessMemoryApp.Model.Lichess.Lichess_API;
 using ChessMemoryApp.Model.ChessMoveLogic;
-using static SQLite.TableMapping;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace ChessMemoryApp.Model.Chess_Board
 {

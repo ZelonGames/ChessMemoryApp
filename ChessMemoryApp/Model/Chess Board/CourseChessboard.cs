@@ -19,7 +19,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public readonly Course course;
         protected readonly TapGestureRecognizer tapGestureRecognizer;
-        private readonly UICourseChessBoard uiCourseChessBoard;
+        protected readonly UICourseChessBoard uiCourseChessBoard;
 
         public string fen;
 

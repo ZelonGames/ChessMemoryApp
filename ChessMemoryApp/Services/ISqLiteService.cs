@@ -20,6 +20,8 @@ namespace ChessMemoryApp.Services
     public interface ISqLiteService_CustomVariation : ISqLiteService<CustomVariation>
     {
         public string JsonData { get; set; }
+        public string CourseName { get; set; }
+        public int SortingOrder { get; set; }
     }
 
     public interface ISqLiteService_Course : ISqLiteService<Course>

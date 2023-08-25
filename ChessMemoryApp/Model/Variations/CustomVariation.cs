@@ -20,6 +20,9 @@ namespace ChessMemoryApp.Model.Variations
         public int ID { get; set; }
 
         [JsonIgnore]
+        public int SortingOrder { get; set; }
+
+        [JsonIgnore]
         public string CourseName { get; set; }
 
         [JsonIgnore]

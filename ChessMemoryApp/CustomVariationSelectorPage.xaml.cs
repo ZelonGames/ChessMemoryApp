@@ -46,20 +46,27 @@ public partial class CustomVariationSelectorPage : ContentPage
         await Shell.Current.GoToAsync(nameof(SearchPage), parameters);
     }
 
+    private async Task UpdateVariationSortingOrder(Dictionary<string, CustomVariation> customVariations, string previewFen, int sortingOrder)
+    {
+        previewFen = previewFen.Split(' ')[0];
+        CustomVariation customVariation = customVariations.Where(x => x.Value.PreviewFen.Split(' ')[0] == previewFen).FirstOrDefault().Value;
+        customVariation.SortingOrder = sortingOrder;
+        await CustomVariationService.Update(customVariation);
+    }
+
     public async void ReloadUI(Course course)
     {
         customVariationBoards.ForEach(x => x.ClearBoard());
         customVariationBoards.Clear();
         coursesLayout.Clear();
-        var customVariations = await CustomVariationService.GetAll(course);
-
+        var customVariations = await CustomVariationService.GetAllFromCourse(course);
         CustomVariationChessboard customVariationBoard = null;
 
         bool shouldAddFirst = customVariations.Count > 6;
         if (shouldAddFirst)
             AddNewCustomVariationBoardButton(customVariationBoard, course.PlayAsBlack);
 
-        foreach (var customVariation in customVariations)
+        foreach (var customVariation in customVariations.OrderBy(x => x.Value.SortingOrder))
         {
             customVariationBoard = new CustomVariationChessboard(customVariation.Value, coursesLayout, boardSize);
             customVariationBoard.Clicked += PracticeCustomVariation_Clicked;

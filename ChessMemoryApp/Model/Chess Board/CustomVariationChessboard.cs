@@ -26,6 +26,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
             this.customVariation = customVariation;
             uiCustomVariationChessBoard = new UICustomVariationChessBoard(chessBoardListLayout, customVariation);
+            uiCourseChessBoard.DisableTitle();
             
             uiCustomVariationChessBoard.EditClicked += UiCustomVariationChessBoard_EditClicked;
             uiCustomVariationChessBoard.DeleteClicked += UiCustomVariationChessBoard_DeleteClicked;
