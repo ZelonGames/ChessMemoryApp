@@ -265,28 +265,6 @@ namespace ChessMemoryApp.Model.Chess_Board
             return square;
         }
 
-        /// <summary>
-        /// Tries to add a piece to a given square based on FEN
-        /// </summary>
-        /// <param name="square">If this square is in the FEN, a piece will be added to it</param>
-        /// <param name="fen"></param>
-        /// <param name="tempPieces"></param>
-        /// <returns></returns>
-        private Piece TryAddPieceFromFEN(Square square, string fen)
-        {
-            Piece piece = null;
-
-            char? pieceChar = FenHelper.GetPieceOnSquare(fen, BoardHelper.GetLetterCoordinates(
-                new Piece.Coordinates<int>(square.coordinate.X, square.coordinate.Y)));
-
-            if (!pieceChar.HasValue)
-                return null;
-
-            AddPieceToSquare(pieceChar.Value, square);
-
-            return piece;
-        }
-
         public Square GetSquare(string coordinates)
         {
             return squares[coordinates];
