@@ -75,6 +75,9 @@ namespace ChessMemoryApp.Model.CourseMaker
         {
             var pieces = new Dictionary<string, char?>();
 
+            if (!FenHelper.IsValidFen(fen))
+                return pieces;
+
             for (char row = '1'; row <= '8'; row++)
             {
                 for (char column = 'a'; column <= 'h'; column++)

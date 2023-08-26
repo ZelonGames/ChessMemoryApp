@@ -51,15 +51,13 @@ namespace ChessMemoryApp.Model.UI_Components
         private void OnPointerExited(object sender, PointerEventArgs e)
         {
             if (!isClickingButton)
-                chessBoard.LoadPieces(previewFen, initialFen);
+                chessBoard.LoadTemporaryFen(initialFen);
         }
 
         private void OnPointerEntered(object sender, PointerEventArgs e)
         {
             if (!isClickingButton)
-            {
-                chessBoard.LoadPieces(initialFen, previewFen);
-            }
+                chessBoard.LoadTemporaryFen(previewFen);
         }
 
         public void RequestNewFen(object sender, EventArgs e)

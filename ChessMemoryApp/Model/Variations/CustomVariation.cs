@@ -120,8 +120,6 @@ namespace ChessMemoryApp.Model.Variations
                 listButton.CustomVariationButtonClicked += ListButton_CustomVariationButtonClicked;
                 verticalStackLayout.Add(listButton.button);
             }
-
-            //verticalStackLayout.HeightRequest = ListButton.BUTTON_HEIGHT * moves.Count;
         }
 
         private void ListButton_CustomVariationButtonClicked(string fen)

@@ -114,11 +114,7 @@ namespace ChessMemoryApp.Model.Chess_Board
                 return;
 
             LoadTemporaryFen(fen);
-
             currentFen = fen;
-
-            if (squares.Count == 0)
-                LoadSquares();
         }
 
         public void LoadTemporaryFen(string fen)
@@ -129,43 +125,33 @@ namespace ChessMemoryApp.Model.Chess_Board
             if (squares.Count == 0)
                 LoadSquares();
 
-            if (currentFen == null)
-                LoadPieces(fen, fen);
-            else
-                LoadPieces(currentFen, fen);
+            LoadPieces(fen);
 
             Loaded?.Invoke(fen);
         }
 
-        public void LoadPieces(string oldFen, string newFen)
+        public void LoadPieces(string newFen)
         {
-            if (oldFen == newFen && pieces.Count > 0)
-                return;
-
             var piecesToRemove = new List<Piece>();
             var piecesToAdd = new Dictionary<string, char>();
 
             Dictionary<string, char?> newPieces = FenHelper.GetPiecesFromFen(newFen);
-            Dictionary<string, char?> oldPieces = FenHelper.GetPiecesFromFen(oldFen);
 
             if (!IsEmpty)
             {
-                foreach (var piece in oldPieces)
+                foreach (var piece in pieces)
                 {
-                    if (!piece.Value.HasValue)
-                        continue;
-
                     bool isPieceCaptured =
-                        newPieces[piece.Key].HasValue && piece.Value.HasValue &&
-                        newPieces[piece.Key].Value != piece.Value.Value;
+                        newPieces[piece.Key].HasValue &&
+                        newPieces[piece.Key].Value != piece.Value.pieceChar;
 
-                    bool isNewPieceSameAsCurrentPiece = 
-                        newPieces[piece.Key].HasValue && pieces.ContainsKey(piece.Key) && 
-                        newPieces[piece.Key].Value == pieces[piece.Key].pieceChar;
+                    bool isNewPieceSameAsCurrentPiece =
+                        newPieces[piece.Key].HasValue &&
+                        newPieces[piece.Key].Value == piece.Value.pieceChar;
 
-                    if ((!newPieces[piece.Key].HasValue || isPieceCaptured) && 
+                    if ((!newPieces[piece.Key].HasValue || isPieceCaptured) &&
                         pieces.ContainsKey(piece.Key) && !isNewPieceSameAsCurrentPiece)
-                        piecesToRemove.Add(pieces[piece.Key]);
+                        piecesToRemove.Add(piece.Value);
                 }
             }
 
