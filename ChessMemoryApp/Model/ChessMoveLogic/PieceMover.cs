@@ -106,8 +106,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             string newFen = FenHelper.RemovePieceFromFEN(moveNotationHelper.chessBoard.currentFen, fromCoordinates, out removedPiece);
             if (!removedPiece.HasValue)
                 return;
-            moveNotationHelper.chessBoard.currentFen = FenHelper.AddPieceToFEN(newFen, toCoordinates, removedPiece.Value);
-            moveNotationHelper.chessBoard.LoadChessBoardFromFen(moveNotationHelper.chessBoard.currentFen);
+            newFen = FenHelper.AddPieceToFEN(newFen, toCoordinates, removedPiece.Value);
+            moveNotationHelper.chessBoard.LoadChessBoardFromFen(newFen);
         }
 
         /// <summary>

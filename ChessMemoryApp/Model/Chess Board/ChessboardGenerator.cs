@@ -139,6 +139,9 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public void LoadPieces(string oldFen, string newFen)
         {
+            if (oldFen == newFen && pieces.Count > 0)
+                return;
+
             var piecesToRemove = new List<Piece>();
             var piecesToAdd = new Dictionary<string, char>();
 
@@ -156,7 +159,12 @@ namespace ChessMemoryApp.Model.Chess_Board
                         newPieces[piece.Key].HasValue && piece.Value.HasValue &&
                         newPieces[piece.Key].Value != piece.Value.Value;
 
-                    if (!newPieces[piece.Key].HasValue || isPieceCaptured)
+                    bool isNewPieceSameAsCurrentPiece = 
+                        newPieces[piece.Key].HasValue && 
+                        newPieces[piece.Key].Value == pieces[piece.Key].pieceChar;
+
+                    if ((!newPieces[piece.Key].HasValue || isPieceCaptured) && 
+                        pieces.ContainsKey(piece.Key) && !isNewPieceSameAsCurrentPiece)
                         piecesToRemove.Add(pieces[piece.Key]);
                 }
             }

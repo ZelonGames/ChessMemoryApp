@@ -18,7 +18,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         public event ChessableClickHandler Clicked;
 
         protected readonly TapGestureRecognizer tapGestureRecognizer;
-        private readonly UICourseChessBoard uiCourseChessBoard;
+        private readonly UITitleChessBoard uiCourseChessBoard;
 
         public string fen;
 
@@ -28,7 +28,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
 
-            uiCourseChessBoard = new UICourseChessBoard(size, chessBoardLayout, "");
+            uiCourseChessBoard = new UITitleChessBoard(size, chessBoardLayout, "");
             uiCourseChessBoard.AddGestureRecognizers(tapGestureRecognizer, OnBoardEntered, OnBoardExited);
         }
 

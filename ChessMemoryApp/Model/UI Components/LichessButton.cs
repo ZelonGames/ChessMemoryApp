@@ -27,13 +27,15 @@ namespace ChessMemoryApp.Model.UI_Components
 
         private bool isClickingButton = false;
         private readonly string initialFen;
-        private string previewFen;
+        private readonly string previewFen;
 
         public string Text => button.Text;
 
         public LichessButton(ChessboardGenerator chessBoard, Button button, ExplorerMove move)
         {
             initialFen = chessBoard.currentFen;
+            previewFen = FenHelper.MakeMoveWithCoordinates(initialFen, move.MoveNotationCoordinates);
+
             this.chessBoard = chessBoard;
             this.move = move;
             this.button = button;
@@ -56,19 +58,15 @@ namespace ChessMemoryApp.Model.UI_Components
         {
             if (!isClickingButton)
             {
-                if (previewFen == null)
-                    previewFen = FenHelper.MakeMoveWithCoordinates(initialFen, move.MoveNotationCoordinates);
-
                 chessBoard.LoadPieces(initialFen, previewFen);
             }
         }
 
         public void RequestNewFen(object sender, EventArgs e)
         {
-            chessBoard.LoadChessBoardFromFen(initialFen);
+            chessBoard.LoadChessBoardFromFen(previewFen);
             isClickingButton = true;
-            string newFen = FenHelper.MakeMoveWithCoordinates(initialFen, move.MoveNotationCoordinates);
-            RequestedNewFen?.Invoke(newFen, move);
+            RequestedNewFen?.Invoke(previewFen, move);
         }
     }
 }

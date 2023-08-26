@@ -19,6 +19,9 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public readonly CustomVariation customVariation;
         private readonly UICustomVariationChessBoard uiCustomVariationChessBoard;
+        private readonly UISortingButtonsChessBoard uiSortingButtonsChessBoard;
+
+        private bool hasMoved = false;
 
         public CustomVariationChessboard(CustomVariation customVariation, AbsoluteLayout chessBoardListLayout, Size size) : 
             base(customVariation.Course, chessBoardListLayout, size)
@@ -26,13 +29,28 @@ namespace ChessMemoryApp.Model.Chess_Board
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
             this.customVariation = customVariation;
             uiCustomVariationChessBoard = new UICustomVariationChessBoard(chessBoardListLayout, customVariation);
-            uiCourseChessBoard.DisableTitle();
+            uiTitleChessBoard.DisableTitle();
+
+            uiSortingButtonsChessBoard = new UISortingButtonsChessBoard(chessBoardListLayout);
+            uiSortingButtonsChessBoard.AddGestureRecognizers(tapGestureRecognizer);
+            uiSortingButtonsChessBoard.PointerExited += ResetPosition;
             
             uiCustomVariationChessBoard.EditClicked += UiCustomVariationChessBoard_EditClicked;
             uiCustomVariationChessBoard.DeleteClicked += UiCustomVariationChessBoard_DeleteClicked;
             uiCustomVariationChessBoard.DeleteButtonEntered += UiCustomVariationChessBoard_DeleteButtonEntered;
             uiCustomVariationChessBoard.DeleteButtonExited += UiCustomVariationChessBoard_DeleteButtonExited;
             uiCustomVariationChessBoard.HideUI();
+        }
+
+        private void ResetPosition()
+        {
+            if (hasMoved)
+            {
+                offset.X -= 20;
+                UpdateSquaresBounds();
+                uiSortingButtonsChessBoard.HideUI();
+                hasMoved = false;
+            }
         }
 
         public CustomVariationChessboard(AbsoluteLayout chessBoardLayout, Size size) :
@@ -44,7 +62,14 @@ namespace ChessMemoryApp.Model.Chess_Board
         public override void OnBoardEntered(object sender, EventArgs e)
         {
             base.OnBoardEntered(sender, e);
+            if (!hasMoved && uiSortingButtonsChessBoard != null)
+            {
+                offset.X += 20;
+                hasMoved = true;
+                UpdateSquaresBounds();
+            }
             uiCustomVariationChessBoard?.ShowUI();
+            uiSortingButtonsChessBoard?.ShowUI();
         }
 
         public override void OnBoardExited(object sender, EventArgs e)
@@ -57,6 +82,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             base.UpdateSquaresBounds();
             uiCustomVariationChessBoard?.UpdateUIPosition(offset);
+            uiSortingButtonsChessBoard?.UpdateUIPosition(BoardSize, offset);
         }
 
         private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)

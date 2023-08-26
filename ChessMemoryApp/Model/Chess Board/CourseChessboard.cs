@@ -19,7 +19,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public readonly Course course;
         protected readonly TapGestureRecognizer tapGestureRecognizer;
-        protected readonly UICourseChessBoard uiCourseChessBoard;
+        protected readonly UITitleChessBoard uiTitleChessBoard;
 
         public string fen;
 
@@ -30,8 +30,19 @@ namespace ChessMemoryApp.Model.Chess_Board
             tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
 
-            uiCourseChessBoard = new UICourseChessBoard(size, chessBoardLayout, course != null ? course.Name : "Add new");
-            uiCourseChessBoard.AddGestureRecognizers(tapGestureRecognizer, OnBoardEntered, OnBoardExited);
+            uiTitleChessBoard = new UITitleChessBoard(size, chessBoardLayout, course != null ? course.Name : "Add new");
+            uiTitleChessBoard.AddGestureRecognizers(tapGestureRecognizer, OnBoardEntered, OnBoardExited);
+        }
+
+        public CourseChessboard(Course course, AbsoluteLayout chessBoardLayout, Size size, string title) :
+            base(chessBoardLayout, size)
+        {
+            this.course = course;
+            tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
+
+            uiTitleChessBoard = new UITitleChessBoard(size, chessBoardLayout, title);
+            uiTitleChessBoard.AddGestureRecognizers(tapGestureRecognizer, OnBoardEntered, OnBoardExited);
         }
 
         private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
@@ -42,18 +53,18 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public virtual void OnBoardEntered(object sender, EventArgs e)
         {
-            uiCourseChessBoard.HideUI();
+            uiTitleChessBoard.HideUI();
         }
 
         public virtual void OnBoardExited(object sender, EventArgs e)
         {
-            uiCourseChessBoard.ShowUI();
+            uiTitleChessBoard.ShowUI();
         }
 
         public void HideUI()
         {
-            uiCourseChessBoard.ClearGestureRecognizers();
-            uiCourseChessBoard.HideUI();
+            uiTitleChessBoard.ClearGestureRecognizers();
+            uiTitleChessBoard.HideUI();
         }
 
         public async void OnBoardClicked(object sender, EventArgs e)
@@ -64,7 +75,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         public override void UpdateSquaresBounds()
         {
             base.UpdateSquaresBounds();
-            uiCourseChessBoard.UpdateUIPosition(BoardSize, offset);
+            uiTitleChessBoard.UpdateUIPosition(BoardSize, offset);
         }
     }
 }

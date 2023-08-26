@@ -9,14 +9,18 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.UI_Components
 {
-    public class UICourseChessBoard
+    /// <summary>
+    /// A white box with black text in the center of a chessboard button
+    /// Also a transparent black box covering the entire board that you can click on
+    /// </summary>
+    public class UITitleChessBoard
     {
         private readonly Label labelTextName;
         private readonly ContentView clickView = new();
 
         private bool IsUsingTitle => labelTextName.Text.Length > 0;
 
-        public UICourseChessBoard(Size size, AbsoluteLayout chessBoardLayout, string text)
+        public UITitleChessBoard(Size size, AbsoluteLayout chessBoardLayout, string text)
         {
             labelTextName = new()
             {

@@ -17,13 +17,13 @@ public partial class CustomVariationSelectorPage : ContentPage
     private Course selectedCourse = null;
 
     public CustomVariationSelectorPage(CustomVariationSelectorViewModel customVariationSelectorViewModel)
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         this.customVariationSelectorViewModel = customVariationSelectorViewModel;
         BindingContext = customVariationSelectorViewModel;
         this.selectorPageController = new SelectorPageController<CourseChessboard>(customVariationBoards, coursesLayout, selectedCourse);
         Appearing += CustomVariationSelectorPage_Appearing;
-	}
+    }
 
     private void CustomVariationSelectorPage_Appearing(object sender, EventArgs e)
     {
@@ -62,9 +62,7 @@ public partial class CustomVariationSelectorPage : ContentPage
         var customVariations = await CustomVariationService.GetAllFromCourse(course);
         CustomVariationChessboard customVariationBoard = null;
 
-        bool shouldAddFirst = customVariations.Count > 6;
-        if (shouldAddFirst)
-            AddNewCustomVariationBoardButton(customVariationBoard, course.PlayAsBlack);
+        AddNewCustomVariationBoardButton(customVariationBoard, course.PlayAsBlack);
 
         foreach (var customVariation in customVariations.OrderBy(x => x.Value.SortingOrder))
         {
@@ -77,9 +75,6 @@ public partial class CustomVariationSelectorPage : ContentPage
             customVariationBoard.LoadChessBoardFromFen(customVariation.Value.PreviewFen);
             customVariationBoards.Add(customVariationBoard);
         }
-
-        if (!shouldAddFirst)
-            AddNewCustomVariationBoardButton(customVariationBoard, course.PlayAsBlack);
 
         selectorPageController.Window_SizeChanged(this, null);
     }
