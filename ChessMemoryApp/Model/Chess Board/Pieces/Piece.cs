@@ -191,7 +191,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
             }
 
-            char? piece = FenHelper.GetPieceOnSquare(fen, pieceCoordinates).Value;
+            char? piece = FenHelper.GetPieceOnSquare(fen, pieceCoordinates);
             if (!piece.HasValue)
                 return false;
 

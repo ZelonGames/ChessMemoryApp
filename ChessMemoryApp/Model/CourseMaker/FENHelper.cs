@@ -16,7 +16,8 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         public static Piece.ColorType GetColorFromFen(string fen)
         {
-            string colorFromFen = fen.Split(' ')[1];
+            string[] fenComponents = fen.Split(' ');
+            string colorFromFen = fenComponents.Length == 1 ? fen : fenComponents[1];
             return colorFromFen == "w" ? Piece.ColorType.White : Piece.ColorType.Black;
         }
 

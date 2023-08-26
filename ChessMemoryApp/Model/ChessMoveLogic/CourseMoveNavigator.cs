@@ -33,15 +33,6 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             this.course = course;
         }
 
-        public void OnButtonStartClicked(object sender, EventArgs args)
-        {
-            Move move = GetRelativeMove(Course.MoveNavigation.Start, course.PreviewFen);
-            if (move != null)
-            {
-                RequestedNextChessableMove?.Invoke(move);
-            }
-        }
-
         public void OnButtonNextClicked(object sender, EventArgs args)
         {
             if (variationLoader.IsLoadingLichess)
@@ -71,11 +62,9 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             {
                 if (subscriber is Button)
                 {
-                    var button = (subscriber as Button);
+                    var button = subscriber as Button;
                     if (button.Text == ">")
                         button.Clicked += OnButtonNextClicked;
-                    else if (button.Text == "<<")
-                        button.Clicked += OnButtonStartClicked;
                 }
             }
         }

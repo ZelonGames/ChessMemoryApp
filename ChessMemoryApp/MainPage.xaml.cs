@@ -66,9 +66,9 @@ public partial class MainPage : ContentPage
         moveHistory.AddFirstHistoryMove(courseMoveNavigator);
 
         #region Event Subscriptions
-        courseMoveNavigator.SubscribeToEvents(buttonStart, buttonNext);
+        courseMoveNavigator.SubscribeToEvents(buttonNext);
         pieceMover.SubscribeToEvents(courseMoveNavigator);
-        moveHistory.SubscribeToEvents(pieceMover, buttonPrevious);
+        moveHistory.SubscribeToEvents(pieceMover, buttonStart, buttonPrevious);
         fenSettingsUpdater.SubscribeToEvents(pieceMover, moveHistory);
         lichessMoveExplorer.SubscribeToEvents(pieceMover);
         variationLoader.SubscribeToEvents(pieceMover, moveHistory, lichessMoveExplorer);

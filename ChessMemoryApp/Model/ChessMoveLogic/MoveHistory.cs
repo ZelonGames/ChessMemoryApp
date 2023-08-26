@@ -55,12 +55,34 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         public void SubscribeToEvents(params object[] subscribers)
         {
-            var pieceMover = subscribers.First() as PieceMover;
-            pieceMover.MadeMoveFen += OnMadeMoveFen;
-            RequestedPreviousMove += pieceMover.OnPreviousMove;
+            foreach (var subscriber in subscribers)
+            {
+                if (subscriber is PieceMover)
+                {
+                    var pieceMover = subscriber as PieceMover;
+                    pieceMover.MadeMoveFen += OnMadeMoveFen;
+                    RequestedPreviousMove += pieceMover.OnPreviousMove;
+                }
+                else if (subscriber is Button)
+                {
+                    var buttonPrevious = subscriber as Button;
+                    if (buttonPrevious.Text == "<")
+                        buttonPrevious.Clicked += OnReqeustedPreviousMove;
+                    else if (buttonPrevious.Text == "<<")
+                        buttonPrevious.Clicked += OnRequestedFirstMove;
+                }
+            }
+        }
 
-            var buttonPrevious = subscribers[1] as Button;
-            buttonPrevious.Clicked += OnReqeustedPreviousMove;
+        private void OnRequestedFirstMove(object sender, EventArgs e)
+        {
+            if (historyMoves.Count <= 1)
+                return;
+
+            RequestingPreviousMove?.Invoke(historyMoves.Last(), historyMoves.First());
+            historyMoves.RemoveRange(1, historyMoves.Count - 1);
+            previousMove = historyMoves.First();
+            RequestedPreviousMove?.Invoke(previousMove);
         }
 
         public void OnReqeustedPreviousMove(object sender, EventArgs args)
@@ -81,7 +103,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             else
                 color = moveSource == MoveSource.Chessable ? Piece.ColorType.White : Piece.ColorType.Black;
 
-            string moveNotationCoordinates;
+            string moveNotationCoordinates = FenHelper.ConvertToMoveNotationCoordinates(previousFen, moveNotation);
+            /*
             if (moveNotation == "O-O")
             {
                 if (color == Piece.ColorType.White)
@@ -97,7 +120,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
                     moveNotationCoordinates = "e8c8";
             }
             else
-                moveNotationCoordinates = FenHelper.GetMoveNotationCoordinates(previousFen, currentFen, color);
+                moveNotationCoordinates = FenHelper.GetMoveNotationCoordinates(previousFen, currentFen, color);*/
             historyMoves.Add(new Move(moveSource, chessBoard.fenSettings, color, moveNotationCoordinates, moveNotation, currentFen));
             AddedMove?.Invoke(historyMoves.Last());
         }
