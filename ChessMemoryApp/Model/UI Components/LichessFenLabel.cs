@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.UI_Components
 {
-    public class LichessFenLabel : IEventController
+    public class LichessFenLabel
     {
         private readonly Label label;
         private readonly ChessboardGenerator chessboard;
@@ -29,13 +29,9 @@ namespace ChessMemoryApp.Model.UI_Components
         /// 
         /// </summary>
         /// <param name="subscribers">FenSettingsUpdater</param>
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(FenSettingsUpdater fenSettingsUpdater)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is FenSettingsUpdater fenSettingsUpdater)
-                    fenSettingsUpdater.UpdatedFen += FenSettingsUpdater_UpdatedFen;
-            }
+            fenSettingsUpdater.UpdatedFen += FenSettingsUpdater_UpdatedFen;
         }
 
         public void FenSettingsUpdater_UpdatedFen(string fen)

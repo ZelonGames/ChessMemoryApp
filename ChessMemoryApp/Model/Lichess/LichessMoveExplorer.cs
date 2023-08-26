@@ -9,7 +9,7 @@ using ChessMemoryApp.Model.Lichess.Lichess_API;
 
 namespace ChessMemoryApp.Model.Lichess
 {
-    public class LichessMoveExplorer : IEventController
+    public class LichessMoveExplorer
     {
         public delegate void ReceivedLichessMovesEventHandler(string currentFen, OpeningExplorer openingExplorer);
         public event ReceivedLichessMovesEventHandler RecevedLichessMoves;
@@ -21,9 +21,8 @@ namespace ChessMemoryApp.Model.Lichess
             this.chessBoard = chessBoard;
         }
 
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(PieceMover pieceMover)
         {
-            PieceMover pieceMover = subscribers.First() as PieceMover;
             pieceMover.MovedPiece += GetLichessMoves;
         }
 

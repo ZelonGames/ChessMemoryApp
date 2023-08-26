@@ -14,7 +14,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
     /// <summary>
     /// Gets the previous or next move from the selected course
     /// </summary>
-    public class CourseMoveNavigator : IEventController
+    public class CourseMoveNavigator
     {
         public delegate void CourseMoveNavigatorEventHandler(Move move);
         public event CourseMoveNavigatorEventHandler RequestedNextChessableMove;
@@ -56,17 +56,9 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             return course.GetRelativeMove(fen, moveNavigation);
         }
 
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(Button buttonNext)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is Button)
-                {
-                    var button = subscriber as Button;
-                    if (button.Text == ">")
-                        button.Clicked += OnButtonNextClicked;
-                }
-            }
+            buttonNext.Clicked += OnButtonNextClicked;
         }
     }
 }

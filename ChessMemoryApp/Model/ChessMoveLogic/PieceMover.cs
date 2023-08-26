@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
-using ChessMemoryApp.Model.UI_Helpers.Main_Page;
-using ChessMemoryApp.Model.Variations;
 using ChessMemoryApp.Model.Lichess.Lichess_API;
 using ChessMemoryApp.Model.UI_Components;
 
@@ -16,7 +14,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
     /// <summary>
     /// Moves the pieces
     /// </summary>
-    public class PieceMover : IEventController
+    public class PieceMover
     {
         public delegate void MovedPieceEventHandler(string fen);
         public event MovedPieceEventHandler MovedPiece;
@@ -52,10 +50,10 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             GetChessboard().LoadChessBoardFromFen(fen);
         }
 
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(CourseMoveNavigator courseMoveNavigator)
         {
             LichessButton.RequestedNewFen += OnNextLichessMove;
-            (subscribers.First() as CourseMoveNavigator).RequestedNextChessableMove += OnNextChessableMove;
+            courseMoveNavigator.RequestedNextChessableMove += OnNextChessableMove;
         }
 
         public ChessboardGenerator GetChessboard()

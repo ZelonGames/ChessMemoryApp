@@ -71,7 +71,7 @@ public partial class MainPage : ContentPage
         moveHistory.SubscribeToEvents(pieceMover, buttonStart, buttonPrevious);
         fenSettingsUpdater.SubscribeToEvents(pieceMover, moveHistory);
         lichessMoveExplorer.SubscribeToEvents(pieceMover);
-        variationLoader.SubscribeToEvents(pieceMover, moveHistory, lichessMoveExplorer);
+        variationLoader.SubscribeToEvents(lichessMoveExplorer, pieceMover, moveHistory);
         customVariation.SubscribeToEvents(moveHistory);
         customVariationSaver.SubscribeToEvents(buttonSaveVariation);
         lichessFenLabel.SubscribeToEvents(fenSettingsUpdater);

@@ -12,7 +12,7 @@ namespace ChessMemoryApp.Model.Variations
     /// <summary>
     /// Saves and Removes comments
     /// </summary>
-    public class CommentManager : IEventController
+    public class CommentManager
     {
         private readonly Editor editorComment;
         private readonly ChessboardGenerator chessboard;
@@ -29,18 +29,11 @@ namespace ChessMemoryApp.Model.Variations
         /// 
         /// </summary>
         /// <param name="subscribers">Button, CommentLoader</param>
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(Button buttonSaveComment, CommentLoader commentLoader)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is Button button)
-                {
-                    button.Clicked += ButtonCommentManager_Clicked;
-                    buttonCommentManager = button;
-                }
-                else if (subscriber is CommentLoader commentLoader)
-                    commentLoader.LoadedComment += CommentLoader_LoadedComment;
-            }
+            buttonSaveComment.Clicked += ButtonCommentManager_Clicked;
+            buttonCommentManager = buttonSaveComment;
+            commentLoader.LoadedComment += CommentLoader_LoadedComment;
         }
 
         private void CommentLoader_LoadedComment(Comment loadedComment)

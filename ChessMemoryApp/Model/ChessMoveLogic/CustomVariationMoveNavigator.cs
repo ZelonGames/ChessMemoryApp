@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.ChessMoveLogic
 {
-    public class CustomVariationMoveNavigator : IEventController
+    public class CustomVariationMoveNavigator
     {
         public delegate void RevealedMoveEventHandler(string fen);
         public delegate void GuessedMoveEventHandler(MoveHistory.Move moveToMake);
@@ -28,24 +28,13 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         /// 
         /// </summary>
         /// <param name="subscribers">MoveNotationGenerator, Button</param>
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(MoveNotationGenerator moveNotationGenerator, Button buttonStart, Button buttonPrevious, Button buttonNext, Button buttonEnd)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is MoveNotationGenerator moveNotationGenerator)
-                    moveNotationGenerator.MoveNotationCompleted += MoveNotationGenerator_MoveNotationCompleted;
-                else if (subscriber is Button button)
-                {
-                    if (button.Text == ">")
-                        button.Clicked += RevealNextMove;
-                    else if (button.Text == ">>")
-                        button.Clicked += RevealLastMove;
-                    else if (button.Text == "<")
-                        button.Clicked += RevealPreviousMove;
-                    else if (button.Text == "<<")
-                        button.Clicked += RevealFirstMove;
-                }
-            }
+            moveNotationGenerator.MoveNotationCompleted += MoveNotationGenerator_MoveNotationCompleted;
+            buttonNext.Clicked += RevealNextMove;
+            buttonEnd.Clicked += RevealLastMove;
+            buttonPrevious.Clicked += RevealPreviousMove;
+            buttonStart.Clicked += RevealFirstMove;
         }
 
         public void RevealNextMove(object sender, EventArgs args)
@@ -93,12 +82,6 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         private void MoveNotationGenerator_MoveNotationCompleted(string firstClick, string secondClick)
         {
             MoveHistory.Move nextMove = GetNextMove();
-            /*if (nextMove.Equals(customVariation.moves.Last()))
-            {
-                GuessedCorrectMove?.Invoke(nextMove);
-                GuessedLastMove?.Invoke(nextMove);
-                return;
-            }*/
 
             if (nextMove.moveNotationCoordinates == firstClick + secondClick)
             {

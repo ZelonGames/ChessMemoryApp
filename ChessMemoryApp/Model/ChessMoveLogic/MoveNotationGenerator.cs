@@ -9,7 +9,7 @@ using ChessMemoryApp.Model.UI_Helpers.Main_Page;
 
 namespace ChessMemoryApp.Model.ChessMoveLogic
 {
-    public class MoveNotationGenerator : IEventController
+    public class MoveNotationGenerator
     {
         public delegate void MoveNotationCompletedEventHandler(string firstClick, string secondClick);
         public event MoveNotationCompletedEventHandler MoveNotationCompleted;
@@ -39,17 +39,11 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         /// 
         /// </summary>
         /// <param name="subscribers">CustomVariationMoveNavigator</param>
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(CustomVariationMoveNavigator customVariationMoveNavigator)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is CustomVariationMoveNavigator customVariationMoveNavigator)
-                {
-                    customVariationMoveNavigator.GuessedWrongMove += OnResetMove;
-                    customVariationMoveNavigator.GuessedCorrectMove += OnResetMove;
-                    customVariationMoveNavigator.GuessedLastMove += OnResetMove;
-                }
-            }
+            customVariationMoveNavigator.GuessedWrongMove += OnResetMove;
+            customVariationMoveNavigator.GuessedCorrectMove += OnResetMove;
+            customVariationMoveNavigator.GuessedLastMove += OnResetMove;
         }
 
         private void OnResetMove(MoveHistory.Move moveToMake)

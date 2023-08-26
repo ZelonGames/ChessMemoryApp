@@ -12,7 +12,7 @@ namespace ChessMemoryApp.Model.Variations
     /// <summary>
     /// Loads the correct comment for the current fen
     /// </summary>
-    public class CommentLoader : IEventController
+    public class CommentLoader
     {
         public delegate void LoadedCommentEventHandler(Comment loadedComment);
         public event LoadedCommentEventHandler LoadedComment;
@@ -28,16 +28,10 @@ namespace ChessMemoryApp.Model.Variations
         /// 
         /// </summary>
         /// <param name="subscribers">CustomVariationMoveNavigator, CustomVariationCommentManager</param>
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(CustomVariationMoveNavigator customVariationMoveNavigator)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is CustomVariationMoveNavigator customVariationMoveNavigator)
-                {
-                    customVariationMoveNavigator.RevealedMove += CustomVariationCommentLoader_RevealedMove;
-                    customVariationMoveNavigator.GuessedCorrectMove += CustomVariationCommentLoader_GuessedCorrectMove;
-                }
-            }
+            customVariationMoveNavigator.RevealedMove += CustomVariationCommentLoader_RevealedMove;
+            customVariationMoveNavigator.GuessedCorrectMove += CustomVariationCommentLoader_GuessedCorrectMove;
         }
 
 

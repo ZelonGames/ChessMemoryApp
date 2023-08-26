@@ -13,7 +13,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
     /// <summary>
     /// Keeps track of all the moves that has been made and the state of the board of every move
     /// </summary>
-    public class MoveHistory : IEventController
+    public class MoveHistory
     {
         public enum MoveSource
         {
@@ -55,25 +55,13 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             historyFens.Add(move.Fen.Split(' ')[0]);
         }
 
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(PieceMover pieceMover, Button buttonStart, Button buttonPrevious)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is PieceMover)
-                {
-                    var pieceMover = subscriber as PieceMover;
-                    pieceMover.MadeMoveFen += OnMadeMoveFen;
-                    RequestedPreviousMove += pieceMover.OnPreviousMove;
-                }
-                else if (subscriber is Button)
-                {
-                    var buttonPrevious = subscriber as Button;
-                    if (buttonPrevious.Text == "<")
-                        buttonPrevious.Clicked += OnReqeustedPreviousMove;
-                    else if (buttonPrevious.Text == "<<")
-                        buttonPrevious.Clicked += OnRequestedFirstMove;
-                }
-            }
+            pieceMover.MadeMoveFen += OnMadeMoveFen;
+            RequestedPreviousMove += pieceMover.OnPreviousMove;
+
+            buttonPrevious.Clicked += OnReqeustedPreviousMove;
+            buttonStart.Clicked += OnRequestedFirstMove;
         }
 
         private void OnRequestedFirstMove(object sender, EventArgs e)

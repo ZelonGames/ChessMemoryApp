@@ -18,7 +18,7 @@ namespace ChessMemoryApp.Model.Variations
     /// <summary>
     /// Makes sure to load lichess moves using Lichess API at the right moments
     /// </summary>
-    public class VariationLoader : IEventController
+    public class VariationLoader
     {
         public event Action FinishedLoadingLichess;
         public event Action LoadingLichess;
@@ -35,19 +35,13 @@ namespace ChessMemoryApp.Model.Variations
             this.chessBoard = chessBoard;
         }
 
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(LichessMoveExplorer lichessMoveExplorer, PieceMover pieceMover, MoveHistory moveHistory)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is LichessMoveExplorer)
-                    ((LichessMoveExplorer)subscriber).RecevedLichessMoves += LoadLichessVariations;
-                else if (subscriber is PieceMover)
-                    ((PieceMover)subscriber).MadeChessableMove += OnMadeChessableMove;
-                else if (subscriber is MoveHistory)
-                    ((MoveHistory)subscriber).RequestedPreviousMove += OnRequestedPreviousMove;
+            lichessMoveExplorer.RecevedLichessMoves += LoadLichessVariations;
+            pieceMover.MadeChessableMove += OnMadeChessableMove;
+            moveHistory.RequestedPreviousMove += OnRequestedPreviousMove;
 
-                LichessButton.RequestedNewFen += (fen, move) => { ClearLichessMoves(); };
-            }
+            LichessButton.RequestedNewFen += (fen, move) => { ClearLichessMoves(); };
         }
 
         private async void OnRequestedPreviousMove(MoveHistory.Move historyMove)

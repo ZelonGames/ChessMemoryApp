@@ -14,7 +14,7 @@ using ChessMemoryApp.Model.Lichess.Lichess_API;
 
 namespace ChessMemoryApp.Model.Variations
 {
-    public class CustomVariation : IEventController, ISqLiteService_CustomVariation
+    public class CustomVariation : ISqLiteService_CustomVariation
     {
         [JsonIgnore, PrimaryKey, AutoIncrement]
         public int ID { get; set; }
@@ -66,11 +66,11 @@ namespace ChessMemoryApp.Model.Variations
             this.verticalStackLayout = verticalStackLayout;
         }
 
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(MoveHistory moveHistory)
         {
-            (subscribers.First() as MoveHistory).AddedMove += MoveHistory_AddedMove;
-            (subscribers.First() as MoveHistory).RequestingPreviousMove += RequestingPreviousMove;
-            (subscribers.First() as MoveHistory).RequestingFirstMove += RequestingFirstMove;
+            moveHistory.AddedMove += MoveHistory_AddedMove;
+            moveHistory.RequestingPreviousMove += RequestingPreviousMove;
+            moveHistory.RequestingFirstMove += RequestingFirstMove;
         }
 
         public string GetStartingFen()

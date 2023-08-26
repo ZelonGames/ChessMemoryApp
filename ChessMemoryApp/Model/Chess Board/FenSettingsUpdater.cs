@@ -13,7 +13,7 @@ namespace ChessMemoryApp.Model.Chess_Board
     /// <summary>
     /// Updates fen settings after a move has been made
     /// </summary>
-    public class FenSettingsUpdater : IEventController
+    public class FenSettingsUpdater
     {
         public delegate void UpdatedFenEventHandler(string fen);
         public event UpdatedFenEventHandler UpdatedFen;
@@ -26,23 +26,13 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         }
 
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(PieceMover pieceMover, MoveHistory moveHistory)
         {
-            foreach (var subscriber in subscribers)
-            {
-                if (subscriber is PieceMover)
-                {
-                    var pieceMover = subscriber as PieceMover;
-                    pieceMover.MadeLichessMove += OnMadeLichessMove;
-                    pieceMover.MadeChessableMove += OnMadeChessableMove;
-                }
-                else if (subscriber is MoveHistory)
-                {
-                    var moveHistory = subscriber as MoveHistory;
-                    moveHistory.RequestingPreviousMove += OnRequestingPreviousMove;
-                    moveHistory.RequestingFirstMove += OnRequestingFirstMove;
-                }
-            }
+            pieceMover.MadeLichessMove += OnMadeLichessMove;
+            pieceMover.MadeChessableMove += OnMadeChessableMove;
+
+            moveHistory.RequestingPreviousMove += OnRequestingPreviousMove;
+            moveHistory.RequestingFirstMove += OnRequestingFirstMove;
         }
 
         private void OnRequestingFirstMove(MoveHistory.Move firstMove)

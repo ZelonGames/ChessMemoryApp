@@ -14,7 +14,7 @@ namespace ChessMemoryApp.Model.Variations
     /// <summary>
     /// Deletes and Saves and Updates CustomVariations
     /// </summary>
-    public class VariationManager : IEventController
+    public class VariationManager
     {
         private CustomVariation variationToSave;
         private ChessboardGenerator chessboard;
@@ -24,9 +24,9 @@ namespace ChessMemoryApp.Model.Variations
             this.chessboard = chessboard;
         }
 
-        public void SubscribeToEvents(params object[] subscribers)
+        public void SubscribeToEvents(Button buttonSaveCustomVariation)
         {
-            (subscribers[0] as Button).Clicked += SaveCustomVariation;
+            buttonSaveCustomVariation.Clicked += SaveCustomVariation;
         }
 
         public static async void DeleteCustomVariation(CustomVariationChessboard customVariationChessBoard)

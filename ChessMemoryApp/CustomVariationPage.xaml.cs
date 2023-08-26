@@ -38,7 +38,7 @@ public partial class CustomVariationPage : ContentPage
 
         customVariationMoveNavigator.SubscribeToEvents(moveNotationHelper, buttonStart, buttonPrevious, buttonNext, buttonEnd);
         moveNotationHelper.SubscribeToEvents(customVariationMoveNavigator);
-        commentLoader.SubscribeToEvents(customVariationMoveNavigator, commentManager);
+        commentLoader.SubscribeToEvents(customVariationMoveNavigator);
         commentManager.SubscribeToEvents(buttonCommentManager, commentLoader);
 
         SizeChanged += chessboard.UpdateSquaresViewSize;
