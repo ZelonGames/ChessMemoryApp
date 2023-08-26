@@ -103,10 +103,6 @@ namespace ChessMemoryApp.Model.Variations
 
             foreach (var move in openingExplorer.Moves)
             {
-                if (move.MoveNotation == "Nc3")
-                {
-
-                }
                 var button = new ListButton(move.MoveNotation + " Wins: " + move.GetWinsInPercent(chessBoard.playAsBlack), lichessButtons.Count);
                 var lichessButton = new LichessButton(chessBoard, button.button, move);
                 lichessButtons.Add(lichessButton);

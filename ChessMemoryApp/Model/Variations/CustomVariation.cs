@@ -69,7 +69,8 @@ namespace ChessMemoryApp.Model.Variations
         public void SubscribeToEvents(params object[] subscribers)
         {
             (subscribers.First() as MoveHistory).AddedMove += MoveHistory_AddedMove;
-            (subscribers.First() as MoveHistory).RequestingPreviousMove += MoveHistory_RequestingPreviousMove;
+            (subscribers.First() as MoveHistory).RequestingPreviousMove += RequestingPreviousMove;
+            (subscribers.First() as MoveHistory).RequestingFirstMove += RequestingFirstMove;
         }
 
         public string GetStartingFen()
@@ -88,7 +89,13 @@ namespace ChessMemoryApp.Model.Variations
             return moves.Last().fenSettings;
         }
 
-        private void MoveHistory_RequestingPreviousMove(MoveHistory.Move currentMove, MoveHistory.Move previousMove)
+        private void RequestingFirstMove(MoveHistory.Move firstMove)
+        {
+            moves.Clear();
+            ReloadListButtons();
+        }
+
+        private void RequestingPreviousMove(MoveHistory.Move currentMove, MoveHistory.Move previousMove)
         {
             moves.Remove(currentMove);
             ReloadListButtons();

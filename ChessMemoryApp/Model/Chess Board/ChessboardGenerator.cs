@@ -160,7 +160,7 @@ namespace ChessMemoryApp.Model.Chess_Board
                         newPieces[piece.Key].Value != piece.Value.Value;
 
                     bool isNewPieceSameAsCurrentPiece = 
-                        newPieces[piece.Key].HasValue && 
+                        newPieces[piece.Key].HasValue && pieces.ContainsKey(piece.Key) && 
                         newPieces[piece.Key].Value == pieces[piece.Key].pieceChar;
 
                     if ((!newPieces[piece.Key].HasValue || isPieceCaptured) && 

@@ -39,12 +39,19 @@ namespace ChessMemoryApp.Model.Chess_Board
                 else if (subscriber is MoveHistory)
                 {
                     var moveHistory = subscriber as MoveHistory;
-                    moveHistory.RequestingPreviousMove += OnRequestedPreviousMove;
+                    moveHistory.RequestingPreviousMove += OnRequestingPreviousMove;
+                    moveHistory.RequestingFirstMove += OnRequestingFirstMove;
                 }
             }
         }
 
-        private void OnRequestedPreviousMove(MoveHistory.Move currentMove, MoveHistory.Move previousMove)
+        private void OnRequestingFirstMove(MoveHistory.Move firstMove)
+        {
+            chessboard.fenSettings = firstMove.fenSettings;
+            UpdatedFen?.Invoke(firstMove.fen + " " + firstMove.fenSettings.AppliedFenSettings);
+        }
+
+        private void OnRequestingPreviousMove(MoveHistory.Move currentMove, MoveHistory.Move previousMove)
         {
             chessboard.fenSettings = previousMove.fenSettings;
             UpdatedFen?.Invoke(chessboard.currentFen);

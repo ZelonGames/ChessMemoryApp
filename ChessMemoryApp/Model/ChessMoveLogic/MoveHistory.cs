@@ -22,8 +22,10 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         }
 
         public delegate void PreviousMoveHandler(Move currentMove, Move previousMove);
+        public delegate void FirstMoveHandler(Move firstMove);
 
         public event PreviousMoveHandler RequestingPreviousMove;
+        public event FirstMoveHandler RequestingFirstMove;
         public event Action<Move> RequestedPreviousMove;
         public event Action<Move> AddedMove;
 
@@ -79,9 +81,11 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             if (historyMoves.Count <= 1)
                 return;
 
-            RequestingPreviousMove?.Invoke(historyMoves.Last(), historyMoves.First());
-            historyMoves.RemoveRange(1, historyMoves.Count - 1);
-            previousMove = historyMoves.First();
+            Move firstMove = historyMoves.First();
+            RequestingFirstMove?.Invoke(firstMove);
+            previousMove = firstMove;
+            historyMoves.Clear();
+            historyMoves.Add(firstMove);
             RequestedPreviousMove?.Invoke(previousMove);
         }
 
@@ -104,23 +108,6 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
                 color = moveSource == MoveSource.Chessable ? Piece.ColorType.White : Piece.ColorType.Black;
 
             string moveNotationCoordinates = FenHelper.ConvertToMoveNotationCoordinates(previousFen, moveNotation);
-            /*
-            if (moveNotation == "O-O")
-            {
-                if (color == Piece.ColorType.White)
-                    moveNotationCoordinates = "e1g1";
-                else
-                    moveNotationCoordinates = "e8g8";
-            }
-            else if (moveNotation == "O-O-O")
-            {
-                if (color == Piece.ColorType.White)
-                    moveNotationCoordinates = "e1c1";
-                else
-                    moveNotationCoordinates = "e8c8";
-            }
-            else
-                moveNotationCoordinates = FenHelper.GetMoveNotationCoordinates(previousFen, currentFen, color);*/
             historyMoves.Add(new Move(moveSource, chessBoard.fenSettings, color, moveNotationCoordinates, moveNotation, currentFen));
             AddedMove?.Invoke(historyMoves.Last());
         }
