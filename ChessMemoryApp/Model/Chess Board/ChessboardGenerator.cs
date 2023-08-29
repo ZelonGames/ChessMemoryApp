@@ -261,7 +261,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public Piece AddPieceToSquare(char pieceChar, Square square)
         {
-            bool pieceImageFileExists = Piece.pieceFileNames.TryGetValue(pieceChar, out string fileName);
+            bool pieceImageFileExists = Piece.pieceFileNames.TryGetValue(pieceChar, out _);
 
             if (pieceImageFileExists)
             {

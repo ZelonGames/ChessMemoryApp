@@ -221,7 +221,6 @@ namespace ChessMemoryApp.Model.CourseMaker
         /// </summary>
         /// <param name="currentFen"></param>
         /// <param name="moveNotation"></param>
-        /// <param name="color"></param>
         /// <returns></returns>
         public static string MakeMove(string currentFen, string moveNotation)
         {

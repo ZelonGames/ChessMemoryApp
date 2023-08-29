@@ -111,18 +111,16 @@ namespace ChessMemoryApp.Model.Chess_Board
                 }
             }
             else if (moveNotation[0] == 'R')
-                UpdateFenSettingsOnRookMove(moveNotation, Piece.GetOppositeColor(color));
+                UpdateFenSettingsOnRookMove(Piece.GetOppositeColor(color));
         }
 
-        private void UpdateFenSettingsOnRookMove(string moveNotation, Piece.ColorType color)
+        private void UpdateFenSettingsOnRookMove(Piece.ColorType color)
         {
             char rank = color == Piece.ColorType.White ? '1' : '8';
 
             char? king = FenHelper.GetPieceOnSquare(chessboard.currentFen, "e" + rank);
             char? kingSideRook = FenHelper.GetPieceOnSquare(chessboard.currentFen, "h" + rank);
             char? queenSideRook = FenHelper.GetPieceOnSquare(chessboard.currentFen, "a" + rank);
-
-            Piece.Coordinates<char> toCoordinates = BoardHelper.GetCoordinates(moveNotation);
 
             bool movedKingSideRook = king.HasValue && !kingSideRook.HasValue;
             bool movedQueenSideRook = king.HasValue && !queenSideRook.HasValue;

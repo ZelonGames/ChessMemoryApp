@@ -14,9 +14,7 @@ namespace ChessMemoryApp.Model.UI_Components
         public event CustomVariationButtonClickedEventHandler CustomVariationButtonClicked;
 
         private readonly FenChessboard chessBoard;
-        private readonly string fen;
-
-        public string FEN => fen;
+        public readonly string fen;
 
         public CustomVariationMoveButton(FenChessboard chessBoard, string fen, string moveNotation, int buttonIndex) :
             base(moveNotation, buttonIndex)
