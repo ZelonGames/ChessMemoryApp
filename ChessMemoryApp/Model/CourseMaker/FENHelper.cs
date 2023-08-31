@@ -71,6 +71,9 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         public static char? GetPieceOnSquare(string fen, string coordinate)
         {
+            if (!IsValidFen(fen) || string.IsNullOrEmpty(coordinate))
+                return null;
+
             int column = coordinate[0] - 'a';
             int row = 8 - (coordinate[1] - '0');
 

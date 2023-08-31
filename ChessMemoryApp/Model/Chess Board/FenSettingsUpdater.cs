@@ -18,60 +18,17 @@ namespace ChessMemoryApp.Model.Chess_Board
         public delegate void UpdatedFenEventHandler(string fen);
         public event UpdatedFenEventHandler UpdatedFen;
 
-        private readonly ChessboardGenerator chessboard;
+        protected readonly FenSettings fenSettings;
 
-        public FenSettingsUpdater(ChessboardGenerator chessboard)
+        public FenSettingsUpdater(FenSettings fenSettings)
         {
-            this.chessboard = chessboard;
-
+            this.fenSettings = fenSettings;
         }
 
-        public void SubscribeToEvents(PieceMover pieceMover, MoveHistory moveHistory)
-        {
-            pieceMover.MadeLichessMove += OnMadeLichessMove;
-            pieceMover.MadeChessableMove += OnMadeChessableMove;
-
-            moveHistory.RequestingPreviousMove += OnRequestingPreviousMove;
-            moveHistory.RequestingFirstMove += OnRequestingFirstMove;
-        }
-
-        private void OnRequestingFirstMove(MoveHistory.Move firstMove)
-        {
-            chessboard.fenSettings = firstMove.fenSettings;
-            UpdatedFen?.Invoke(firstMove.fen + " " + firstMove.fenSettings.AppliedFenSettings);
-        }
-
-        private void OnRequestingPreviousMove(MoveHistory.Move currentMove, MoveHistory.Move previousMove)
-        {
-            chessboard.fenSettings = previousMove.fenSettings;
-            UpdatedFen?.Invoke(chessboard.currentFen);
-        }
-
-        private void OnMadeChessableMove(Move move)
-        {
-            string fenColor = chessboard.playAsBlack ? FenSettings.FenColor.WHITE : FenSettings.FenColor.BLACK;
-            chessboard.fenSettings.SetColorToPlay(fenColor);
-
-            UpdateFenCastleSettings(move.MoveNotation, FenSettings.FenColor.GetPieceColor(fenColor));
-            UpdatePawnPlyCount(move.MoveNotation);
-            UpdatedFen?.Invoke(chessboard.currentFen);
-        }
-
-        private void OnMadeLichessMove(string fen, ExplorerMove move)
-        {
-            string fenColor = chessboard.playAsBlack ? FenSettings.FenColor.BLACK : FenSettings.FenColor.WHITE;
-
-            chessboard.fenSettings.SetColorToPlay(fenColor);
-            UpdateFenCastleSettings(move.MoveNotation, FenSettings.FenColor.GetPieceColor(fenColor));
-            UpdatePawnPlyCount(move.MoveNotation);
-            chessboard.fenSettings.IncreaseMoveCount();
-            UpdatedFen?.Invoke(chessboard.currentFen);
-        }
-
-        private void UpdatePawnPlyCount(string moveNotation)
+        protected void UpdatePawnPlyCount(string moveNotation)
         {
             bool isPawnMove = true;
-            bool shouldReset = false;
+            bool shouldReset;
 
             if (moveNotation.Contains('x'))
                 shouldReset = true;
@@ -90,55 +47,71 @@ namespace ChessMemoryApp.Model.Chess_Board
             }
 
             if (shouldReset)
-                chessboard.fenSettings.ResetPlyCount();
+                fenSettings.ResetPlyCount();
             else
-                chessboard.fenSettings.IncreasePlyCount();
+                fenSettings.IncreasePlyCount();
         }
 
-        private void UpdateFenCastleSettings(string moveNotation, Piece.ColorType color)
+        protected void UpdateEnPassant(string moveNotation, string fen)
         {
-            if (moveNotation == "O-O" || moveNotation == "O-O-O")
+            bool isDoubleMove = false;
+
+            if (!isDoubleMove || fenSettings.CanEnPassant || moveNotation.Contains("="))
             {
-                if (chessboard.fenSettings.GetColorToPlaySetting().Equals(FenSettings.FenColor.BLACK))
-                {
-                    chessboard.fenSettings.DisableWhiteKingSideCastling();
-                    chessboard.fenSettings.DisableWhiteQueenSideCastling();
-                }
-                else
-                {
-                    chessboard.fenSettings.DisableBlackKingSideCastling();
-                    chessboard.fenSettings.DisableBlackQueenSideCastling();
-                }
+                fenSettings.DisableEnPassant();
+                return;
             }
-            else if (moveNotation[0] == 'R')
-                UpdateFenSettingsOnRookMove(Piece.GetOppositeColor(color));
-        }
 
-        private void UpdateFenSettingsOnRookMove(Piece.ColorType color)
-        {
-            char rank = color == Piece.ColorType.White ? '1' : '8';
+            string[] moveNotationComponents = moveNotation.Replace("+", "").Replace("#", "").Split('x');
+            string toCoordinates;
+            if (moveNotationComponents.Length == 2)
+                toCoordinates = moveNotationComponents[1];
+            else
+                toCoordinates = moveNotationComponents[0];
 
-            char? king = FenHelper.GetPieceOnSquare(chessboard.currentFen, "e" + rank);
-            char? kingSideRook = FenHelper.GetPieceOnSquare(chessboard.currentFen, "h" + rank);
-            char? queenSideRook = FenHelper.GetPieceOnSquare(chessboard.currentFen, "a" + rank);
+            bool isPawnMove = moveNotation.Length != 2;
+            if (isPawnMove)
+                return;
 
-            bool movedKingSideRook = king.HasValue && !kingSideRook.HasValue;
-            bool movedQueenSideRook = king.HasValue && !queenSideRook.HasValue;
+            Piece.Coordinates<int> coordinates = BoardHelper.GetNumberCoordinates(moveNotation);
 
-            if (movedKingSideRook)
+            bool IsSameColor(char c1, char c2)
             {
-                if (color == Piece.ColorType.White)
-                    chessboard.fenSettings.DisableWhiteKingSideCastling();
-                else
-                    chessboard.fenSettings.DisableBlackKingSideCastling();
+                return char.IsUpper(c1) && char.IsUpper(c2) ||
+                    char.IsLower(c1) && char.IsLower(c2);
             }
-            if (movedQueenSideRook)
+
+            bool IsNeighboorPieceEnemyPawn(char movedPiece, char? neighboorPiece)
             {
-                if (color == Piece.ColorType.White)
-                    chessboard.fenSettings.DisableWhiteQueenSideCastling();
-                else
-                    chessboard.fenSettings.DisableBlackQueenSideCastling();
+                bool isNeighboorPiecePawn = char.ToLower(neighboorPiece.Value) == 'p';
+                return isNeighboorPiecePawn && !IsSameColor(neighboorPiece.Value, movedPiece);
             }
+
+            string GetEnPassantSquare(bool isMovedPieceWhite, string movedPieceCoordinates)
+            {
+                Piece.Coordinates<int> coordinates = BoardHelper.GetNumberCoordinates(movedPieceCoordinates);
+
+                if (isMovedPieceWhite)
+                    return BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(coordinates.X, coordinates.Y - 1));
+                else
+                    return BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(coordinates.X, coordinates.Y + 1));
+            }
+
+            // Left side
+            char movedPiece = FenHelper.GetPieceOnSquare(fen, toCoordinates).Value;
+            string neighboorPieceCoordinates = BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(coordinates.X - 1, coordinates.Y));
+            char? neighboorPiece = FenHelper.GetPieceOnSquare(fen, neighboorPieceCoordinates);
+            bool isMovedPieceWhite = char.IsUpper(movedPiece);
+            if (neighboorPiece.HasValue && IsNeighboorPieceEnemyPawn(movedPiece, neighboorPiece.Value))
+                fenSettings.SetEnPassantSquare(GetEnPassantSquare(isMovedPieceWhite, toCoordinates));
+
+            // Right Side
+            movedPiece = FenHelper.GetPieceOnSquare(fen, toCoordinates).Value;
+            neighboorPieceCoordinates = BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(coordinates.X + 1, coordinates.Y));
+            neighboorPiece = FenHelper.GetPieceOnSquare(fen, neighboorPieceCoordinates);
+            isMovedPieceWhite = char.IsUpper(movedPiece);
+            if (neighboorPiece.HasValue && IsNeighboorPieceEnemyPawn(movedPiece, neighboorPiece.Value))
+                fenSettings.SetEnPassantSquare(GetEnPassantSquare(isMovedPieceWhite, toCoordinates));
         }
     }
 }

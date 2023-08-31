@@ -88,6 +88,7 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
         public bool CanWhiteCastleQueenSide => whiteQueenSideSetting == "Q";
         public bool CanBlackCastleKingSide => blackKingSideSetting == "k";
         public bool CanBlackCastleQueenSide => blackQueenSideSetting == "q";
+        public bool CanEnPassant => GetEnPassantSquare() != "-";
 
         public void UpdateMoveAndPlyCount(string fen)
         {
@@ -103,7 +104,7 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
 
         public string GetAppliedSettings(string spaceEncoding)
         {
-            return spaceEncoding + colorToPlaySetting + spaceEncoding + GetCastlingSettings(spaceEncoding);
+            return spaceEncoding + colorToPlaySetting + spaceEncoding + GetCastlingSettings(spaceEncoding) + spaceEncoding + GetEnPassantSquare();
         }
 
         public FenSettings SetSpaceEncoding(string spaceEncoding)
@@ -220,6 +221,11 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
             EnableWhiteQueenSideCastling();
 
             return this;
+        }
+
+        public string GetEnPassantSquare()
+        {
+            return enPassantSquare != null && enPassantSquare.Length == 2 ? enPassantSquare : "-";
         }
 
         public FenSettings SetEnPassantSquare(string enPassantSquare)

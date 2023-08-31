@@ -31,7 +31,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             if (!hasMoved)
             {
                 string betweenRow = isWhite ? "3" : "6";
-                bool isAnyPieceBetween = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates[0] + betweenRow).HasValue;
+                char file = pieceLetterCoordinates[0];
+                bool isAnyPieceBetween = FenHelper.GetPieceOnSquare(fen, file + betweenRow).HasValue;
                 if (!isAnyPieceBetween)
                 {
                     currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X, true);

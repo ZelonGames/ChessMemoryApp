@@ -29,7 +29,7 @@ namespace ChessMemoryApp.Model.UI_Components
         /// 
         /// </summary>
         /// <param name="subscribers">FenSettingsUpdater</param>
-        public void SubscribeToEvents(FenSettingsUpdater fenSettingsUpdater)
+        public void SubscribeToEvents(FenSettingsChessBoardUpdater fenSettingsUpdater)
         {
             fenSettingsUpdater.UpdatedFen += FenSettingsUpdater_UpdatedFen;
         }

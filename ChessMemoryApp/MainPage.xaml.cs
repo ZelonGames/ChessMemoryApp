@@ -51,7 +51,7 @@ public partial class MainPage : ContentPage
         var courseMoveNavigator = new CourseMoveNavigator(chessboard, variationLoader, selectedCourse);
         var pieceMover = new PieceMover(moveNotationGenerator, false);
         var moveHistory = new MoveHistory(chessboard);
-        var fenSettingsUpdater = new FenSettingsUpdater(chessboard);
+        var fenSettingsUpdater = new FenSettingsUpdaterA(chessboard);
         var lichessMoveExplorer = new LichessMoveExplorer(chessboard);
         var customVariation = editingVariation ?? new CustomVariation(fenChessBoard, customVariationMovesList, selectedCourse);
         var customVariationSaver = new VariationManager(chessboard);
