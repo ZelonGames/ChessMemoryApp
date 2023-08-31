@@ -14,65 +14,13 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         }
 
-        public static HashSet<string> GetAvailableMoves(Coordinates<int> currentCoordinate, ColorType ColorType, string fen)
+        public static HashSet<string> GetAvailableMoves(string pieceLetterCoordinates, string fen)
         {
             var availableMoves = new HashSet<string>();
 
-            // Up
-            for (int y = currentCoordinate.Y + 1; y <= 8; y++)
-            {
-                if (AddVerticalMove(availableMoves, fen, currentCoordinate, y, ColorType))
-                    break;
-            }
-
-            // Down
-            for (int y = currentCoordinate.Y - 1; y >= 1; y--)
-            {
-                if (AddVerticalMove(availableMoves, fen, currentCoordinate, y, ColorType))
-                    break;
-            }
-
-            // Right
-            for (int x = currentCoordinate.X + 1; x <= 8; x++)
-            {
-                if (AddHorizontalMove(availableMoves, fen, currentCoordinate, x, ColorType))
-                    break;
-            }
-
-            // Left
-            for (int x = currentCoordinate.X - 1; x >= 1; x--)
-            {
-                if (AddHorizontalMove(availableMoves, fen, currentCoordinate, x, ColorType))
-                    break;
-            }
-
-            // Going up and right
-            for (int x = currentCoordinate.X + 1, y = currentCoordinate.Y + 1; x <= 8 && y <= 8; x++, y++)
-            {
-                if (AddDiagonalMove(availableMoves, fen, x, y, ColorType))
-                    break;
-            }
-
-            // Going up and left
-            for (int x = currentCoordinate.X - 1, y = currentCoordinate.Y + 1; x >= 1 && y <= 8; x--, y++)
-            {
-                if (AddDiagonalMove(availableMoves, fen, x, y, ColorType))
-                    break;
-            }
-
-            // Going down and right
-            for (int x = currentCoordinate.X + 1, y = currentCoordinate.Y - 1; x <= 8 && y >= 1; x++, y--)
-            {
-                if (AddDiagonalMove(availableMoves, fen, x, y, ColorType))
-                    break;
-            }
-
-            // Going down and left
-            for (int x = currentCoordinate.X - 1, y = currentCoordinate.Y - 1; x >= 1 && y >= 1; x--, y--)
-            {
-                if (AddDiagonalMove(availableMoves, fen, x, y, ColorType))
-                    break;
-            }
+            availableMoves.UnionWith(Bishop.GetAvailableMoves(pieceLetterCoordinates, fen));
+            availableMoves.UnionWith(Rook.GetAvailableMoves(pieceLetterCoordinates, fen));
+            
 
             return availableMoves;
         }

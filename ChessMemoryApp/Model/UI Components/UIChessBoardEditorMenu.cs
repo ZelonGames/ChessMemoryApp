@@ -12,7 +12,7 @@ namespace ChessMemoryApp.Model.UI_Components
     {
         public List<Piece> pieces = new List<Piece>();
 
-        public UIChessBoardEditorMenu(ChessboardEditor chessBoardEditor)
+        public UIChessBoardEditorMenu()
         {
         }
     }

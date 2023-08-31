@@ -100,6 +100,14 @@ public partial class MainPage : ContentPage
         checkBoxLichessFromPlayer.IsChecked = !checkBoxLichessFromPlayer.IsChecked;
         LichessRequestHelper.openingsFromPlayer = checkBoxLichessFromPlayer.IsChecked;
 
+        Piece.ColorType color = FenHelper.GetColorFromFen(labelLichessFen.Text);
+        bool isYourTurn = 
+            chessboard.playAsBlack && color == Piece.ColorType.Black || 
+            !chessboard.playAsBlack && color == Piece.ColorType.White;
+
+        if (isYourTurn)
+            return;
+
         var task = Task.Run(async () =>
         {
             OpeningExplorer openingExplorer = await LichessRequestHelper.GetOpeningMoves(

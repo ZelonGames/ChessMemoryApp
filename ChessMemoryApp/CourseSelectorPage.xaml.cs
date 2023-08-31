@@ -5,6 +5,7 @@ using ChessMemoryApp.Model;
 using ChessMemoryApp.Model.File_System;
 using Microsoft.Maui.Controls.Internals;
 using ChessMemoryApp.Model.Game_Analysing;
+using ChessMemoryApp.Model.Chess_Board.Pieces;
 
 namespace ChessMemoryApp;
 
@@ -24,8 +25,6 @@ public partial class CourseSelectorPage : ContentPage
         Appearing += Appeared;
         SizeChanged += selectorPageController.Window_SizeChanged;
     }
-
-
 
     public async void Appeared(object sender, EventArgs e)
     {

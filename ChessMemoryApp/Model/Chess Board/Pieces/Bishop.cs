@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using Newtonsoft.Json.Linq;
-using ChessMemoryApp.Model.CourseMaker;
 
 namespace ChessMemoryApp.Model.Chess_Board.Pieces
 {
@@ -25,7 +23,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X + 1, y = pieceCoordinates.Y + 1; x <= 8 && y <= 8; x++, y++)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, y));
-                if (!TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates))
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
+                if (isPieceOnSquare)
                     break;
             }
 
@@ -33,7 +32,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X - 1, y = pieceCoordinates.Y + 1; x >= 1 && y <= 8; x--, y++)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, y));
-                if (!TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates))
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
+                if (isPieceOnSquare)
                     break;
             }
 
@@ -41,7 +41,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X + 1, y = pieceCoordinates.Y - 1; x <= 8 && y >= 1; x++, y--)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, y));
-                if (!TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates))
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
+                if (isPieceOnSquare)
                     break;
             }
 
@@ -49,7 +50,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X - 1, y = pieceCoordinates.Y - 1; x >= 1 && y >= 1; x--, y--)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, y));
-                if (!TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates))
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
+                if (isPieceOnSquare)
                     break;
             }
 

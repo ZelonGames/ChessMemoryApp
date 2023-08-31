@@ -14,35 +14,44 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         }
 
-        public static HashSet<string> GetAvailableMoves(Coordinates<int> currentCoordinate, ColorType ColorType, string fen)
+        public static HashSet<string> GetAvailableMoves(string pieceLetterCoordinates, string fen)
         {
             var availableMoves = new HashSet<string>();
+            Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(pieceLetterCoordinates);
 
             // Up
-            for (int y = currentCoordinate.Y + 1; y <= 8; y++)
+            for (int y = pieceCoordinates.Y + 1; y <= 8; y++)
             {
-                if (AddVerticalMove(availableMoves, fen, currentCoordinate, y, ColorType))
+                string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, y));
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
+                if (isPieceOnSquare)
                     break;
             }
 
             // Down
-            for (int y = currentCoordinate.Y - 1; y >= 1; y--)
+            for (int y = pieceCoordinates.Y - 1; y >= 1; y--)
             {
-                if (AddVerticalMove(availableMoves, fen, currentCoordinate, y, ColorType))
+                string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, y));
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
+                if (isPieceOnSquare)
                     break;
             }
 
             // Right
-            for (int x = currentCoordinate.X + 1; x <= 8; x++)
+            for (int x = pieceCoordinates.X + 1; x <= 8; x++)
             {
-                if (AddHorizontalMove(availableMoves, fen, currentCoordinate, x, ColorType))
+                string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, pieceCoordinates.Y));
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
+                if (isPieceOnSquare)
                     break;
             }
 
             // Left
-            for (int x = currentCoordinate.X - 1; x >= 1; x--)
+            for (int x = pieceCoordinates.X - 1; x >= 1; x--)
             {
-                if (AddHorizontalMove(availableMoves, fen, currentCoordinate, x, ColorType))
+                string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, pieceCoordinates.Y));
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
+                if (isPieceOnSquare)
                     break;
             }
 

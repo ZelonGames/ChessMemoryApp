@@ -16,9 +16,22 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         public static Piece.ColorType GetColorFromFen(string fen)
         {
+
             string[] fenComponents = fen.Split(' ');
             string colorFromFen = fenComponents.Length == 1 ? fen : fenComponents[1];
             return colorFromFen == "w" ? Piece.ColorType.White : Piece.ColorType.Black;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fen"></param>
+        /// <returns>returns null if there is no en passant available</returns>
+        public static string GetEnPassantSquareFromFen(string fen)
+        {
+            string[] fenComponents = fen.Split(' ');
+            string enPassantSquare = fenComponents.Length >= 4 ? fenComponents[3] : null;
+            return enPassantSquare;
         }
 
         public static string ConvertFenToChessableUrl(string fen, string courseID)
@@ -75,7 +88,7 @@ namespace ChessMemoryApp.Model.CourseMaker
         {
             var pieces = new Dictionary<string, char?>();
 
-            if (!FenHelper.IsValidFen(fen))
+            if (!IsValidFen(fen))
                 return pieces;
 
             for (char row = '1'; row <= '8'; row++)
@@ -84,6 +97,49 @@ namespace ChessMemoryApp.Model.CourseMaker
                 {
                     string coordinate = column.ToString() + row.ToString();
                     pieces.Add(coordinate, GetPieceOnSquare(fen, coordinate));
+                }
+            }
+
+            return pieces;
+        }
+
+        public static Dictionary<string, char?> GetPiecesByColorFromFen(string fen, Piece.ColorType color)
+        {
+            var pieces = new Dictionary<string, char?>();
+
+            if (!IsValidFen(fen))
+                return pieces;
+
+            for (char row = '1'; row <= '8'; row++)
+            {
+                for (char column = 'a'; column <= 'h'; column++)
+                {
+                    string coordinate = column.ToString() + row.ToString();
+                    char? piece = GetPieceOnSquare(fen, coordinate);
+                    if (piece.HasValue && color == Piece.ColorType.White && char.IsUpper(piece.Value) ||
+                        piece.HasValue && color == Piece.ColorType.Black && char.IsLower(piece.Value))
+                        pieces.Add(coordinate, piece);
+                }
+            }
+
+            return pieces;
+        }
+
+        public static Dictionary<string, char> GetPiecesOfTypeFromFen(char pieceType, string fen)
+        {
+            var pieces = new Dictionary<string, char>();
+
+            if (!IsValidFen(fen))
+                return pieces;
+
+            for (char row = '1'; row <= '8'; row++)
+            {
+                for (char column = 'a'; column <= 'h'; column++)
+                {
+                    string coordinate = column.ToString() + row.ToString();
+                    char? piece = GetPieceOnSquare(fen, coordinate);
+                    if (piece.HasValue && piece.Value == pieceType)
+                        pieces.Add(coordinate, piece.Value);
                 }
             }
 
@@ -140,80 +196,73 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         public static string GetLetterFromCoordinates(string fen, string moveNotation)
         {
-            Piece.ColorType color = GetColorFromFen(fen);
+            Piece.ColorType colorToPlay = GetColorFromFen(fen);
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
-            bool isPawn = false;
-            bool isCapture = moveNotation.Contains('x');
             char pieceType = moveNotation.First();
-
-            if (char.IsLower(pieceType))
-            {
-                pieceType = color.Equals(Piece.ColorType.White) ? 'P' : 'p';
-                isPawn = true;
-            }
-
-            if (color.Equals(Piece.ColorType.Black))
-                pieceType = char.ToLower(pieceType);
-
+            pieceType = colorToPlay == Piece.ColorType.White ? Char.ToUpper(pieceType) : Char.ToLower(pieceType);
             string letterToCoordinates = moveNotation[^2..];
-            Piece.Coordinates<int> numberToCoordinates = BoardHelper.GetNumberCoordinates(letterToCoordinates);
+            char? file = null;
+            char? row = null;
 
-            HashSet<string> squares = GetSquaresWithPiece(fen, pieceType);
-            HashSet<string> possibleMoves;
-
-            switch (char.ToLower(pieceType))
+            string[] moveNotationComponents = moveNotation.Split('x');
+            if (moveNotationComponents.Length == 2 && moveNotationComponents[0].Length == 2)
             {
-                case 'r':
-                    possibleMoves = Rook.GetAvailableMoves(numberToCoordinates, color, fen);
-                    break;
-                case 'n':
-                    possibleMoves = Knight.GetAvailableMoves(numberToCoordinates, color, fen);
-                    break;
-                case 'b':
-                    possibleMoves = Bishop.GetAvailableMoves(letterToCoordinates, fen);
-                    break;
-                case 'q':
-                    possibleMoves = Queen.GetAvailableMoves(numberToCoordinates, color, fen);
-                    break;
-                case 'k':
-                    possibleMoves = King.GetAvailableMoves(numberToCoordinates, color, fen);
-                    break;
-                default:
-                    bool whiteDirection = color.Equals(Piece.ColorType.White);
-                    bool direction = !whiteDirection;
-                    if (isCapture)
-                    {
-                        //direction = !whiteDirection ? whiteDirection : whiteDirection;
-                    }
-
-                    possibleMoves = Pawn.GetAvailableMoves(numberToCoordinates, color, fen, direction, isCapture);
-                    break;
+                char specificPiece = moveNotationComponents[0][1];
+                if (char.IsLetter(specificPiece))
+                    file = specificPiece;
+                else if (char.IsDigit(specificPiece))
+                    row = specificPiece;
             }
 
-            string letterFromCoordinates = "";
+            Dictionary<string, char> pieces = GetPiecesOfTypeFromFen(pieceType, fen);
+            HashSet<string> availableMoves;
 
-            squares.IntersectWith(possibleMoves);
-
-            if (squares.Count == 0)
+            foreach (var piece in pieces)
             {
-                return "";
+                string pieceCoordinates = piece.Key;
+
+                if (pieceCoordinates == "g1")
+                {
+
+                }
+
+                char pieceFile = pieceCoordinates[0];
+                char pieceRow = pieceCoordinates[1];
+
+                if (file.HasValue && pieceFile != file.Value)
+                    continue;
+                else if (row.HasValue && pieceRow != row.Value)
+                    continue;
+
+                switch (char.ToLower(pieceType))
+                {
+                    case 'r':
+                        availableMoves = Rook.GetAvailableMoves(pieceCoordinates, fen);
+                        break;
+                    case 'n':
+                        availableMoves = Knight.GetAvailableMoves(pieceCoordinates, fen);
+                        break;
+                    case 'b':
+                        availableMoves = Bishop.GetAvailableMoves(pieceCoordinates, fen);
+                        break;
+                    case 'q':
+                        availableMoves = Queen.GetAvailableMoves(pieceCoordinates, fen);
+                        break;
+                    case 'k':
+                        availableMoves = King.GetAvailableMoves(pieceCoordinates, fen);
+                        break;
+                    default:
+                        bool whiteDirection = colorToPlay.Equals(Piece.ColorType.White);
+                        bool direction = !whiteDirection;
+                        availableMoves = Pawn.GetAvailableMoves(pieceCoordinates, fen);
+                        break;
+                }
+
+                if (availableMoves.Contains(letterToCoordinates))
+                    return pieceCoordinates;
             }
 
-            if (squares.Count > 1)
-            {
-                if (isPawn && isCapture)
-                    letterFromCoordinates = squares.Where(x => x[0] == moveNotation[0]).FirstOrDefault();
-                else if (char.IsDigit(moveNotation[1]))
-                    letterFromCoordinates = squares.Where(x => x[1] == moveNotation[1]).FirstOrDefault();
-                else
-                    letterFromCoordinates = squares.Where(x => x[0] == moveNotation[1]).FirstOrDefault();
-            }
-            else
-            {
-                letterFromCoordinates = squares.First();
-            }
-
-            return letterFromCoordinates;
+            return null;
         }
 
         /// <summary>
@@ -566,6 +615,62 @@ namespace ChessMemoryApp.Model.CourseMaker
 
             return board;
         }
+
+        #region Castling State From Fen
+
+        public static bool CanWhiteCastleKingSide(string fen)
+        {
+            string[] fenComponents = fen.Split(' ');
+
+            if (fenComponents.Length >= 3)
+            {
+                string castlingComponent = fenComponents[2];
+                return castlingComponent.Contains('K');
+            }
+
+            return false;
+        }
+
+        public static bool CanWhiteCastleQueenSide(string fen)
+        {
+            string[] fenComponents = fen.Split(' ');
+
+            if (fenComponents.Length >= 3)
+            {
+                string castlingComponent = fenComponents[2];
+                return castlingComponent.Contains('Q');
+            }
+
+            return false;
+        }
+
+        public static bool CanBlackCastleKingSide(string fen)
+        {
+            string[] fenComponents = fen.Split(' ');
+
+            if (fenComponents.Length >= 3)
+            {
+                string castlingComponent = fenComponents[2];
+                return castlingComponent.Contains('k');
+            }
+
+            return false;
+        }
+
+        public static bool CanBlackCastleQueenSide(string fen)
+        {
+            string[] fenComponents = fen.Split(' ');
+
+            if (fenComponents.Length >= 3)
+            {
+                string castlingComponent = fenComponents[2];
+                return castlingComponent.Contains('q');
+            }
+
+            return false;
+        }
+
+        #endregion
 
         public static bool IsValidFen(string fen)
         {

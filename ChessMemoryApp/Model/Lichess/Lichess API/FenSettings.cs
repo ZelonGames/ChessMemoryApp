@@ -75,6 +75,8 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
         private string whiteQueenSideSetting;
         [JsonProperty("blackQueenSideSetting")]
         private string blackQueenSideSetting;
+        [JsonProperty("enPassantSquare")]
+        private string enPassantSquare;
         [JsonProperty("spaceEncoding")]
         private string spaceEncoding = SpaceEncoding.PERCENT;
 
@@ -217,6 +219,18 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
             EnableWhiteKingSideCastling();
             EnableWhiteQueenSideCastling();
 
+            return this;
+        }
+
+        public FenSettings SetEnPassantSquare(string enPassantSquare)
+        {
+            this.enPassantSquare = enPassantSquare;
+            return this;
+        }
+
+        public FenSettings DisableEnPassant()
+        {
+            enPassantSquare = "-";
             return this;
         }
 

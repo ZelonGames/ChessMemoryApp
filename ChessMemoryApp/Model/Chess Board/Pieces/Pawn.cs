@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using ChessMemoryApp.Model.CourseMaker;
 
 namespace ChessMemoryApp.Model.Chess_Board.Pieces
 {
@@ -13,48 +14,75 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         {
 
         }
-        public static HashSet<string> GetAvailableMoves(Coordinates<int> currentCoordinate, Piece.ColorType color, string fen, bool whiteDirection, bool isCapture)
+        public static HashSet<string> GetAvailableMoves(string pieceLetterCoordinates, string fen)
         {
             var availableMoves = new HashSet<string>();
-            string nextPositionNotation = "";
+            Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(pieceLetterCoordinates);
+            char? pawn = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
+            bool isWhite = char.IsUpper(pawn.Value);
 
-            var nextPosition = GetNextPosition(whiteDirection, currentCoordinate, new Coordinates<int>(0, 1));
-            if (!isCapture)
+            // Forward
+            string currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X, false);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+
+            // Two moves forward
+            char startingRow = isWhite ? '2' : '7';
+            bool hasMoved = pieceLetterCoordinates[1] != startingRow;
+            if (!hasMoved)
             {
-                // Forward
-                nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
-                //if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
+                string betweenRow = isWhite ? "3" : "6";
+                bool isAnyPieceBetween = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates[0] + betweenRow).HasValue;
+                if (!isAnyPieceBetween)
                 {
-                    availableMoves.Add(nextPositionNotation);
-
-                    nextPosition = GetNextPosition(whiteDirection, currentCoordinate, new Coordinates<int>(0, 2));
-                    nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
-
-                    //if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color)) 
-                        availableMoves.Add(nextPositionNotation);
+                    currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X, true);
+                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
                 }
             }
-            else
-            {
-                // Diagonal Right Capture
-                nextPosition = GetNextPosition(whiteDirection, currentCoordinate, new Coordinates<int>(1, 1));
-                nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
-                //if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
-                    availableMoves.Add(BoardHelper.GetLetterCoordinates(nextPosition));
 
-                // Diagonal Left Capture
-                nextPosition = GetNextPosition(whiteDirection, currentCoordinate, new Coordinates<int>(-1, 1));
-                nextPositionNotation = BoardHelper.GetLetterCoordinates(nextPosition);
-                //if (nextPositionNotation != "" && !IsFriendlyPieceOnSquare(availableMoves, fen, nextPositionNotation, color))
-                    availableMoves.Add(BoardHelper.GetLetterCoordinates(nextPosition));
+            // Capture Left
+            currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X - 1, false);
+            char? piece = FenHelper.GetPieceOnSquare(fen, currentCoordinates);
+            if (piece.HasValue)
+            {
+                bool isPieceAnEnemy = char.IsLower(piece.Value);
+                if (isPieceAnEnemy)
+                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
             }
+
+            // Capture Right
+            currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X + 1, false);
+            piece = FenHelper.GetPieceOnSquare(fen, currentCoordinates);
+            if (piece.HasValue)
+            {
+                bool isPieceAnEnemy = char.IsLower(piece.Value);
+                if (isPieceAnEnemy)
+                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            }
+
+            // En Passant
+            string enPassantSquare = FenHelper.GetEnPassantSquareFromFen(fen);
+            if (enPassantSquare != null)
+                availableMoves.Add(enPassantSquare);
 
             return availableMoves;
         }
 
-        private static Coordinates<int> GetNextPosition(bool whiteDirection, Coordinates<int> currentCoordinate, Coordinates<int> steps)
+        private static string GetForwardMove(bool isWhite, Coordinates<int> pieceCoordinates, int coordinateX, bool isDoubleMove)
         {
-            return new Coordinates<int>(currentCoordinate.X + steps.X, currentCoordinate.Y + (whiteDirection ? steps.Y : steps.Y * -1));
+            if (isWhite)
+            {
+                if (isDoubleMove)
+                    return BoardHelper.GetLetterCoordinates(new Coordinates<int>(coordinateX, pieceCoordinates.Y + 2));
+                else
+                    return BoardHelper.GetLetterCoordinates(new Coordinates<int>(coordinateX, pieceCoordinates.Y + 1));
+            }
+            else
+            {
+                if (isDoubleMove)
+                    return BoardHelper.GetLetterCoordinates(new Coordinates<int>(coordinateX, pieceCoordinates.Y - 2));
+                else
+                    return BoardHelper.GetLetterCoordinates(new Coordinates<int>(coordinateX, pieceCoordinates.Y - 1));
+            }
         }
     }
 }
