@@ -22,35 +22,35 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
             // Right Down
             string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 2, pieceCoordinates.Y - 1));
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Right Up
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 2, pieceCoordinates.Y + 1));
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Up Right
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 1, pieceCoordinates.Y + 2));
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Up Left
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 1, pieceCoordinates.Y + 2));
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Left Up
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 2, pieceCoordinates.Y + 1));
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Left Down
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 2, pieceCoordinates.Y - 1));
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Down Left
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 1, pieceCoordinates.Y - 2));
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Down Right
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 1, pieceCoordinates.Y - 2));
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             return availableMoves;
         }

@@ -134,40 +134,37 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             return char.IsUpper(piece) ? ColorType.White : ColorType.Black;
         }
 
-        public static HashSet<string> GetAvailableMoves(char pieceType, string letterToCoordinates, string fen)
+        public static HashSet<string> GetAvailableMoves(char pieceType, string pieceLetterCoordinates, string fen)
         {
             HashSet<string> availableMoves;
             switch (char.ToLower(pieceType))
             {
                 case 'r':
-                    availableMoves = Rook.GetAvailableMoves(letterToCoordinates, fen);
+                    availableMoves = Rook.GetAvailableMoves(pieceLetterCoordinates, fen);
                     break;
                 case 'n':
-                    availableMoves = Knight.GetAvailableMoves(letterToCoordinates, fen);
+                    availableMoves = Knight.GetAvailableMoves(pieceLetterCoordinates, fen);
                     break;
                 case 'b':
-                    availableMoves = Bishop.GetAvailableMoves(letterToCoordinates, fen);
+                    availableMoves = Bishop.GetAvailableMoves(pieceLetterCoordinates, fen);
                     break;
                 case 'q':
-                    availableMoves = Queen.GetAvailableMoves(letterToCoordinates, fen);
+                    availableMoves = Queen.GetAvailableMoves(pieceLetterCoordinates, fen);
                     break;
                 case 'k':
-                    availableMoves = King.GetAvailableMoves(letterToCoordinates, fen);
+                    availableMoves = King.GetAvailableMoves(pieceLetterCoordinates, fen);
                     break;
                 default:
-                    char? piece = FenHelper.GetPieceOnSquare(fen, letterToCoordinates);
-                    bool whiteDirection = piece.HasValue && Char.IsUpper(piece.Value);
-                    bool direction = !whiteDirection;
-                    availableMoves = Pawn.GetAvailableMoves(letterToCoordinates, fen);
+                    availableMoves = Pawn.GetAvailableMoves(pieceLetterCoordinates, fen);
                     break;
             }
 
             return availableMoves;
         }
 
-        public static bool IsPieceByColorOnSquare(string fen, string squareCoordinates, ColorType pieceColor)
+        public static bool IsPieceByColorOnSquare(string fen, string squareCoordinates, ColorType pieceColor, out char? pieceType)
         {
-            char? pieceType = FenHelper.GetPieceOnSquare(fen, squareCoordinates);
+            pieceType = FenHelper.GetPieceOnSquare(fen, squareCoordinates);
             if (pieceType.HasValue)
             {
                 // Uppercase = white | Lowercase = black
@@ -188,43 +185,66 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         /// <param name="fen">The state of the board</param>
         /// <param name="pieceCoordinates">The position of the piece you are adding moves to</param>
         /// <param name="squareCoordinates">The move you want to try to add to the piece</param>
-        /// <param name="isPieceOnSquare">returns true if there is a piece on squareCoordinates</param>
-        /// <returns>returns true if a valid move was added</returns>
-        protected static bool TryAddMove(HashSet<string> availableMoves, string fen, string pieceCoordinates, string squareCoordinates, out bool isPieceOnSquare)
+        /// <returns></returns>
+        protected static TryAddMoveResult TryAddMove(HashSet<string> availableMoves, string fen, string pieceCoordinates, string squareCoordinates)
         {
             if (string.IsNullOrEmpty(squareCoordinates) || string.IsNullOrEmpty(pieceCoordinates))
             {
-                isPieceOnSquare = false;
-                return false;
+                return new TryAddMoveResult()
+                {
+                    isPieceOnSquare = false,
+                    success = false,
+                };
             }
 
             char? piece = FenHelper.GetPieceOnSquare(fen, pieceCoordinates);
             // Don't do anything if there is no piece to move
             if (!piece.HasValue)
             {
-                isPieceOnSquare = false;
-                return false;
+                return new TryAddMoveResult()
+                {
+                    isPieceOnSquare = false,
+                    success = false,
+                };
             }
 
             ColorType pieceColor = GetColorOfPiece(piece.Value);
             ColorType enemyPieceColor = GetOppositeColor(pieceColor);
 
-            isPieceOnSquare = FenHelper.GetPieceOnSquare(fen, squareCoordinates).HasValue;
-            bool isEnemyPieceOnSquare = IsPieceByColorOnSquare(fen, squareCoordinates, enemyPieceColor);
+            bool isPieceOnSquare = FenHelper.GetPieceOnSquare(fen, squareCoordinates).HasValue;
+            bool isEnemyPieceOnSquare = IsPieceByColorOnSquare(fen, squareCoordinates, enemyPieceColor, out _);
 
             if (isEnemyPieceOnSquare)
             {
                 availableMoves.Add(squareCoordinates);
-                return true;
+                return new TryAddMoveResult()
+                {
+                    isPieceOnSquare = isPieceOnSquare,
+                    success = true,
+                };
             }
             else if (!isPieceOnSquare)
             {
                 availableMoves.Add(squareCoordinates);
-                return true;
+                return new TryAddMoveResult()
+                {
+                    isPieceOnSquare = isPieceOnSquare,
+                    success = true,
+                };
             }
 
             // A frierndly piece is on this square
-            return false;
+            return new TryAddMoveResult()
+            {
+                isPieceOnSquare = isPieceOnSquare,
+                success = false,
+            };
+        }
+
+        protected struct TryAddMoveResult
+        {
+            public bool success;
+            public bool isPieceOnSquare;
         }
     }
 }

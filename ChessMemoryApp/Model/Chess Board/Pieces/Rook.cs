@@ -23,8 +23,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int y = pieceCoordinates.Y + 1; y <= 8; y++)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, y));
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
-                if (isPieceOnSquare)
+                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -32,8 +31,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int y = pieceCoordinates.Y - 1; y >= 1; y--)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, y));
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
-                if (isPieceOnSquare)
+                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -41,8 +39,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X + 1; x <= 8; x++)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, pieceCoordinates.Y));
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
-                if (isPieceOnSquare)
+                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -50,8 +47,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X - 1; x >= 1; x--)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, pieceCoordinates.Y));
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
-                if (isPieceOnSquare)
+                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
                     break;
             }
 

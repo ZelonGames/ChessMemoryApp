@@ -20,10 +20,16 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(pieceLetterCoordinates);
             char? pawn = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
             bool isWhite = char.IsUpper(pawn.Value);
+            ColorType pieceColor = isWhite ? Piece.ColorType.White : Piece.ColorType.Black;
 
             // Forward
             string currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X, false);
-            TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+            char? enemyPiece = FenHelper.GetPieceOnSquare(fen, currentCoordinates);
+
+            // Normally a move would be added if an enemy piece is on the square but pawns can't capture forward
+            bool isPieceOnSquare = FenHelper.GetPieceOnSquare(fen, currentCoordinates).HasValue;
+            if (!isPieceOnSquare)
+                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Two moves forward
             char startingRow = isWhite ? '2' : '7';
@@ -36,7 +42,9 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
                 if (!isAnyPieceBetween)
                 {
                     currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X, true);
-                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+                    isPieceOnSquare = FenHelper.GetPieceOnSquare(fen, currentCoordinates).HasValue;
+                    if (!isPieceOnSquare)
+                        TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
                 }
             }
 
@@ -45,9 +53,9 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             char? piece = FenHelper.GetPieceOnSquare(fen, currentCoordinates);
             if (piece.HasValue)
             {
-                bool isPieceAnEnemy = char.IsLower(piece.Value);
+                bool isPieceAnEnemy = isWhite ? char.IsLower(piece.Value) : char.IsUpper(piece.Value);
                 if (isPieceAnEnemy)
-                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
             }
 
             // Capture Right
@@ -55,9 +63,9 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             piece = FenHelper.GetPieceOnSquare(fen, currentCoordinates);
             if (piece.HasValue)
             {
-                bool isPieceAnEnemy = char.IsLower(piece.Value);
+                bool isPieceAnEnemy = isWhite ? char.IsLower(piece.Value) : char.IsUpper(piece.Value);
                 if (isPieceAnEnemy)
-                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out _);
+                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
             }
 
             // En Passant

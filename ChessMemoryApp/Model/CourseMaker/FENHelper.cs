@@ -31,7 +31,7 @@ namespace ChessMemoryApp.Model.CourseMaker
         {
             string[] fenComponents = fen.Split(' ');
             string enPassantSquare = fenComponents.Length >= 4 ? fenComponents[3] : null;
-            return enPassantSquare;
+            return enPassantSquare != "-" ? enPassantSquare : null;
         }
 
         public static string ConvertFenToChessableUrl(string fen, string courseID)
@@ -106,9 +106,9 @@ namespace ChessMemoryApp.Model.CourseMaker
             return pieces;
         }
 
-        public static Dictionary<string, char?> GetPiecesByColorFromFen(string fen, Piece.ColorType color)
+        public static Dictionary<string, char> GetPiecesByColorFromFen(string fen, Piece.ColorType color)
         {
-            var pieces = new Dictionary<string, char?>();
+            var pieces = new Dictionary<string, char>();
 
             if (!IsValidFen(fen))
                 return pieces;
@@ -118,10 +118,11 @@ namespace ChessMemoryApp.Model.CourseMaker
                 for (char column = 'a'; column <= 'h'; column++)
                 {
                     string coordinate = column.ToString() + row.ToString();
+
                     char? piece = GetPieceOnSquare(fen, coordinate);
                     if (piece.HasValue && color == Piece.ColorType.White && char.IsUpper(piece.Value) ||
                         piece.HasValue && color == Piece.ColorType.Black && char.IsLower(piece.Value))
-                        pieces.Add(coordinate, piece);
+                        pieces.Add(coordinate, piece.Value);
                 }
             }
 
@@ -349,55 +350,102 @@ namespace ChessMemoryApp.Model.CourseMaker
             return UpdateFenColorToPlay(newFen);
         }
 
-        public static string MakeMoveWithCoordinates(string currentFen, string moveNotationCoordinates)
+        public static string MakeMoveWithCoordinates(string currentFen, string moveNotationCoordinates, bool updateColorToPlay = true)
         {
-            string newFen;
-            if (moveNotationCoordinates == "e1h1")
+            string newFen = currentFen;
+            string fromCoordinates = moveNotationCoordinates[..2];
+            string toCoordinates = moveNotationCoordinates[2..];
+            char? piece = GetPieceOnSquare(currentFen, fromCoordinates);
+            if (!piece.HasValue)
+                return null;
+            
+            #region Castling Moves
+            bool isCastlingMove = false;
+            bool isMovingPieceKing = piece.HasValue && char.ToLower(piece.Value) == 'k';
+            if (isMovingPieceKing)
             {
-                // White king side castle
-                newFen = TeleportPiece(currentFen, "e1g1");
-                newFen = TeleportPiece(newFen, "h1f1");
+                if (moveNotationCoordinates == "e1h1")
+                {
+                    // White king side castle
+                    newFen = TeleportPiece(currentFen, "e1g1", false);
+                    newFen = TeleportPiece(newFen, "h1f1", false);
+                    isCastlingMove = true;
+                }
+                else if (moveNotationCoordinates == "e1a1")
+                {
+                    // White queen side castle
+                    newFen = TeleportPiece(currentFen, "e1c1", false);
+                    newFen = TeleportPiece(newFen, "a1d1", false);
+                    isCastlingMove = true;
+                }
+                else if (moveNotationCoordinates == "e8h8")
+                {
+                    // Black king side castle
+                    newFen = TeleportPiece(currentFen, "e8g8", false);
+                    newFen = TeleportPiece(newFen, "h8f8", false);
+                    isCastlingMove = true;
+                }
+                else if (moveNotationCoordinates == "e8a8")
+                {
+                    // Black queen side castle
+                    newFen = TeleportPiece(currentFen, "e8c8", false);
+                    newFen = TeleportPiece(newFen, "a8d8", false);
+                    isCastlingMove = true;
+                }
             }
-            else if (moveNotationCoordinates == "e1a1")
-            {
-                // White queen side castle
-                newFen = TeleportPiece(currentFen, "e1c1");
-                newFen = TeleportPiece(newFen, "a1d1");
-            }
-            else if (moveNotationCoordinates == "e8h8")
-            {
-                // Black king side castle
-                newFen = TeleportPiece(currentFen, "e8g8");
-                newFen = TeleportPiece(newFen, "h8f8");
-            }
-            else if (moveNotationCoordinates == "e8a8")
-            {
-                // Black queen side castle
-                newFen = TeleportPiece(currentFen, "e8c8");
-                newFen = TeleportPiece(newFen, "a8d8");
-            }
-            else
-                newFen = TeleportPiece(currentFen, moveNotationCoordinates);
 
-            return newFen;
+            if (isCastlingMove)
+                return updateColorToPlay ? UpdateFenColorToPlay(currentFen) : newFen;
+            #endregion
+
+            char? capturedPiece = GetPieceOnSquare(currentFen, toCoordinates);
+            if (capturedPiece.HasValue)
+                newFen = RemovePieceFromFEN(newFen, toCoordinates);
+
+            string enPassantSquare = GetEnPassantSquareFromFen(currentFen);
+            if (toCoordinates == enPassantSquare)
+            {
+                char movedPiece = GetPieceOnSquare(currentFen, fromCoordinates).Value;
+                bool isMovedPiecePawn = char.ToLower(movedPiece) == 'p';
+                if (isMovedPiecePawn)
+                {
+                    bool isWhitePawn = movedPiece == 'P';
+
+                    if (isWhitePawn)
+                    {
+                        Piece.Coordinates<int> toNumberCoordinates = BoardHelper.GetNumberCoordinates(toCoordinates);
+                        string capturedPieceCoordinates = BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(toNumberCoordinates.X, toNumberCoordinates.Y - 1));
+                        newFen = RemovePieceFromFEN(newFen, capturedPieceCoordinates);
+                    }
+                }
+            }
+
+            return TeleportPiece(newFen, moveNotationCoordinates, updateColorToPlay);
         }
 
-        public static string TeleportPiece(string currentFen, string moveNotationCoordinates)
+        public static string TeleportPiece(string currentFen, string moveNotationCoordinates, bool updateColorToPlay = true)
         {
             string fromCoordinates = moveNotationCoordinates[..2];
+            string toCoordinates = moveNotationCoordinates[2..];
+
             char? pieceChar = GetPieceOnSquare(currentFen, fromCoordinates);
             if (!pieceChar.HasValue)
                 return string.Empty;
 
-            string toCoordinates = moveNotationCoordinates.Substring(moveNotationCoordinates.Length - 2);
 
             string newFen = RemovePieceFromFEN(currentFen, fromCoordinates);
-            return AddPieceToFEN(UpdateFenColorToPlay(newFen), toCoordinates, pieceChar.Value);
+            newFen = updateColorToPlay ? UpdateFenColorToPlay(newFen) : newFen;
+            return AddPieceToFEN(newFen, toCoordinates, pieceChar.Value);
         }
 
         public static string GetColorToPlayFromFen(string fen)
         {
             return fen.Split(' ')[1];
+        }
+
+        public static Piece.ColorType GetColorTypeToPlayFromFen(string fen)
+        {
+            return GetColorToPlayFromFen(fen) == "w" ? Piece.ColorType.White : Piece.ColorType.Black;
         }
 
         public static string GetOppositeColor(string color)

@@ -23,8 +23,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X + 1, y = pieceCoordinates.Y + 1; x <= 8 && y <= 8; x++, y++)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, y));
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
-                if (isPieceOnSquare)
+                
+                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -32,8 +32,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X - 1, y = pieceCoordinates.Y + 1; x >= 1 && y <= 8; x--, y++)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, y));
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
-                if (isPieceOnSquare)
+                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -41,8 +40,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X + 1, y = pieceCoordinates.Y - 1; x <= 8 && y >= 1; x++, y--)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, y));
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
-                if (isPieceOnSquare)
+                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -50,8 +48,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X - 1, y = pieceCoordinates.Y - 1; x >= 1 && y >= 1; x--, y--)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, y));
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates, out var isPieceOnSquare);
-                if (isPieceOnSquare)
+                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
                     break;
             }
 

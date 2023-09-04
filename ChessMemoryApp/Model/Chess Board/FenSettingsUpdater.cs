@@ -15,8 +15,7 @@ namespace ChessMemoryApp.Model.Chess_Board
     /// </summary>
     public class FenSettingsUpdater
     {
-        public delegate void UpdatedFenEventHandler(string fen);
-        public event UpdatedFenEventHandler UpdatedFen;
+
 
         protected readonly FenSettings fenSettings;
 
