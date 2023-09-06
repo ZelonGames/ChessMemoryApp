@@ -51,7 +51,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         }
 
         public HashSet<string> availableMoves = new();
-        public Coordinates<int> currentCoordinate = new();
+        public string currentCoordinates;
         public readonly Image image;
         public readonly char pieceType;
         public readonly ColorType color;
@@ -105,16 +105,16 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             if (chessBoard.MoveNotationHelper == null)
                 return;
 
-            bool clickedOnPiece = chessBoard.GetPiece(BoardHelper.GetLetterCoordinates(currentCoordinate)) != null;
+            bool clickedOnPiece = chessBoard.GetPiece((currentCoordinates)) != null;
 
             if (clickedOnPiece && chessBoard.MoveNotationHelper.IsFirstClick)
             {
-                chessBoard.MoveNotationHelper.SetFirstClick(currentCoordinate);
-                chessBoard.GetSquare(BoardHelper.GetLetterCoordinates(currentCoordinate)).HighlightSquare();
+                chessBoard.MoveNotationHelper.SetFirstClick(BoardHelper.GetNumberCoordinates(currentCoordinates));
+                chessBoard.GetSquare(currentCoordinates).HighlightSquare();
             }
             else
             {
-                chessBoard.MoveNotationHelper.SetSecondClick(currentCoordinate);
+                chessBoard.MoveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(currentCoordinates));
                 Square.HighlightedSquare?.LowlightSquare();
             }
         }

@@ -14,6 +14,11 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         }
 
+        public HashSet<string> GetAvailableMoves(string fen)
+        {
+            return GetAvailableMoves(currentCoordinates, fen);
+        }
+
         public static HashSet<string> GetAvailableMoves(string pieceLetterCoordinates, string fen)
         {
             var availableMoves = new HashSet<string>();

@@ -1,4 +1,5 @@
-﻿using ChessMemoryApp.Model.Chess_Board.Pieces;
+﻿using ChessMemoryApp.Model.Chess_Board;
+using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.ChessMoveLogic;
 using ChessMemoryApp.Model.UI_Helpers.Main_Page;
 using Microsoft.Maui.Controls.Compatibility;
@@ -14,18 +15,18 @@ namespace ChessMemoryApp.Model
     public class Square
     {
         public ContentView contentView;
-        public Piece.Coordinates<int> coordinate;
+        public string coordinates;
         public readonly Color initialColor;
         private MoveNotationGenerator moveNotationHelper;
 
         public static Square HighlightedSquare { get; private set; }
 
-        public Square(ContentView contentView, Piece.Coordinates<int> coordinate, bool isClickable = true)
+        public Square(ContentView contentView, string coordinates, bool isClickable = true)
         {
             var pointer = new PointerGestureRecognizer();
 
             this.contentView = contentView;
-            this.coordinate = coordinate;
+            this.coordinates = coordinates;
             initialColor = contentView.BackgroundColor;
 
             if (isClickable)
@@ -77,7 +78,7 @@ namespace ChessMemoryApp.Model
 
             if (!moveNotationHelper.IsFirstClick)
             {
-                moveNotationHelper.SetSecondClick(coordinate);
+                moveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(coordinates));
                 HighlightedSquare?.LowlightSquare();
             }
         }

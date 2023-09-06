@@ -189,8 +189,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             piece.ResetEvents();
             UILogicHelper.RemovePieceFromSquare(this, piece);
-            string coordinates = BoardHelper.GetLetterCoordinates(piece.currentCoordinate);
-            pieces.Remove(coordinates);
+            pieces.Remove(piece.currentCoordinates);
         }
 
         public void ClearSquares()
@@ -242,11 +241,11 @@ namespace ChessMemoryApp.Model.Chess_Board
                 TranslationY = offset.Y + (row - 1) * squareSize,
             };
 
-            var square = new Square(contentViewSquare, new Piece.Coordinates<int>(column, row), arePiecesAndSquaresClickable);
+            string coordinates = column + row.ToString();
+            var square = new Square(contentViewSquare, coordinates, arePiecesAndSquaresClickable);
             if (MoveNotationHelper != null)
                 square.SetMoveNotationGenerator(MoveNotationHelper);
-            square.coordinate = new Piece.Coordinates<int>(column, row);
-            string letterCoordinates = BoardHelper.GetLetterCoordinates(square.coordinate);
+            string letterCoordinates = square.coordinates;
 
             chessBoardListLayout.Add(square.contentView);
             squares.Add(letterCoordinates, square);
@@ -273,9 +272,8 @@ namespace ChessMemoryApp.Model.Chess_Board
             if (pieceImageFileExists)
             {
                 var piece = new Piece(this, pieceType, arePiecesAndSquaresClickable);
-                piece.currentCoordinate = new Piece.Coordinates<int>(square.coordinate.X, square.coordinate.Y);
-
-                pieces.Add(BoardHelper.GetLetterCoordinates(piece.currentCoordinate), piece);
+                piece.currentCoordinates = square.coordinates;
+                pieces.Add(piece.currentCoordinates, piece);
                 square.contentView.Content = piece.image;
 
                 return piece;
