@@ -17,13 +17,10 @@ namespace ChessMemoryApp.Model
         private readonly List<T> chessBoards = new();
         private readonly AbsoluteLayout coursesLayout;
 
-        private Course selectedCourse;
-
-        public SelectorPageController(List<T> customVariationBoards, AbsoluteLayout coursesLayout, Course selectedCourse)
+        public SelectorPageController(List<T> customVariationBoards, AbsoluteLayout coursesLayout)
         {
-            this.chessBoards = customVariationBoards;
+            chessBoards = customVariationBoards;
             this.coursesLayout = coursesLayout;
-            this.selectedCourse = selectedCourse;
         }
 
         public void Window_SizeChanged(object sender, EventArgs e)

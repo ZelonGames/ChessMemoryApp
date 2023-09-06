@@ -31,9 +31,9 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         public enum ColorType
         {
-            White,
-            Black,
-            Empty
+            White = 1,
+            Black = 2,
+            Empty = 0,
         }
 
         public class Coordinates<T> where T : struct, IComparable, IComparable<T>, IEquatable<T>, IConvertible
@@ -53,7 +53,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         public HashSet<string> availableMoves = new();
         public Coordinates<int> currentCoordinate = new();
         public readonly Image image;
-        public readonly char pieceChar;
+        public readonly char pieceType;
         public readonly ColorType color;
         private readonly ChessboardGenerator chessBoard;
 
@@ -62,8 +62,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             this.chessBoard = chessBoard;
             this.color = color;
 
-            this.pieceChar = color == ColorType.White ? char.ToUpper(pieceChar) : char.ToLower(pieceChar);
-            pieceFileNames.TryGetValue(this.pieceChar, out string value);
+            this.pieceType = color == ColorType.White ? char.ToUpper(pieceChar) : char.ToLower(pieceChar);
+            pieceFileNames.TryGetValue(this.pieceType, out string value);
 
             this.image = new Image()
             {
@@ -73,7 +73,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         public Piece(ChessboardGenerator chessBoard, char pieceChar, bool isClickable = true)
         {
             this.chessBoard = chessBoard;
-            this.pieceChar = pieceChar;
+            this.pieceType = pieceChar;
 
             pieceFileNames.TryGetValue(pieceChar, out string fileName);
             image = new Image()
@@ -121,7 +121,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         public static ColorType GetColorFromChessboard(ChessboardGenerator chessBoard)
         {
-            return chessBoard.playAsBlack ? ColorType.Black : ColorType.White;
+            return chessBoard.colorToPlay;
         }
 
         public static ColorType GetOppositeColor(ColorType colorType)
@@ -134,9 +134,15 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             return char.IsUpper(piece) ? ColorType.White : ColorType.Black;
         }
 
+        public virtual void GetAvailableMoves()
+        {
+
+        }
+
         public static HashSet<string> GetAvailableMoves(char pieceType, string pieceLetterCoordinates, string fen)
         {
             HashSet<string> availableMoves;
+
             switch (char.ToLower(pieceType))
             {
                 case 'r':

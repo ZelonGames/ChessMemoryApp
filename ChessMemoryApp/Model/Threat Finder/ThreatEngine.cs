@@ -10,8 +10,9 @@ namespace ChessMemoryApp.Model.Threat_Finder
 {
     public class ThreatEngine
     {
-        private FamilyTree<string> tree = new();
-        private List<List<FamilyTree<string>>> lines;
+        private Dictionary<string, int> repeatedPositions = new();
+        private FamilyTree<CalculatedMoveInfo> tree = new();
+        private List<Stack<FamilyTree<CalculatedMoveInfo>>> lines;
         public readonly int depth;
 
         public ThreatEngine(int depth)
@@ -21,103 +22,67 @@ namespace ChessMemoryApp.Model.Threat_Finder
 
         public void CalculateMoves(string fen)
         {
-            CalculateMovesRecurrsive(fen, tree);
+            CalculateMovesRecursive(fen, tree);
         }
 
-        public List<List<FamilyTree<string>>> GetLines()
+        public List<Stack<FamilyTree<CalculatedMoveInfo>>> GetLines()
         {
             if (lines != null)
                 return lines;
             return lines = tree.GetPaths();
         }
 
-        private void CalculateMovesRecurrsive(string fen, FamilyTree<string> parent)
+        private void CalculateMovesRecursive(string fen, FamilyTree<CalculatedMoveInfo> parent)
         {
+            if (IsDrawnByRepetition(fen))
+                return;
+
             List<string> threats = GetThreats(fen);
             for (int i = 0; i < threats.Count; i++)
             {
                 string threat = threats[i];
-                FamilyTree<string> child = parent.AddChild();
-                child.value = threat;
+                parent.AddChild(new CalculatedMoveInfo(fen, threat));
             }
 
             for (int i = 0; i < parent.Children.Count; i++)
             {
-                FamilyTree<string> child = parent.Children[i];
-                string newFen = FenHelper.MakeMoveWithCoordinates(fen, child.value);
+                FamilyTree<CalculatedMoveInfo> child = parent.Children[i];
+                string newFen = FenHelper.MakeMoveWithCoordinates(fen, child.value.moveNotationCoordinates);
+                if (IsDrawnByRepetition(newFen))
+                    continue;
+
                 if (child.Depth <= depth)
-                    CalculateMovesRecurrsive(newFen, child);
+                    CalculateMovesRecursive(newFen, child);
             }
         }
 
-        public static HashSet<string> GetChecks(string fen)
+        private bool IsDrawnByRepetition(string fen)
         {
-            var checks = new HashSet<string>();
-            Piece.ColorType colorToPlay = FenHelper.GetColorToPlayFromFen(fen) == "w" ? Piece.ColorType.White : Piece.ColorType.Black;
-            Dictionary<string, char> friendlyPieces = FenHelper.GetPiecesByColorFromFen(fen, colorToPlay);
-
-            char enemyKingType = colorToPlay == Piece.ColorType.White ? 'k' : 'K';
-            KeyValuePair<string, char> enemyKing = FenHelper.GetPiecesOfTypeFromFen(enemyKingType, fen).FirstOrDefault();
-            if (enemyKing.Key == null)
-                return checks;
-
-            string enemyKingCoordinates = enemyKing.Key;
-
-            foreach (var piece in friendlyPieces)
+            if (repeatedPositions.ContainsKey(fen))
             {
-                string fromCoordinates = piece.Key;
-                HashSet<string> availableMoves = Piece.GetAvailableMoves(piece.Value, piece.Key, fen);
-
-                foreach (var toCoordinates in availableMoves)
-                {
-                    string moveNotation = fromCoordinates + toCoordinates;
-                    string newFen = FenHelper.MakeMoveWithCoordinates(fen, moveNotation);
-
-                    // Loop through the pieces again to find discovered checks
-                    Dictionary<string, char> newPieces = FenHelper.GetPiecesByColorFromFen(newFen, colorToPlay);
-                    foreach (var newPiece in newPieces)
-                    {
-                        HashSet<string> newAvailableMoves = Piece.GetAvailableMoves(newPiece.Value, newPiece.Key, newFen);
-
-                        if (newAvailableMoves.Contains(enemyKingCoordinates))
-                            checks.Add(moveNotation);
-                    }
-                }
+                if (repeatedPositions[fen] == 3)
+                    return true;
+                repeatedPositions[fen]++;
             }
+            else
+                repeatedPositions.Add(fen, 1);
 
-            return checks;
+            return false;
         }
 
-        public static HashSet<string> GetCaptures(string fen)
+        public static string ConvertLineToString(Stack<FamilyTree<CalculatedMoveInfo>> line)
         {
-            var captures = new HashSet<string>();
-            Piece.ColorType colorToPlay = FenHelper.GetColorToPlayFromFen(fen) == "w" ? Piece.ColorType.White : Piece.ColorType.Black;
-            Dictionary<string, char> friendlyPieces = FenHelper.GetPiecesByColorFromFen(fen, colorToPlay);
+            string lineString = "";
 
-            foreach (var piece in friendlyPieces)
-            {
-                HashSet<string> availableMoves = Piece.GetAvailableMoves(piece.Value, piece.Key, fen);
-                string fromCoordinates = piece.Key;
+            foreach (var moveInfo in line)
+                lineString += moveInfo.value.moveNotationCoordinates + " ";
 
-                foreach (var toCoordinates in availableMoves)
-                {
-                    string moveNotation = fromCoordinates + toCoordinates;
-
-                    char? capturePiece = FenHelper.GetPieceOnSquare(fen, toCoordinates);
-                    if (capturePiece.HasValue)
-                        captures.Add(moveNotation);
-                }
-            }
-
-            return captures;
+            return lineString;
         }
 
         public static List<string> GetThreats(string fen)
         {
             var threats = new HashSet<string>();
-            threats.UnionWith(GetChecks(fen));
-            threats.UnionWith(GetCaptures(fen));
-
             Piece.ColorType colorToPlay = FenHelper.GetColorTypeToPlayFromFen(fen);
             Dictionary<string, char> friendlyPieces = FenHelper.GetPiecesByColorFromFen(fen, colorToPlay);
 

@@ -1,5 +1,6 @@
 using ChessMemoryApp.Model;
 using ChessMemoryApp.Model.Chess_Board;
+using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.ChessMoveLogic;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.ViewModel;
@@ -24,7 +25,7 @@ public partial class SearchPage : ContentPage
         this.searchViewModel = searchViewModel;
         BindingContext = searchViewModel;
 
-        selectorPageController = new SelectorPageController<ChessableChessboard>(customVariationBoards, coursesLayout, searchViewModel.Course);
+        selectorPageController = new SelectorPageController<ChessableChessboard>(customVariationBoards, coursesLayout);
         
         SizeChanged += selectorPageController.Window_SizeChanged;
         scrollViewCourses.Scrolled += ScrollViewCourses_Scrolled;
@@ -73,7 +74,7 @@ public partial class SearchPage : ContentPage
             var customVariationBoard = new ChessableChessboard(coursesLayout, boardSize);
             customVariationBoard.fen = filteredVariations[i].lastSearchMove.Fen;
             customVariationBoard.LoadChessBoardFromFen(customVariationBoard.fen);
-            customVariationBoard.playAsBlack = searchViewModel.Course.PlayAsBlack;
+            customVariationBoard.colorToPlay = searchViewModel.Course.PlayAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
             customVariationBoard.Clicked += OnBoardClicked;
             customVariationBoards.Add(customVariationBoard);
         }

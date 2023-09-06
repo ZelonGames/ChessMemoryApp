@@ -9,75 +9,65 @@ namespace ChessMemoryApp.Model.Threat_Finder
     public class FamilyTree<T>
     {
         private readonly List<FamilyTree<T>> children = new();
+        private readonly List<FamilyTree<T>> leafNodes = new();
+        public List<FamilyTree<T>> LeafNodes => Root.leafNodes;
         public List<FamilyTree<T>> Children => children;
         public FamilyTree<T> Parent { get; private set; }
+        public FamilyTree<T> Root { get; private set; }
         public T value;
 
         public int Depth { get; private set; }
-        private bool HasChildren => children.Count > 0;
-        private bool HasVisitedAllChildren => timesVisited >= children.Count;
-        private int timesVisited = 0;
+        public bool HasChildren => children.Count > 0;
 
         public FamilyTree()
         {
+            Root = this;
         }
 
-        public List<List<FamilyTree<T>>> GetPaths()
+        public List<Stack<FamilyTree<T>>> GetPaths()
         {
-            var paths = new List<List<FamilyTree<T>>>();
-            
-            if (children.Count == 0)
-                return null;
+            var paths = new List<Stack<FamilyTree<T>>>();
 
-            FamilyTree<T> child = this;
-            paths.Add(new List<FamilyTree<T>>());
-
-            while (true)
+            foreach (var node in leafNodes)
             {
-                while (child != null)
-                {
-                    if (!child.HasChildren)
-                        break;
-
-                    child = child.Children[child.timesVisited];
-                    child.Parent.timesVisited++;
-                    paths.Last().Add(child);
-                }
-
-                child = child.Parent;
-                while (child.HasVisitedAllChildren)
-                {
-                    child.timesVisited = 0;
-                    child = child.Parent;
-                    if (child == null)
-                        break;
-                }
-
-                if (child == null)
-                    break;
-
-                var newPath = new List<FamilyTree<T>>();
-                foreach (var node in paths.Last())
-                {
-                    if (node.Parent == child)
-                        break;
-
-                    newPath.Add(node);
-                }
-
-                paths.Add(newPath);
+                var path = GetPathFromChildToRoot(node);
+                paths.Add(path);
             }
 
             return paths;
         }
 
-        public FamilyTree<T> AddChild()
+        public static Stack<FamilyTree<T>> GetPathFromChildToRoot(FamilyTree<T> child)
+        {
+            var path = new Stack<FamilyTree<T>>(child.Depth);
+            FamilyTree<T> parent = child;
+
+            do
+            {
+                path.Push(parent);
+                parent = parent.Parent;
+            }
+            while (parent != null && parent.value != null);
+
+            return path;
+        }
+
+        public FamilyTree<T> AddChild(T value)
         {
             var child = new FamilyTree<T>();
             child.Parent = this;
-            child.Depth = Depth + 1;
+            child.Depth = child.Parent.Depth + 1;
+            child.Root = child.Parent.Root;
+            child.value = value;
             children.Add(child);
+            UpdateLeafNodes(child);
             return child;
+        }
+
+        private void UpdateLeafNodes(FamilyTree<T> addedChild)
+        {
+            Root.leafNodes.Remove(addedChild.Parent);
+            Root.leafNodes.Add(addedChild);
         }
     }
 }

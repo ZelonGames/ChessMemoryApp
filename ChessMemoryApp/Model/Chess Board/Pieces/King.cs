@@ -24,7 +24,10 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(pieceLetterCoordinates);
 
             char? king = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
-            bool isInCheck = IsSquareControlledByEnemy(pieceLetterCoordinates, pieceLetterCoordinates, fen);
+            if (!king.HasValue)
+                return null;
+
+            bool isInCheck = IsInCheck(pieceLetterCoordinates, fen);
 
             if (!isInCheck)
             {
@@ -43,42 +46,42 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
             // Right
             string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 1, pieceCoordinates.Y));
-            if (!IsSquareControlledByEnemy(currentCoordinates, pieceLetterCoordinates, fen))
+            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
                 TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Left
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 1, pieceCoordinates.Y));
-            if (!IsSquareControlledByEnemy(currentCoordinates, pieceLetterCoordinates, fen))
+            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
                 TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Up
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, pieceCoordinates.Y + 1));
-            if (!IsSquareControlledByEnemy(currentCoordinates, pieceLetterCoordinates, fen))
+            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
                 TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Down
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, pieceCoordinates.Y - 1));
-            if (!IsSquareControlledByEnemy(currentCoordinates, pieceLetterCoordinates, fen))
+            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
                 TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Up Right
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 1, pieceCoordinates.Y + 1));
-            if (!IsSquareControlledByEnemy(currentCoordinates, pieceLetterCoordinates, fen))
+            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
                 TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Up Left
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 1, pieceCoordinates.Y + 1));
-            if (!IsSquareControlledByEnemy(currentCoordinates, pieceLetterCoordinates, fen))
+            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
                 TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Down Right
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 1, pieceCoordinates.Y - 1));
-            if (!IsSquareControlledByEnemy(currentCoordinates, pieceLetterCoordinates, fen))
+            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
                 TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             // Down Left
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 1, pieceCoordinates.Y - 1));
-            if (!IsSquareControlledByEnemy(currentCoordinates, pieceLetterCoordinates, fen))
+            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
                 TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
 
             return availableMoves;
@@ -147,23 +150,18 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             return false;
         }
 
-        private static bool IsSquareControlledByEnemy(string squareCoordinates, string pieceLetterCoordinates, string fen)
+        public static bool IsInCheck(string fen)
         {
-            char? king = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
-            ColorType enemyColor = GetOppositeColor(GetColorOfPiece(king.Value));
-            Dictionary<string, char> enemyPieces = FenHelper.GetPiecesByColorFromFen(fen, enemyColor);
+            ColorType colorToPlay = FenHelper.GetColorTypeToPlayFromFen(fen);
+            char kingType = colorToPlay == ColorType.White ? 'K' : 'k';
+            KeyValuePair<string, char> king = FenHelper.GetPiecesOfTypeFromFen(kingType, fen).First();
 
-            foreach (var piece in enemyPieces)
-            {
-                if (char.ToLower(piece.Value) == 'k')
-                    continue;
+            return FenHelper.IsSquareControlledByEnemy(king.Key, fen);
+        }
 
-                HashSet<string> availableMoves = GetAvailableMoves(piece.Value, piece.Key, fen);
-                if (availableMoves.Contains(squareCoordinates))
-                    return true;
-            }
-
-            return false;
+        private static bool IsInCheck(string kingCoordinates, string fen)
+        {
+            return FenHelper.IsSquareControlledByEnemy(kingCoordinates, fen);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         private void OnMadeChessableMove(Move move)
         {
-            string fenColor = chessboard.playAsBlack ? FenSettings.FenColor.WHITE : FenSettings.FenColor.BLACK;
+            string fenColor = chessboard.colorToPlay == Piece.ColorType.Black ? FenSettings.FenColor.WHITE : FenSettings.FenColor.BLACK;
             chessboard.fenSettings.SetColorToPlay(fenColor);
 
             UpdateFenCastleSettings(move.MoveNotation, FenSettings.FenColor.GetPieceColor(fenColor));
@@ -59,7 +59,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         private void OnMadeLichessMove(string fen, ExplorerMove move)
         {
-            string fenColor = chessboard.playAsBlack ? FenSettings.FenColor.BLACK : FenSettings.FenColor.WHITE;
+            string fenColor = chessboard.colorToPlay == Piece.ColorType.Black ? FenSettings.FenColor.BLACK : FenSettings.FenColor.WHITE;
 
             chessboard.fenSettings.SetColorToPlay(fenColor);
             UpdateFenCastleSettings(move.MoveNotation, FenSettings.FenColor.GetPieceColor(fenColor));

@@ -21,7 +21,7 @@ public partial class CustomVariationSelectorPage : ContentPage
         InitializeComponent();
         this.customVariationSelectorViewModel = customVariationSelectorViewModel;
         BindingContext = customVariationSelectorViewModel;
-        this.selectorPageController = new SelectorPageController<CourseChessboard>(customVariationBoards, coursesLayout, selectedCourse);
+        selectorPageController = new SelectorPageController<CourseChessboard>(customVariationBoards, coursesLayout);
         Appearing += CustomVariationSelectorPage_Appearing;
     }
 
@@ -62,7 +62,7 @@ public partial class CustomVariationSelectorPage : ContentPage
         var customVariations = await CustomVariationService.GetAllFromCourse(course);
         CustomVariationChessboard customVariationBoard = null;
 
-        AddNewCustomVariationBoardButton(customVariationBoard, course.PlayAsBlack);
+        AddNewCustomVariationBoardButton(customVariationBoard, course.PlayAsBlack ? Piece.ColorType.Black : Piece.ColorType.White);
 
         foreach (var customVariation in customVariations.OrderBy(x => x.Value.SortingOrder))
         {
@@ -71,7 +71,7 @@ public partial class CustomVariationSelectorPage : ContentPage
             customVariationBoard.DeleteClicked += VariationManager.DeleteCustomVariation;
             customVariationBoard.DeleteClicked += CustomVariationBoard_DeleteClicked;
             customVariationBoard.EditClicked += CustomVariationBoard_EditClicked;
-            customVariationBoard.playAsBlack = course.PlayAsBlack;
+            customVariationBoard.colorToPlay = course.PlayAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
             customVariationBoard.LoadChessBoardFromFen(customVariation.Value.PreviewFen);
             customVariationBoards.Add(customVariationBoard);
         }
@@ -79,10 +79,10 @@ public partial class CustomVariationSelectorPage : ContentPage
         selectorPageController.Window_SizeChanged(this, null);
     }
 
-    private void AddNewCustomVariationBoardButton(CustomVariationChessboard customVariationBoard, bool playAsBlack)
+    private void AddNewCustomVariationBoardButton(CustomVariationChessboard customVariationBoard, Piece.ColorType colorToPlay)
     {
         customVariationBoard = new CustomVariationChessboard(coursesLayout, boardSize);
-        customVariationBoard.playAsBlack = playAsBlack;
+        customVariationBoard.colorToPlay = colorToPlay;
         customVariationBoard.LoadSquares();
         customVariationBoards.Add(customVariationBoard);
         customVariationBoard.Clicked += AddCustomVariation_Clicked;

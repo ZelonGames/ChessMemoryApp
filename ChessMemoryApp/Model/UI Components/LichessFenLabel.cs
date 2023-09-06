@@ -1,4 +1,5 @@
 ﻿using ChessMemoryApp.Model.Chess_Board;
+using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Model.Lichess.Lichess_API;
 using System;
@@ -12,13 +13,13 @@ namespace ChessMemoryApp.Model.UI_Components
     public class LichessFenLabel
     {
         private readonly Label label;
-        private readonly ChessboardGenerator chessboard;
+        private readonly ChessboardGenerator chessBoard;
         private string url;
 
-        public LichessFenLabel(Label label, ChessboardGenerator chessboard)
+        public LichessFenLabel(Label label, ChessboardGenerator chessBoard)
         {
             this.label = label;
-            this.chessboard = chessboard;
+            this.chessBoard = chessBoard;
 
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
@@ -36,8 +37,8 @@ namespace ChessMemoryApp.Model.UI_Components
 
         public void FenSettingsUpdater_UpdatedFen(string fen)
         {
-            url = FenHelper.ConvertFenToLichessUrl(fen, chessboard.fenSettings, !chessboard.playAsBlack);
-            label.Text = fen.Split(' ')[0] + chessboard.fenSettings.GetAppliedSettings(FenSettings.SpaceEncoding.SPACE);
+            url = FenHelper.ConvertFenToLichessUrl(fen, chessBoard.fenSettings, Piece.GetOppositeColor(chessBoard.colorToPlay));
+            label.Text = fen.Split(' ')[0] + chessBoard.fenSettings.GetAppliedSettings(FenSettings.SpaceEncoding.SPACE);
         }
 
 

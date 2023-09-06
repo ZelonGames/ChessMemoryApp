@@ -43,10 +43,10 @@ namespace ChessMemoryApp.Model.CourseMaker
             return startingHtml + fen.Split(' ')[0].Replace('/', ';');
         }
 
-        public static string ConvertFenToLichessUrl(string fen, FenSettings fenSettings, bool white)
+        public static string ConvertFenToLichessUrl(string fen, FenSettings fenSettings, Piece.ColorType colorToPlay)
         {
             fen = fen.Split(' ')[0];
-            string colorName = white ? "white" : "black";
+            string colorName = colorToPlay == Piece.ColorType.White ? "white" : "black";
             return "https://lichess.org/analysis/" + fen + fenSettings.GetAppliedSettings(FenSettings.SpaceEncoding.SPACE) + "?color=" + colorName;
         }
 
@@ -143,7 +143,13 @@ namespace ChessMemoryApp.Model.CourseMaker
                     string coordinate = column.ToString() + row.ToString();
                     char? piece = GetPieceOnSquare(fen, coordinate);
                     if (piece.HasValue && piece.Value == pieceType)
+                    {
                         pieces.Add(coordinate, piece.Value);
+
+                        // There is only one king
+                        if (char.ToLower(pieceType) == 'k')
+                            return pieces;
+                    }
                 }
             }
 
@@ -722,6 +728,24 @@ namespace ChessMemoryApp.Model.CourseMaker
         }
 
         #endregion
+
+        public static bool IsSquareControlledByEnemy(string squareCoordinates, string fen)
+        {
+            Piece.ColorType enemyColor = Piece.GetOppositeColor(GetColorTypeToPlayFromFen(fen));
+            Dictionary<string, char> enemyPieces = GetPiecesByColorFromFen(fen, enemyColor);
+
+            foreach (var enemyPiece in enemyPieces)
+            {
+                if (char.ToLower(enemyPiece.Value) == 'k')
+                    continue;
+
+                HashSet<string> availableMoves = Piece.GetAvailableMoves(enemyPiece.Value, enemyPiece.Key, fen);
+                if (availableMoves.Contains(squareCoordinates))
+                    return true;
+            }
+
+            return false;
+        }
 
         public static bool IsValidFen(string fen)
         {

@@ -21,31 +21,8 @@ public partial class CourseSelectorPage : ContentPage
 
     public CourseSelectorPage()
     {
-        string fen = "rnb1k2r/pp2qppp/5n2/2bp4/8/1B1QB2P/PPP2PPN/RN2K2R b KQkq - 2 10";
-        //fen = "8/8/8/5p2/4p3/5PP1/8/8 w - - 0 1";
-        var threatEngine = new ThreatEngine(5);
-        threatEngine.CalculateMoves(fen);
-        var lines = threatEngine.GetLines();
-
-        for (int i = 0; i < lines.Count; i++)
-        {
-            for (int j = 0; j < lines.Count; j++)
-            {
-                if (i == j)
-                    continue;
-
-                var a = lines[i].Select(x => x.value).ToList();
-                var b = lines[j].Select(x => x.value).ToList();
-
-                if (a.SequenceEqual(b))
-                {
-
-                }
-            }
-        }
-
         InitializeComponent();
-        selectorPageController = new SelectorPageController<CourseChessboard>(customVariationBoards, coursesLayout, selectedCourse);
+        selectorPageController = new SelectorPageController<CourseChessboard>(customVariationBoards, coursesLayout);
         Appearing += Appeared;
         SizeChanged += selectorPageController.Window_SizeChanged;
     }
@@ -76,7 +53,7 @@ public partial class CourseSelectorPage : ContentPage
         {
             var courseBoard = new CourseChessboard(course.Value, coursesLayout, boardSize);
             courseBoard.Clicked += CourseBoard_Clicked;
-            courseBoard.playAsBlack = course.Value.PlayAsBlack;
+            courseBoard.colorToPlay = course.Value.PlayAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
             courseBoard.LoadChessBoardFromFen(course.Value.PreviewFen);
             customVariationBoards.Add(courseBoard);
             if (startingCourseCount == 0)

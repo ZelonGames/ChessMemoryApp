@@ -25,7 +25,7 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
 
             public static string GetColorFromChessBoard(ChessboardGenerator chessBoard)
             {
-                return chessBoard.playAsBlack ? BLACK : WHITE;
+                return chessBoard.colorToPlay == Piece.ColorType.Black ? BLACK : WHITE;
             }
 
             public static string GetOppositeColor(string color)

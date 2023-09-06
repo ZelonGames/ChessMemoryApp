@@ -30,7 +30,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         public Size BoardSize { get; private set; }
 
         public bool IsEmpty => pieces.Count == 0;
-        public bool playAsBlack;
+        public Piece.ColorType colorToPlay;
 
         public string currentFen;
         public static readonly Color white = Color.FromArgb("#f0d9b5");
@@ -44,7 +44,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         public ChessboardGenerator(AbsoluteLayout chessBoardListLayout, ColumnDefinition columnChessBoard, bool playAsBlack)
         {
             this.columnChessBoard = columnChessBoard;
-            this.playAsBlack = playAsBlack;
+            colorToPlay = playAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
             fenSettings.EnableAllCastleMoves();
             fenSettings.SetColorToPlay(playAsBlack ? FenSettings.FenColor.WHITE : FenSettings.FenColor.BLACK);
             arePiecesAndSquaresClickable = true;
@@ -82,7 +82,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             int xCoordinates = coordinates.X - 1;
             int yCoordinates = 8 - coordinates.Y;
 
-            if (playAsBlack)
+            if (colorToPlay == Piece.ColorType.Black)
             {
                 xCoordinates = 8 - coordinates.X;
                 yCoordinates = coordinates.Y - 1;
@@ -143,11 +143,11 @@ namespace ChessMemoryApp.Model.Chess_Board
                 {
                     bool isPieceCaptured =
                         newPieces[piece.Key].HasValue &&
-                        newPieces[piece.Key].Value != piece.Value.pieceChar;
+                        newPieces[piece.Key].Value != piece.Value.pieceType;
 
                     bool isNewPieceSameAsCurrentPiece =
                         newPieces[piece.Key].HasValue &&
-                        newPieces[piece.Key].Value == piece.Value.pieceChar;
+                        newPieces[piece.Key].Value == piece.Value.pieceType;
 
                     if ((!newPieces[piece.Key].HasValue || isPieceCaptured) &&
                         pieces.ContainsKey(piece.Key) && !isNewPieceSameAsCurrentPiece)
@@ -160,7 +160,7 @@ namespace ChessMemoryApp.Model.Chess_Board
                 bool isPieceCaptured =
                     pieces.ContainsKey(newPiece.Key) &&
                     newPiece.Value.HasValue &&
-                    pieces[newPiece.Key].pieceChar != newPiece.Value.Value;
+                    pieces[newPiece.Key].pieceType != newPiece.Value.Value;
 
                 if (!pieces.ContainsKey(newPiece.Key) && newPiece.Value.HasValue ||
                     isPieceCaptured)
@@ -259,13 +259,20 @@ namespace ChessMemoryApp.Model.Chess_Board
             return squares[coordinates];
         }
 
-        public Piece AddPieceToSquare(char pieceChar, Square square)
+        public void MovePiece(string fromCoordinates, string toCoordinates)
         {
-            bool pieceImageFileExists = Piece.pieceFileNames.TryGetValue(pieceChar, out _);
+            Piece piece = GetPiece(fromCoordinates);
+            RemovePiece(piece);
+            AddPieceToSquare(piece.pieceType, squares[toCoordinates]);
+        }
+
+        public Piece AddPieceToSquare(char pieceType, Square square)
+        {
+            bool pieceImageFileExists = Piece.pieceFileNames.TryGetValue(pieceType, out _);
 
             if (pieceImageFileExists)
             {
-                var piece = new Piece(this, pieceChar, arePiecesAndSquaresClickable);
+                var piece = new Piece(this, pieceType, arePiecesAndSquaresClickable);
                 piece.currentCoordinate = new Piece.Coordinates<int>(square.coordinate.X, square.coordinate.Y);
 
                 pieces.Add(BoardHelper.GetLetterCoordinates(piece.currentCoordinate), piece);

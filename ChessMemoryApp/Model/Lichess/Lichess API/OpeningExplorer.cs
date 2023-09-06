@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChessMemoryApp.Model.Chess_Board.Pieces;
 using Newtonsoft.Json;
 
 namespace ChessMemoryApp.Model.Lichess.Lichess_API
@@ -44,9 +45,9 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
 
         public int TotalGames => White + Black + Draws;
 
-        public string GetWinsInPercent(bool playAsBlack)
+        public string GetWinsInPercent(Piece.ColorType colorToPlay)
         {
-            float wins = playAsBlack ? Black : White;
+            float wins = colorToPlay == Piece.ColorType.White ? White : Black;
             double percentValue = MathF.Round(wins / TotalGames * 100, 0);
 
             return percentValue + "%";

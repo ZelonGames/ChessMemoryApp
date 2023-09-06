@@ -90,7 +90,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void OnMadeMoveFen(MoveSource moveSource, Piece.ColorType color, string moveNotation, string previousFen, string currentFen)
         {
-            if (chessBoard.playAsBlack)
+            if (chessBoard.colorToPlay == Piece.ColorType.Black)
                 color = moveSource == MoveSource.Chessable ? Piece.ColorType.Black : Piece.ColorType.White;
             else
                 color = moveSource == MoveSource.Chessable ? Piece.ColorType.White : Piece.ColorType.Black;
