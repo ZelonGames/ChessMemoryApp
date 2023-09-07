@@ -44,7 +44,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             if (historyMoves.Count > 0)
                 return;
 
-            CourseMaker.Move move = courseMoveNavigator.GetRelativeMove(Course.MoveNavigation.Current, chessBoard.currentFen);
+            CourseMaker.Move move = courseMoveNavigator.GetRelativeMove(Course.MoveNavigation.Current, chessBoard.GetFen());
             historyMoves.Add(new Move(
                 MoveSource.Chessable,
                 chessBoard.fenSettings,
@@ -90,13 +90,13 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void OnMadeMoveFen(MoveSource moveSource, Piece.ColorType color, string moveNotation, string previousFen, string currentFen)
         {
-            if (chessBoard.colorToPlay == Piece.ColorType.Black)
+            if (chessBoard.boardColorOrientation == Piece.ColorType.Black)
                 color = moveSource == MoveSource.Chessable ? Piece.ColorType.Black : Piece.ColorType.White;
             else
                 color = moveSource == MoveSource.Chessable ? Piece.ColorType.White : Piece.ColorType.Black;
 
-            string moveNotationCoordinates = FenHelper.ConvertToMoveNotationCoordinates(previousFen, moveNotation);
-            historyMoves.Add(new Move(moveSource, chessBoard.fenSettings, color, moveNotationCoordinates, moveNotation, currentFen));
+            string moveNotationCoordinates = BoardHelper.ConvertToMoveNotationCoordinates(chessBoard, moveNotation);
+            historyMoves.Add(new Move(moveSource, chessBoard.fenSettings.Copy(), color, moveNotationCoordinates, moveNotation, currentFen));
             AddedMove?.Invoke(historyMoves.Last());
         }
 

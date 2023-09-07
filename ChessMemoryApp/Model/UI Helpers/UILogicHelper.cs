@@ -15,7 +15,7 @@ namespace ChessMemoryApp.Model.UI_Helpers
 
         public static void RemovePieceFromSquare(ChessboardGenerator chessBoard, Piece piece)
         {
-            chessBoard.squares[piece.currentCoordinates].RemovePiece();
+            chessBoard.squares[piece.coordinates].RemovePiece();
         }
 
         public static void RemoveButtonFromVariationLoader(VariationLoader variationLoader, Button button)

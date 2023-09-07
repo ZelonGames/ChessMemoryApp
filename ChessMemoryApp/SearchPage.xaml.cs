@@ -71,10 +71,9 @@ public partial class SearchPage : ContentPage
             if (i > filteredVariations.Count - 1)
                 break;
 
-            var customVariationBoard = new ChessableChessboard(coursesLayout, boardSize);
+            var customVariationBoard = new ChessableChessboard(coursesLayout, boardSize, searchViewModel.Course.PlayAsBlack);
             customVariationBoard.fen = filteredVariations[i].lastSearchMove.Fen;
             customVariationBoard.LoadChessBoardFromFen(customVariationBoard.fen);
-            customVariationBoard.colorToPlay = searchViewModel.Course.PlayAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
             customVariationBoard.Clicked += OnBoardClicked;
             customVariationBoards.Add(customVariationBoard);
         }

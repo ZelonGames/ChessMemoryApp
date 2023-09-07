@@ -66,12 +66,12 @@ public partial class CustomVariationSelectorPage : ContentPage
 
         foreach (var customVariation in customVariations.OrderBy(x => x.Value.SortingOrder))
         {
-            customVariationBoard = new CustomVariationChessboard(customVariation.Value, coursesLayout, boardSize);
+            customVariationBoard = new CustomVariationChessboard(customVariation.Value, coursesLayout, boardSize, customVariation.Value.Course.PlayAsBlack);
             customVariationBoard.Clicked += PracticeCustomVariation_Clicked;
             customVariationBoard.DeleteClicked += VariationManager.DeleteCustomVariation;
             customVariationBoard.DeleteClicked += CustomVariationBoard_DeleteClicked;
             customVariationBoard.EditClicked += CustomVariationBoard_EditClicked;
-            customVariationBoard.colorToPlay = course.PlayAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
+            customVariationBoard.boardColorOrientation = course.PlayAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
             customVariationBoard.LoadChessBoardFromFen(customVariation.Value.PreviewFen);
             customVariationBoards.Add(customVariationBoard);
         }
@@ -81,8 +81,8 @@ public partial class CustomVariationSelectorPage : ContentPage
 
     private void AddNewCustomVariationBoardButton(CustomVariationChessboard customVariationBoard, Piece.ColorType colorToPlay)
     {
-        customVariationBoard = new CustomVariationChessboard(coursesLayout, boardSize);
-        customVariationBoard.colorToPlay = colorToPlay;
+        // TODO: Fix colorToPlay
+        customVariationBoard = new CustomVariationChessboard(coursesLayout, boardSize, colorToPlay == Piece.ColorType.Black);
         customVariationBoard.LoadSquares();
         customVariationBoards.Add(customVariationBoard);
         customVariationBoard.Clicked += AddCustomVariation_Clicked;

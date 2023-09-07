@@ -23,8 +23,9 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public string fen;
 
-        public CourseChessboard(Course course, AbsoluteLayout chessBoardLayout, Size size) :
-            base(chessBoardLayout, size)
+        // TODO: Fix playAsBlack
+        public CourseChessboard(Course course, AbsoluteLayout chessBoardLayout, Size size, bool playAsBlack) :
+            base(chessBoardLayout, size, playAsBlack)
         {
             this.course = course;
             tapGestureRecognizer = new TapGestureRecognizer();
@@ -34,8 +35,8 @@ namespace ChessMemoryApp.Model.Chess_Board
             uiTitleChessBoard.AddGestureRecognizers(tapGestureRecognizer, OnBoardEntered, OnBoardExited);
         }
 
-        public CourseChessboard(Course course, AbsoluteLayout chessBoardLayout, Size size, string title) :
-            base(chessBoardLayout, size)
+        public CourseChessboard(Course course, AbsoluteLayout chessBoardLayout, Size size, string title, bool playAsBlack) :
+            base(chessBoardLayout, size, playAsBlack)
         {
             this.course = course;
             tapGestureRecognizer = new TapGestureRecognizer();

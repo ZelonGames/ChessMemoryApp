@@ -11,10 +11,10 @@ public partial class CalculationTrainerPage : ContentPage
 	{
         string fen = "rnb1k2r/pp2qppp/5n2/2bp4/8/1B1QB2P/PPP2PPN/RN2K2R b KQkq - 2 10";
         //fen = "8/8/8/5p2/4p3/5PP1/8/8 w - - 0 1";
-        var a = ThreatEngine.GetThreats("rnb1k2r/pp2qppp/5n2/3p4/Bb6/3QB2P/PPP2PPN/RN2K2R b KQkq - 2 10");
-        var threatEngine = new ThreatEngine(5);
-        threatEngine.CalculateMoves(fen);
-        var lines = threatEngine.GetLines();
+        var threatEngine = new ThreatEngine(new ChessboardGenerator(), 5);
+        threatEngine.GetThreats("rnb1k2r/pp2qppp/5n2/3p4/Bb6/3QB2P/PPP2PPN/RN2K2R b KQkq - 2 10");
+        //threatEngine.CalculateMoves(fen);
+        //var lines = threatEngine.GetLines();
 
         InitializeComponent();
         Appearing += OnAppearing;

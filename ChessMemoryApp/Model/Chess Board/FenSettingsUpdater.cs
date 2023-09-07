@@ -15,8 +15,6 @@ namespace ChessMemoryApp.Model.Chess_Board
     /// </summary>
     public class FenSettingsUpdater
     {
-
-
         protected readonly FenSettings fenSettings;
 
         public FenSettingsUpdater(FenSettings fenSettings)

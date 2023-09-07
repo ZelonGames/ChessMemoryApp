@@ -37,7 +37,7 @@ namespace ChessMemoryApp.Model.UI_Components
 
         public void FenSettingsUpdater_UpdatedFen(string fen)
         {
-            url = FenHelper.ConvertFenToLichessUrl(fen, chessBoard.fenSettings, Piece.GetOppositeColor(chessBoard.colorToPlay));
+            url = FenHelper.ConvertFenToLichessUrl(fen, chessBoard.fenSettings, Piece.GetOppositeColor(chessBoard.boardColorOrientation));
             label.Text = fen.Split(' ')[0] + chessBoard.fenSettings.GetAppliedSettings(FenSettings.SpaceEncoding.SPACE);
         }
 

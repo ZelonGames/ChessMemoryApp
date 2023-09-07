@@ -66,19 +66,20 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             string fromCoordinates = BoardHelper.GetFromCoordinatesString(moveToMake.moveNotationCoordinates);
             string toCoordinates = BoardHelper.GetToCoordinatesString(moveToMake.moveNotationCoordinates);
 
-            bool madeCastleMove; 
-            TryMakeCastleMove(moveNotationHelper.chessBoard.currentFen, fromCoordinates, toCoordinates, out madeCastleMove);
+            bool madeCastleMove;
+            string fen = GetChessboard().GetFen();
+            TryMakeCastleMove(fen, fromCoordinates, toCoordinates, out madeCastleMove);
 
             if (!madeCastleMove)
                 MakeTeleportMove(fromCoordinates, toCoordinates);
 
-            MovedPiece?.Invoke(moveNotationHelper.chessBoard.currentFen);
+            MovedPiece?.Invoke(fen);
             moveNotationHelper.ResetClicks();
         }
 
         private void OnNextChessableMove(Move move)
         {
-            string previousFen = GetChessboard().currentFen;
+            string previousFen = GetChessboard().GetFen();
             GetChessboard().LoadChessBoardFromFen(move.Fen);
             MadeChessableMove?.Invoke(move);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, previousFen, move.Fen);
@@ -86,11 +87,11 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void OnNextLichessMove(string fen, ExplorerMove move)
         {
-            string previousFen = GetChessboard().currentFen;
+            string previousFen = GetChessboard().GetFen();
             GetChessboard().LoadChessBoardFromFen(fen);
             MadeLichessMove?.Invoke(fen, move);
             Piece.ColorType color = Piece.GetColorFromChessboard(GetChessboard());
-            MadeMoveFen?.Invoke(MoveHistory.MoveSource.Lichess, color, move.MoveNotation, previousFen, GetChessboard().currentFen);
+            MadeMoveFen?.Invoke(MoveHistory.MoveSource.Lichess, color, move.MoveNotation, previousFen, fen);
         }
 
         public void OnPreviousMove(MoveHistory.Move historyMove)
@@ -100,8 +101,9 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void MakeTeleportMove(string fromCoordinates, string toCoordinates)
         {
+            // TODO: Use chessboard instead of fenhelper
             char? removedPiece; 
-            string newFen = FenHelper.RemovePieceFromFEN(moveNotationHelper.chessBoard.currentFen, fromCoordinates, out removedPiece);
+            string newFen = FenHelper.RemovePieceFromFEN(GetChessboard().GetFen(), fromCoordinates, out removedPiece);
             if (!removedPiece.HasValue)
                 return;
             newFen = FenHelper.AddPieceToFEN(newFen, toCoordinates, removedPiece.Value);

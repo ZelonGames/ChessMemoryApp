@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChessMemoryApp.Model.Chess_Board;
 
 namespace ChessMemoryApp.Model.Threat_Finder
 {
@@ -13,10 +14,12 @@ namespace ChessMemoryApp.Model.Threat_Finder
         private Dictionary<string, int> repeatedPositions = new();
         private FamilyTree<CalculatedMoveInfo> tree = new();
         private List<Stack<FamilyTree<CalculatedMoveInfo>>> lines;
+        private readonly ChessboardGenerator chessboard;
         public readonly int depth;
 
-        public ThreatEngine(int depth)
+        public ThreatEngine(ChessboardGenerator chessboard, int depth)
         {
+            this.chessboard = chessboard;
             this.depth = depth;
         }
 
@@ -80,25 +83,27 @@ namespace ChessMemoryApp.Model.Threat_Finder
             return lineString;
         }
 
-        public static List<string> GetThreats(string fen)
+        public List<string> GetThreats(string fen)
         {
+            chessboard.LoadPiecesFromFen(fen);
+
             var threats = new HashSet<string>();
             Piece.ColorType colorToPlay = FenHelper.GetColorTypeToPlayFromFen(fen);
-            Dictionary<string, char> friendlyPieces = FenHelper.GetPiecesByColorFromFen(fen, colorToPlay);
+            List<Piece> friendlyPieces = chessboard.GetPiecesByColor(colorToPlay);
 
             foreach (var piece in friendlyPieces)
             {
-                string fromCoordinates = piece.Key;
-                HashSet<string> availableMoves = Piece.GetAvailableMoves(piece.Value, fromCoordinates, fen);
-                Dictionary<string, AttackedPiece> oldAttackedPieces = GetAttackedPiecesFromFen(fen);
-                Dictionary<string, AttackedPiece> oldAttackedPiecesByPiece = GetAttackedPiecesByPiece(fen, fromCoordinates);
+                string fromCoordinates = piece.coordinates;
+                HashSet<string> availableMoves = piece.GetAvailableMoves();
+                Dictionary<string, AttackedPiece> oldAttackedPieces = GetAttackedPieces();
+                Dictionary<string, AttackedPiece> oldAttackedPiecesByPiece = GetAttackedPiecesByPiece(chessboard.GetPiece(fromCoordinates));
 
                 foreach (var toCoordinates in availableMoves)
                 {
                     string moveNotation = fromCoordinates + toCoordinates;
                     string newFen = FenHelper.MakeMoveWithCoordinates(fen, moveNotation, false);
-                    Dictionary<string, AttackedPiece> newAttackedPieces = GetAttackedPiecesFromFen(newFen);
-                    Dictionary<string, AttackedPiece> newAttackedPiecesByPiece = GetAttackedPiecesByPiece(newFen, toCoordinates);
+                    Dictionary<string, AttackedPiece> newAttackedPieces = GetAttackedPieces();
+                    Dictionary<string, AttackedPiece> newAttackedPiecesByPiece = GetAttackedPiecesByPiece(chessboard.GetPiece(toCoordinates));
 
                     #region Check if new pieces are being attacked
                     foreach (var newAttackedPiece in newAttackedPieces)
@@ -127,29 +132,29 @@ namespace ChessMemoryApp.Model.Threat_Finder
             return threats.ToList();
         }
 
-        private static Dictionary<string, AttackedPiece> GetAttackedPiecesFromFen(string fen)
+        private Dictionary<string, AttackedPiece> GetAttackedPieces()
         {
             var attackedPieces = new Dictionary<string, AttackedPiece>();
-            Piece.ColorType colorToPlay = FenHelper.GetColorTypeToPlayFromFen(fen);
-            Dictionary<string, char> friendlyPieces = FenHelper.GetPiecesByColorFromFen(fen, colorToPlay);
-            Dictionary<string, char> enemyPieces = FenHelper.GetPiecesByColorFromFen(fen, Piece.GetOppositeColor(colorToPlay));
+            Piece.ColorType colorToPlay = chessboard.boardColorOrientation;
+            List<Piece> friendlyPieces = chessboard.GetPiecesByColor(colorToPlay);
+            List<Piece> enemyPieces = chessboard.GetPiecesByColor(Piece.GetOppositeColor(colorToPlay));
 
             foreach (var friendlyPiece in friendlyPieces)
             {
-                var availableMoves = Piece.GetAvailableMoves(friendlyPiece.Value, friendlyPiece.Key, fen);
+                var availableMoves = friendlyPiece.GetAvailableMoves();
 
                 foreach (var enemyPiece in enemyPieces)
                 {
-                    if (!availableMoves.Contains(enemyPiece.Key))
+                    if (!availableMoves.Contains(enemyPiece.coordinates))
                         continue;
 
-                    if (attackedPieces.ContainsKey(enemyPiece.Key))
-                        attackedPieces[enemyPiece.Key].TryAddThreateningPiece(friendlyPiece.Key, friendlyPiece.Value);
+                    if (attackedPieces.ContainsKey(enemyPiece.coordinates))
+                        attackedPieces[enemyPiece.coordinates].TryAddThreateningPiece(friendlyPiece.coordinates, friendlyPiece.pieceType);
                     else
                     {
-                        var attackedPiece = new AttackedPiece(enemyPiece.Value);
-                        attackedPiece.TryAddThreateningPiece(friendlyPiece.Key, friendlyPiece.Value);
-                        attackedPieces.Add(enemyPiece.Key, attackedPiece);
+                        var attackedPiece = new AttackedPiece(enemyPiece.pieceType);
+                        attackedPiece.TryAddThreateningPiece(friendlyPiece.coordinates, friendlyPiece.pieceType);
+                        attackedPieces.Add(enemyPiece.coordinates, attackedPiece);
                     }
                 }
             }
@@ -157,24 +162,23 @@ namespace ChessMemoryApp.Model.Threat_Finder
             return attackedPieces;
         }
 
-        private static Dictionary<string, AttackedPiece> GetAttackedPiecesByPiece(string fen, string pieceCoordinates)
+        private Dictionary<string, AttackedPiece> GetAttackedPiecesByPiece(Piece piece)
         {
             var attackedPieces = new Dictionary<string, AttackedPiece>();
-            char? piece = FenHelper.GetPieceOnSquare(fen, pieceCoordinates);
-            if (!piece.HasValue)
+            if (piece == null)
                 return attackedPieces;
 
-            HashSet<string> availableMoves = Piece.GetAvailableMoves(piece.Value, pieceCoordinates, fen);
-            Piece.ColorType enemyColor = Piece.GetOppositeColor(FenHelper.GetColorTypeToPlayFromFen(fen));
-            Dictionary<string, char> enemyPieces = FenHelper.GetPiecesByColorFromFen(fen, enemyColor);
+            HashSet<string> availableMoves = piece.GetAvailableMoves();
+            Piece.ColorType enemyColor = Piece.GetOppositeColor(piece.color);
+            List<Piece> enemyPieces = chessboard.GetPiecesByColor(enemyColor);
 
             foreach (var enemyPiece in enemyPieces)
             {
-                if (availableMoves.Contains(enemyPiece.Key))
+                if (availableMoves.Contains(enemyPiece.coordinates))
                 {
-                    var attackedPiece = new AttackedPiece(enemyPiece.Value);
-                    attackedPiece.TryAddThreateningPiece(pieceCoordinates, piece.Value);
-                    attackedPieces.Add(enemyPiece.Key, attackedPiece);
+                    var attackedPiece = new AttackedPiece(enemyPiece.pieceType);
+                    attackedPiece.TryAddThreateningPiece(piece.coordinates, piece.pieceType);
+                    attackedPieces.Add(enemyPiece.coordinates, attackedPiece);
                 }
             }
 

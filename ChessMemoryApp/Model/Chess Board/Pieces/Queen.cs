@@ -9,18 +9,22 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 {
     public class Queen : Piece
     {
-        public Queen(ChessboardGenerator chessBoard, ColorType color) : base(chessBoard, color, 'q')
+        public Queen(ChessboardGenerator chessBoard, char pieceType) : base(chessBoard, pieceType)
         {
 
         }
 
-        public static HashSet<string> GetAvailableMoves(string pieceLetterCoordinates, string fen)
+        public override HashSet<string> GetAvailableMoves()
         {
             var availableMoves = new HashSet<string>();
 
-            availableMoves.UnionWith(Bishop.GetAvailableMoves(pieceLetterCoordinates, fen));
-            availableMoves.UnionWith(Rook.GetAvailableMoves(pieceLetterCoordinates, fen));
-            
+            var rook = new Rook(chessBoard, color == ColorType.White ? 'R' : 'r', false);
+            rook.coordinates = coordinates;
+            var bishop = new Bishop(chessBoard, color == ColorType.White ? 'B' : 'b', false);
+            bishop.coordinates = coordinates;
+
+            availableMoves.UnionWith(rook.GetAvailableMoves());
+            availableMoves.UnionWith(bishop.GetAvailableMoves());
 
             return availableMoves;
         }

@@ -9,21 +9,26 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 {
     public class Rook : Piece
     {
-        public Rook(ChessboardGenerator chessBoard, ColorType color) : base(chessBoard, color, 'r')
+        public Rook(ChessboardGenerator chessBoard, char pieceType) : base(chessBoard, pieceType)
         {
 
         }
 
-        public static HashSet<string> GetAvailableMoves(string pieceLetterCoordinates, string fen)
+        public Rook(ChessboardGenerator chessBoard, char pieceType, bool useImage = true) : base(chessBoard, pieceType, useImage)
+        {
+
+        }
+
+        public override HashSet<string> GetAvailableMoves()
         {
             var availableMoves = new HashSet<string>();
-            Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(pieceLetterCoordinates);
+            Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(coordinates);
 
             // Up
             for (int y = pieceCoordinates.Y + 1; y <= 8; y++)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, y));
-                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
+                if (TryAddMove(availableMoves, chessBoard, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -31,7 +36,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int y = pieceCoordinates.Y - 1; y >= 1; y--)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, y));
-                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
+                if (TryAddMove(availableMoves, chessBoard, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -39,7 +44,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X + 1; x <= 8; x++)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, pieceCoordinates.Y));
-                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
+                if (TryAddMove(availableMoves, chessBoard, currentCoordinates).isPieceOnSquare)
                     break;
             }
 
@@ -47,7 +52,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             for (int x = pieceCoordinates.X - 1; x >= 1; x--)
             {
                 string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(x, pieceCoordinates.Y));
-                if (TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates).isPieceOnSquare)
+                if (TryAddMove(availableMoves, chessBoard, currentCoordinates).isPieceOnSquare)
                     break;
             }
 

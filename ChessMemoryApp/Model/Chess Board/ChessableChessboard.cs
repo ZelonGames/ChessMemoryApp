@@ -22,8 +22,8 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public string fen;
 
-        public ChessableChessboard(AbsoluteLayout chessBoardLayout, Size size) :
-            base(chessBoardLayout, size)
+        public ChessableChessboard(AbsoluteLayout chessBoardLayout, Size size, bool playAsBlack) :
+            base(chessBoardLayout, size, playAsBlack)
         {
             tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;

@@ -10,88 +10,75 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 {
     public class Pawn : Piece
     {
-        public Pawn(ChessboardGenerator chessBoard, ColorType color) : base(chessBoard, color, 'p')
+        public Pawn(ChessboardGenerator chessBoard, char pieceType) : base(chessBoard, pieceType)
         {
 
         }
-        public static HashSet<string> GetAvailableMoves(string pieceLetterCoordinates, string fen)
+
+        public override HashSet<string> GetAvailableMoves()
         {
             var availableMoves = new HashSet<string>();
-            Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(pieceLetterCoordinates);
-            char? pawn = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
-            bool isWhite = char.IsUpper(pawn.Value);
-            ColorType pieceColor = isWhite ? Piece.ColorType.White : Piece.ColorType.Black;
+            Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(coordinates);
 
             // Forward
-            string currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X, false);
-            char? enemyPiece = FenHelper.GetPieceOnSquare(fen, currentCoordinates);
+            string currentCoordinates = GetForwardMove(pieceCoordinates.X, false);
 
             // Normally a move would be added if an enemy piece is on the square but pawns can't capture forward
-            bool isPieceOnSquare = FenHelper.GetPieceOnSquare(fen, currentCoordinates).HasValue;
+            bool isPieceOnSquare = chessBoard.GetPiece(currentCoordinates) != null;
             if (!isPieceOnSquare)
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             // Two moves forward
-            char startingRow = isWhite ? '2' : '7';
-            bool hasMoved = pieceLetterCoordinates[1] != startingRow;
+            char startingRow = color == ColorType.White ? '2' : '7';
+            bool hasMoved = coordinates[1] != startingRow;
             if (!hasMoved)
             {
-                string betweenRow = isWhite ? "3" : "6";
-                char file = pieceLetterCoordinates[0];
-                bool isAnyPieceBetween = FenHelper.GetPieceOnSquare(fen, file + betweenRow).HasValue;
+                string betweenRow = color == ColorType.White ? "3" : "6";
+                char file = coordinates[0];
+                bool isAnyPieceBetween = chessBoard.GetPiece(file + betweenRow) != null;
                 if (!isAnyPieceBetween)
                 {
-                    currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X, true);
-                    isPieceOnSquare = FenHelper.GetPieceOnSquare(fen, currentCoordinates).HasValue;
+                    currentCoordinates = GetForwardMove(pieceCoordinates.X, true);
+                    isPieceOnSquare = chessBoard.GetPiece(currentCoordinates) != null;
                     if (!isPieceOnSquare)
-                        TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+                        TryAddMove(availableMoves, chessBoard, currentCoordinates);
                 }
             }
 
             // Capture Left
-            currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X - 1, false);
-            char? piece = FenHelper.GetPieceOnSquare(fen, currentCoordinates);
-            if (piece.HasValue)
+            currentCoordinates = GetForwardMove(pieceCoordinates.X - 1, false);
+            Piece piece = chessBoard.GetPiece(currentCoordinates);
+            if (piece != null)
             {
-                bool isPieceAnEnemy = isWhite ? char.IsLower(piece.Value) : char.IsUpper(piece.Value);
+                bool isPieceAnEnemy = piece.color != color;
                 if (isPieceAnEnemy)
-                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+                    TryAddMove(availableMoves, chessBoard, currentCoordinates);
             }
 
             // Capture Right
-            currentCoordinates = GetForwardMove(isWhite, pieceCoordinates, pieceCoordinates.X + 1, false);
-            piece = FenHelper.GetPieceOnSquare(fen, currentCoordinates);
-            if (piece.HasValue)
+            currentCoordinates = GetForwardMove(pieceCoordinates.X + 1, false);
+            piece = chessBoard.GetPiece(currentCoordinates);
+            if (piece != null)
             {
-                bool isPieceAnEnemy = isWhite ? char.IsLower(piece.Value) : char.IsUpper(piece.Value);
+                bool isPieceAnEnemy = piece.color != color;
                 if (isPieceAnEnemy)
-                    TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+                    TryAddMove(availableMoves, chessBoard, currentCoordinates);
             }
 
             // En Passant
-            string enPassantSquare = FenHelper.GetEnPassantSquareFromFen(fen);
+            string enPassantSquare = FenHelper.GetEnPassantSquareFromFen(chessBoard.GetFen());
             if (enPassantSquare != null)
                 availableMoves.Add(enPassantSquare);
 
             return availableMoves;
         }
 
-        private static string GetForwardMove(bool isWhite, Coordinates<int> pieceCoordinates, int coordinateX, bool isDoubleMove)
+        private string GetForwardMove(int xCoordinate, bool isDoubleMove)
         {
-            if (isWhite)
-            {
-                if (isDoubleMove)
-                    return BoardHelper.GetLetterCoordinates(new Coordinates<int>(coordinateX, pieceCoordinates.Y + 2));
-                else
-                    return BoardHelper.GetLetterCoordinates(new Coordinates<int>(coordinateX, pieceCoordinates.Y + 1));
-            }
-            else
-            {
-                if (isDoubleMove)
-                    return BoardHelper.GetLetterCoordinates(new Coordinates<int>(coordinateX, pieceCoordinates.Y - 2));
-                else
-                    return BoardHelper.GetLetterCoordinates(new Coordinates<int>(coordinateX, pieceCoordinates.Y - 1));
-            }
+            int yCoordinate = BoardHelper.GetNumberCoordinates(coordinates).Y;
+            int steps = isDoubleMove ? 2 : 1;
+            steps *= color == ColorType.White ? 1 : -1;
+            return BoardHelper.GetLetterCoordinates(new Coordinates<int>(xCoordinate, yCoordinate + steps));
         }
     }
 }

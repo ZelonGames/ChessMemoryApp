@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.Chess_Board.Pieces
 {
-    public class Piece
+    public abstract class Piece
     {
         public static readonly Dictionary<char, string> pieceFileNames = new()
         {
@@ -28,6 +28,17 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             { 'k', "king_black" },
             { 'K', "king_white" },
         };
+
+        public static readonly Dictionary<char, string> pieceNames = new()
+        {
+            { nameof(Pawn)[0], nameof(Pawn) },
+            { nameof(Bishop)[0], nameof(Bishop) },
+            { char.ToUpper(nameof(Knight)[1]), nameof(Knight) },
+            { nameof(Rook)[0], nameof(Rook) },
+            { nameof(Queen)[0], nameof(Queen) },
+            { nameof(King)[0], nameof(King) },
+        };
+
 
         public enum ColorType
         {
@@ -51,38 +62,30 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         }
 
         public HashSet<string> availableMoves = new();
-        public string currentCoordinates;
+        public string coordinates;
         public readonly Image image;
         public readonly char pieceType;
         public readonly ColorType color;
-        private readonly ChessboardGenerator chessBoard;
+        protected readonly ChessboardGenerator chessBoard;
 
-        public Piece(ChessboardGenerator chessBoard, ColorType color, char pieceChar)
-        {
-            this.chessBoard = chessBoard;
-            this.color = color;
 
-            this.pieceType = color == ColorType.White ? char.ToUpper(pieceChar) : char.ToLower(pieceChar);
-            pieceFileNames.TryGetValue(this.pieceType, out string value);
-
-            this.image = new Image()
-            {
-                Source = ImageSource.FromFile(value + ".png"),
-            };
-        }
-        public Piece(ChessboardGenerator chessBoard, char pieceChar, bool isClickable = true)
+        public Piece(ChessboardGenerator chessBoard, char pieceChar, bool useImage = true)
         {
             this.chessBoard = chessBoard;
             this.pieceType = pieceChar;
+            this.color = char.IsUpper(pieceChar) ? ColorType.White : ColorType.Black;
 
-            pieceFileNames.TryGetValue(pieceChar, out string fileName);
-            image = new Image()
+            if (useImage)
             {
-                Source = ImageSource.FromFile(fileName + ".png"),
-            };
+                pieceFileNames.TryGetValue(pieceChar, out string fileName);
+                image = new Image()
+                {
+                    Source = ImageSource.FromFile(fileName + ".png"),
+                };
 
-            if (isClickable)
-                UIEventHelper.ImageClickSubscribe(this.image, OnPieceClicked);
+                if (chessBoard.arePiecesAndSquaresClickable)
+                    UIEventHelper.ImageClickSubscribe(this.image, OnPieceClicked);
+            }
         }
 
         public static ColorType GetColorOfPieceFromFen(string fen, string coordinates)
@@ -105,23 +108,23 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             if (chessBoard.MoveNotationHelper == null)
                 return;
 
-            bool clickedOnPiece = chessBoard.GetPiece((currentCoordinates)) != null;
+            bool clickedOnPiece = chessBoard.GetPiece((coordinates)) != null;
 
             if (clickedOnPiece && chessBoard.MoveNotationHelper.IsFirstClick)
             {
-                chessBoard.MoveNotationHelper.SetFirstClick(BoardHelper.GetNumberCoordinates(currentCoordinates));
-                chessBoard.GetSquare(currentCoordinates).HighlightSquare();
+                chessBoard.MoveNotationHelper.SetFirstClick(BoardHelper.GetNumberCoordinates(coordinates));
+                chessBoard.GetSquare(coordinates).HighlightSquare();
             }
             else
             {
-                chessBoard.MoveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(currentCoordinates));
+                chessBoard.MoveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(coordinates));
                 Square.HighlightedSquare?.LowlightSquare();
             }
         }
 
         public static ColorType GetColorFromChessboard(ChessboardGenerator chessBoard)
         {
-            return chessBoard.colorToPlay;
+            return chessBoard.boardColorOrientation;
         }
 
         public static ColorType GetOppositeColor(ColorType colorType)
@@ -134,41 +137,9 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             return char.IsUpper(piece) ? ColorType.White : ColorType.Black;
         }
 
-        public virtual void GetAvailableMoves()
-        {
+        public abstract HashSet<string> GetAvailableMoves();
 
-        }
-
-        public static HashSet<string> GetAvailableMoves(char pieceType, string pieceLetterCoordinates, string fen)
-        {
-            HashSet<string> availableMoves;
-
-            switch (char.ToLower(pieceType))
-            {
-                case 'r':
-                    availableMoves = Rook.GetAvailableMoves(pieceLetterCoordinates, fen);
-                    break;
-                case 'n':
-                    availableMoves = Knight.GetAvailableMoves(pieceLetterCoordinates, fen);
-                    break;
-                case 'b':
-                    availableMoves = Bishop.GetAvailableMoves(pieceLetterCoordinates, fen);
-                    break;
-                case 'q':
-                    availableMoves = Queen.GetAvailableMoves(pieceLetterCoordinates, fen);
-                    break;
-                case 'k':
-                    availableMoves = King.GetAvailableMoves(pieceLetterCoordinates, fen);
-                    break;
-                default:
-                    availableMoves = Pawn.GetAvailableMoves(pieceLetterCoordinates, fen);
-                    break;
-            }
-
-            return availableMoves;
-        }
-
-        public static bool IsPieceByColorOnSquare(string fen, string squareCoordinates, ColorType pieceColor, out char? pieceType)
+        public bool IsPieceByColorOnSquare(string fen, string squareCoordinates, ColorType pieceColor, out char? pieceType)
         {
             pieceType = FenHelper.GetPieceOnSquare(fen, squareCoordinates);
             if (pieceType.HasValue)
@@ -192,9 +163,9 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         /// <param name="pieceCoordinates">The position of the piece you are adding moves to</param>
         /// <param name="squareCoordinates">The move you want to try to add to the piece</param>
         /// <returns></returns>
-        protected static TryAddMoveResult TryAddMove(HashSet<string> availableMoves, string fen, string pieceCoordinates, string squareCoordinates)
+        protected TryAddMoveResult TryAddMove<T>(HashSet<string> availableMoves, T chessBoard, string squareCoordinates) where T : ChessboardGenerator
         {
-            if (string.IsNullOrEmpty(squareCoordinates) || string.IsNullOrEmpty(pieceCoordinates))
+            if (string.IsNullOrEmpty(squareCoordinates))
             {
                 return new TryAddMoveResult()
                 {
@@ -203,22 +174,9 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
                 };
             }
 
-            char? piece = FenHelper.GetPieceOnSquare(fen, pieceCoordinates);
-            // Don't do anything if there is no piece to move
-            if (!piece.HasValue)
-            {
-                return new TryAddMoveResult()
-                {
-                    isPieceOnSquare = false,
-                    success = false,
-                };
-            }
-
-            ColorType pieceColor = GetColorOfPiece(piece.Value);
-            ColorType enemyPieceColor = GetOppositeColor(pieceColor);
-
-            bool isPieceOnSquare = FenHelper.GetPieceOnSquare(fen, squareCoordinates).HasValue;
-            bool isEnemyPieceOnSquare = IsPieceByColorOnSquare(fen, squareCoordinates, enemyPieceColor, out _);
+            Piece pieceOnSquare = chessBoard.GetPiece(squareCoordinates);
+            bool isPieceOnSquare = pieceOnSquare != null;
+            bool isEnemyPieceOnSquare = isPieceOnSquare && pieceOnSquare.color != color;
 
             if (isEnemyPieceOnSquare)
             {

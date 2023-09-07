@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace ChessMemoryApp.Model.Lichess.Lichess_API
 {
-    public struct FenSettings
+    public class FenSettings
     {
         public struct FenColor
         {
@@ -25,7 +25,7 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
 
             public static string GetColorFromChessBoard(ChessboardGenerator chessBoard)
             {
-                return chessBoard.colorToPlay == Piece.ColorType.Black ? BLACK : WHITE;
+                return chessBoard.boardColorOrientation == Piece.ColorType.Black ? BLACK : WHITE;
             }
 
             public static string GetOppositeColor(string color)
@@ -60,7 +60,7 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
             public const string SPACE = " ";
         }
 
-        public string AppliedFenSettings => GetAppliedSettings(spaceEncoding);
+        public string AppliedFenSettings => GetAppliedSettings(_SpaceEncoding);
         [JsonProperty("plyCountSincePawnMoveSetting")]
         private char plyCountSincePawnMoveSetting = '0';
         [JsonProperty("moveCount")]
@@ -78,10 +78,16 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
         [JsonProperty("enPassantSquare")]
         private string enPassantSquare;
         [JsonProperty("spaceEncoding")]
-        private string spaceEncoding = SpaceEncoding.PERCENT;
-
+        public string _SpaceEncoding { get; private set; }
+        
         public FenSettings()
         {
+            _SpaceEncoding = SpaceEncoding.PERCENT;
+        }
+
+        public FenSettings Copy()
+        {
+            return (FenSettings)MemberwiseClone();
         }
 
         public bool CanWhiteCastleKingSide => whiteKingSideSetting == "K";
@@ -102,6 +108,11 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
             return fen.Split(' ')[0] + GetAppliedSettings(SpaceEncoding.SPACE);
         }
 
+        /// <summary>
+        /// Begins with a spaceEncoding
+        /// </summary>
+        /// <param name="spaceEncoding"></param>
+        /// <returns></returns>
         public string GetAppliedSettings(string spaceEncoding)
         {
             return spaceEncoding + colorToPlaySetting + spaceEncoding + GetCastlingSettings(spaceEncoding) + spaceEncoding + GetEnPassantSquare();
@@ -109,7 +120,7 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
 
         public FenSettings SetSpaceEncoding(string spaceEncoding)
         {
-            this.spaceEncoding = spaceEncoding;
+            this._SpaceEncoding = spaceEncoding;
             return this;
         }
 
@@ -155,52 +166,44 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
             return this;
         }
 
-        public FenSettings EnableWhiteKingSideCastling()
+        public void EnableWhiteKingSideCastling()
         {
             whiteKingSideSetting = "K";
-            return this;
         }
 
-        public FenSettings DisableWhiteKingSideCastling()
+        public void DisableWhiteKingSideCastling()
         {
             whiteKingSideSetting = "";
-            return this;
         }
 
-        public FenSettings EnableBlackKingSideCastling()
+        public void EnableBlackKingSideCastling()
         {
             blackKingSideSetting = "k";
-            return this;
         }
 
-        public FenSettings DisableBlackKingSideCastling()
+        public void DisableBlackKingSideCastling()
         {
             blackKingSideSetting = "";
-            return this;
         }
 
-        public FenSettings EnableWhiteQueenSideCastling()
+        public void EnableWhiteQueenSideCastling()
         {
             whiteQueenSideSetting = "Q";
-            return this;
         }
 
-        public FenSettings DisableWhiteQueenSideCastling()
+        public void DisableWhiteQueenSideCastling()
         {
             whiteQueenSideSetting = "";
-            return this;
         }
 
-        public FenSettings EnableBlackQueenSideCastling()
+        public void EnableBlackQueenSideCastling()
         {
             blackQueenSideSetting = "q";
-            return this;
         }
 
-        public FenSettings DisableBlackQueenSideCastling()
+        public void DisableBlackQueenSideCastling()
         {
             blackQueenSideSetting = "";
-            return this;
         }
 
         public FenSettings EnableAllCastleMoves(FenSettings fenSettings)

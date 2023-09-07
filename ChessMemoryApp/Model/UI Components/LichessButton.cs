@@ -33,7 +33,7 @@ namespace ChessMemoryApp.Model.UI_Components
 
         public LichessButton(ChessboardGenerator chessBoard, Button button, ExplorerMove move)
         {
-            initialFen = chessBoard.currentFen;
+            initialFen = chessBoard.GetFen();
             previewFen = FenHelper.MakeMoveWithCoordinates(initialFen, move.MoveNotationCoordinates);
 
             this.chessBoard = chessBoard;
@@ -51,13 +51,13 @@ namespace ChessMemoryApp.Model.UI_Components
         private void OnPointerExited(object sender, PointerEventArgs e)
         {
             if (!isClickingButton)
-                chessBoard.LoadTemporaryFen(initialFen);
+                chessBoard.LoadChessBoardFromFen(initialFen);
         }
 
         private void OnPointerEntered(object sender, PointerEventArgs e)
         {
             if (!isClickingButton)
-                chessBoard.LoadTemporaryFen(previewFen);
+                chessBoard.LoadChessBoardFromFen(previewFen);
         }
 
         public void RequestNewFen(object sender, EventArgs e)

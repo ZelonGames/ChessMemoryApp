@@ -13,93 +13,91 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         public const string KingSideCastle = "O-O";
         public const string QueenSideCastle = "O-O-O";
 
-        public King(ChessboardGenerator chessBoard, ColorType color) : base(chessBoard, color, 'k')
+        public King(ChessboardGenerator chessBoard, char pieceType) : base(chessBoard, pieceType)
         {
 
         }
 
-        public static HashSet<string> GetAvailableMoves(string pieceLetterCoordinates, string fen)
+        public override HashSet<string> GetAvailableMoves()
         {
             var availableMoves = new HashSet<string>();
-            Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(pieceLetterCoordinates);
+            Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(coordinates);
 
-            char? king = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
-            if (!king.HasValue)
-                return null;
-
-            bool isInCheck = IsInCheck(pieceLetterCoordinates, fen);
+            bool isInCheck = IsInCheck();
 
             if (!isInCheck)
             {
-                bool isWhite = char.IsUpper(king.Value);
-                string row = isWhite ? "1" : "8";
+                string row = color == ColorType.White ? "1" : "8";
+                bool canCastleKingSide = color == ColorType.White ? chessBoard.fenSettings.CanWhiteCastleKingSide : chessBoard.fenSettings.CanBlackCastleKingSide;
+                bool canCastleQueenSide = color == ColorType.White ? chessBoard.fenSettings.CanWhiteCastleQueenSide : chessBoard.fenSettings.CanBlackCastleQueenSide;
 
-                if (FenHelper.CanWhiteCastleKingSide(fen) && 
-                    !IsKingSideCoveredByEnemy(pieceLetterCoordinates, fen) &&
-                    !IsAnyPieceOnKingSide(pieceLetterCoordinates, fen))
+                if (canCastleKingSide &&
+                    !IsKingSideCoveredByEnemy() &&
+                    !IsAnyPieceOnKingSide())
                     availableMoves.Add("g" + row);
-                if (FenHelper.CanWhiteCastleQueenSide(fen) && 
-                    !IsQueenSideCoveredByEnemy(pieceLetterCoordinates, fen) &&
-                    !IsAnyPieceOnQueenSide(pieceLetterCoordinates, fen))
+                if (canCastleQueenSide &&
+                    !IsQueenSideCoveredByEnemy() &&
+                    !IsAnyPieceOnQueenSide())
                     availableMoves.Add("c" + row);
             }
 
+            ColorType enemyColor = GetOppositeColor(color);
+
             // Right
             string currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 1, pieceCoordinates.Y));
-            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+            if (!BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, currentCoordinates))
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             // Left
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 1, pieceCoordinates.Y));
-            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+            if (!BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, currentCoordinates))
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             // Up
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, pieceCoordinates.Y + 1));
-            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+            if (!BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, currentCoordinates))
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             // Down
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X, pieceCoordinates.Y - 1));
-            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+            if (!BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, currentCoordinates))
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             // Up Right
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 1, pieceCoordinates.Y + 1));
-            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+            if (!BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, currentCoordinates))
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             // Up Left
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 1, pieceCoordinates.Y + 1));
-            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+            if (!BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, currentCoordinates))
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             // Down Right
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X + 1, pieceCoordinates.Y - 1));
-            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+            if (!BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, currentCoordinates))
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             // Down Left
             currentCoordinates = BoardHelper.GetLetterCoordinates(new Coordinates<int>(pieceCoordinates.X - 1, pieceCoordinates.Y - 1));
-            if (!FenHelper.IsSquareControlledByEnemy(currentCoordinates, fen))
-                TryAddMove(availableMoves, fen, pieceLetterCoordinates, currentCoordinates);
+            if (!BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, currentCoordinates))
+                TryAddMove(availableMoves, chessBoard, currentCoordinates);
 
             return availableMoves;
         }
 
-        public static bool IsKingSideCoveredByEnemy(string pieceLetterCoordinates, string fen)
+        public bool IsKingSideCoveredByEnemy()
         {
-            char? king = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
-            string row = char.IsUpper(king.Value) ? "1" : "8";
-            ColorType enemyColor = GetOppositeColor(GetColorOfPiece(king.Value));
-            Dictionary<string, char> enemyPieces = FenHelper.GetPiecesByColorFromFen(fen, enemyColor);
+            string row = color == ColorType.White ? "1" : "8";
+            ColorType enemyColor = GetOppositeColor(color);
+            List<Piece> enemyPieces = chessBoard.GetPiecesByColor(enemyColor);
 
             foreach (var piece in enemyPieces)
             {
-                if (char.ToLower(piece.Value) == 'k')
+                if (piece is King)
                     continue;
 
-                HashSet<string> availableMoves = GetAvailableMoves(piece.Value, piece.Key, fen);
+                HashSet<string> availableMoves = GetAvailableMoves();
                 if (availableMoves.Contains("f" + row) ||
                     availableMoves.Contains("g" + row))
                     return true;
@@ -108,40 +106,37 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             return false;
         }
 
-        public static bool IsAnyPieceOnKingSide(string pieceLetterCoordinates, string fen)
+        public bool IsAnyPieceOnKingSide()
         {
-            char? king = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
-            string row = char.IsUpper(king.Value) ? "1" : "8";
+            string row = color == ColorType.White ? "1" : "8";
 
             return
-                FenHelper.GetPieceOnSquare(fen, "f" + row).HasValue ||
-                FenHelper.GetPieceOnSquare(fen, "g" + row).HasValue;
+                chessBoard.GetPiece("f" + row) != null ||
+                chessBoard.GetPiece("g" + row) != null;
         }
 
-        public static bool IsAnyPieceOnQueenSide(string pieceLetterCoordinates, string fen)
+        public bool IsAnyPieceOnQueenSide()
         {
-            char? king = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
-            string row = char.IsUpper(king.Value) ? "1" : "8";
+            string row = color == ColorType.White ? "1" : "8";
 
             return
-                FenHelper.GetPieceOnSquare(fen, "d" + row).HasValue ||
-                FenHelper.GetPieceOnSquare(fen, "c" + row).HasValue ||
-                FenHelper.GetPieceOnSquare(fen, "b" + row).HasValue;
+                chessBoard.GetPiece("d" + row) != null ||
+                chessBoard.GetPiece("c" + row) != null ||
+                chessBoard.GetPiece("b" + row) != null;
         }
 
-        public static bool IsQueenSideCoveredByEnemy(string pieceLetterCoordinates, string fen)
+        public bool IsQueenSideCoveredByEnemy()
         {
-            char? king = FenHelper.GetPieceOnSquare(fen, pieceLetterCoordinates);
-            ColorType enemyColor = GetOppositeColor(GetColorOfPiece(king.Value));
-            Dictionary<string, char> enemyPieces = FenHelper.GetPiecesByColorFromFen(fen, enemyColor);
-            string row = char.IsUpper(king.Value) ? "1" : "8";
+            ColorType enemyColor = GetOppositeColor(color);
+            List<Piece> enemyPieces = chessBoard.GetPiecesByColor(enemyColor);
+            string row = color == ColorType.White ? "1" : "8";
 
             foreach (var piece in enemyPieces)
             {
-                if (char.ToLower(piece.Value) == 'k')
+                if (piece is King)
                     continue;
 
-                HashSet<string> availableMoves = GetAvailableMoves(piece.Value, piece.Key, fen);
+                HashSet<string> availableMoves = piece.GetAvailableMoves();
                 if (availableMoves.Contains("d" + row) ||
                     availableMoves.Contains("c" + row))
                     return true;
@@ -150,18 +145,10 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             return false;
         }
 
-        public static bool IsInCheck(string fen)
+        public bool IsInCheck()
         {
-            ColorType colorToPlay = FenHelper.GetColorTypeToPlayFromFen(fen);
-            char kingType = colorToPlay == ColorType.White ? 'K' : 'k';
-            KeyValuePair<string, char> king = FenHelper.GetPiecesOfTypeFromFen(kingType, fen).First();
-
-            return FenHelper.IsSquareControlledByEnemy(king.Key, fen);
-        }
-
-        private static bool IsInCheck(string kingCoordinates, string fen)
-        {
-            return FenHelper.IsSquareControlledByEnemy(kingCoordinates, fen);
+            ColorType enemyColor = GetOppositeColor(color);
+            return BoardHelper.IsSquareControlledByColor(chessBoard, enemyColor, coordinates);
         }
     }
 }

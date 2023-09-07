@@ -38,10 +38,5 @@ namespace ChessMemoryApp.Model.CourseMaker
         {
             Fen = fen;
         }
-
-        public string UpdateFenAndColor(string fen, int currentMove)
-        {
-            return Fen = FenHelper.MakeMove(fen, MoveNotation.Replace("+", "").Replace("#", ""));
-        }
     }
 }

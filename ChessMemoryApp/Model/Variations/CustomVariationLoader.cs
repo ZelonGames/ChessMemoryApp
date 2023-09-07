@@ -78,7 +78,7 @@ namespace ChessMemoryApp.Model.Variations
             var task = Task.Run(async () =>
             {
                 OpeningExplorer openingExplorer = await LichessRequestHelper.GetOpeningMoves(
-                    chessBoard.fenSettings, chessBoard.currentFen);
+                    chessBoard.fenSettings, chessBoard.GetFen());
 
                 return openingExplorer;
             });
@@ -97,7 +97,7 @@ namespace ChessMemoryApp.Model.Variations
 
             foreach (var move in openingExplorer.Moves)
             {
-                var button = new ListButton(move.MoveNotation + " Wins: " + move.GetWinsInPercent(chessBoard.colorToPlay), lichessButtons.Count);
+                var button = new ListButton(move.MoveNotation + " Wins: " + move.GetWinsInPercent(chessBoard.boardColorOrientation), lichessButtons.Count);
                 var lichessButton = new LichessButton(chessBoard, button.button, move);
                 lichessButtons.Add(lichessButton);
                 verticalStackLayout.Add(lichessButton.button);

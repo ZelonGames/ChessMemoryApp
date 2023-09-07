@@ -116,7 +116,7 @@ namespace ChessMemoryApp.Model.Variations
             {
                 string fen = moves[i].fen.Split(' ')[0] + moves[i].fenSettings.GetAppliedSettings(" ");
 
-                var listButton = new CustomVariationMoveButton(chessBoard, fen, moves[i].moveNotation, i);
+                var listButton = new CustomVariationMoveButton(this, chessBoard, fen, moves[i].moveNotation, i);
                 listButton.CustomVariationButtonClicked += ListButton_CustomVariationButtonClicked;
                 verticalStackLayout.Add(listButton.button);
             }

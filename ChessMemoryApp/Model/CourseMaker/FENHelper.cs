@@ -204,158 +204,6 @@ namespace ChessMemoryApp.Model.CourseMaker
             return board;
         }
 
-        public static string GetLetterFromCoordinates(string fen, string moveNotation)
-        {
-            Piece.ColorType colorToPlay = GetColorFromFen(fen);
-            moveNotation = moveNotation.Replace("+", "").Replace("#", "");
-            char pieceType = moveNotation.First();
-            pieceType = colorToPlay == Piece.ColorType.White ? Char.ToUpper(pieceType) : Char.ToLower(pieceType);
-            string letterToCoordinates = moveNotation[^2..];
-            char? file = null;
-            char? row = null;
-
-            string[] moveNotationComponents = moveNotation.Split('x');
-            if (moveNotationComponents.Length == 2 && moveNotationComponents[0].Length == 2)
-            {
-                char specificPiece = moveNotationComponents[0][1];
-                if (char.IsLetter(specificPiece))
-                    file = specificPiece;
-                else if (char.IsDigit(specificPiece))
-                    row = specificPiece;
-            }
-
-            Dictionary<string, char> pieces = GetPiecesOfTypeFromFen(pieceType, fen);
-            HashSet<string> availableMoves;
-
-            foreach (var piece in pieces)
-            {
-                string pieceCoordinates = piece.Key;
-
-                if (pieceCoordinates == "g1")
-                {
-
-                }
-
-                char pieceFile = pieceCoordinates[0];
-                char pieceRow = pieceCoordinates[1];
-
-                if (file.HasValue && pieceFile != file.Value)
-                    continue;
-                else if (row.HasValue && pieceRow != row.Value)
-                    continue;
-
-                switch (char.ToLower(pieceType))
-                {
-                    case 'r':
-                        availableMoves = Rook.GetAvailableMoves(pieceCoordinates, fen);
-                        break;
-                    case 'n':
-                        availableMoves = Knight.GetAvailableMoves(pieceCoordinates, fen);
-                        break;
-                    case 'b':
-                        availableMoves = Bishop.GetAvailableMoves(pieceCoordinates, fen);
-                        break;
-                    case 'q':
-                        availableMoves = Queen.GetAvailableMoves(pieceCoordinates, fen);
-                        break;
-                    case 'k':
-                        availableMoves = King.GetAvailableMoves(pieceCoordinates, fen);
-                        break;
-                    default:
-                        bool whiteDirection = colorToPlay.Equals(Piece.ColorType.White);
-                        bool direction = !whiteDirection;
-                        availableMoves = Pawn.GetAvailableMoves(pieceCoordinates, fen);
-                        break;
-                }
-
-                if (availableMoves.Contains(letterToCoordinates))
-                    return pieceCoordinates;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Calculates the fen you would get if you made the move from the currentFen
-        /// </summary>
-        /// <param name="currentFen"></param>
-        /// <param name="moveNotation"></param>
-        /// <returns></returns>
-        public static string MakeMove(string currentFen, string moveNotation)
-        {
-            Piece.ColorType color = GetColorFromFen(currentFen);
-            moveNotation = moveNotation.Replace("+", "").Replace("#", "");
-            string newFen = currentFen;
-
-            bool isCastling = moveNotation == "O-O" || moveNotation == "O-O-O";
-            if (isCastling)
-            {
-                #region Castle Moves
-                bool kingSide = moveNotation == "O-O";
-                char king = color.Equals(Piece.ColorType.White) ? 'K' : 'k';
-                char rook = color.Equals(Piece.ColorType.White) ? 'R' : 'r';
-                string rank = color.Equals(Piece.ColorType.White) ? "1" : "8";
-
-                if (kingSide)
-                {
-                    newFen = RemovePieceFromFEN(newFen, "e" + rank);
-                    newFen = AddPieceToFEN(newFen, "g" + rank, king);
-                    newFen = RemovePieceFromFEN(newFen, "h" + rank);
-                    newFen = AddPieceToFEN(newFen, "f" + rank, rook);
-                }
-                else
-                {
-                    newFen = RemovePieceFromFEN(newFen, "e" + rank);
-                    newFen = AddPieceToFEN(newFen, "c" + rank, king);
-                    newFen = RemovePieceFromFEN(newFen, "a" + rank);
-                    newFen = AddPieceToFEN(newFen, "d" + rank, rook);
-                }
-
-                return newFen;
-                #endregion
-            }
-            else
-            {
-                string[] promotionComponents = moveNotation.Split('=');
-                bool promotion = promotionComponents.Length == 2;
-                string toCoordinates = promotionComponents[0][^2..];
-                string fromCoordinates = GetLetterFromCoordinates(currentFen, promotionComponents[0]);
-
-                if (fromCoordinates == "")
-                    return currentFen;
-
-                char? piece = GetPieceOnSquare(currentFen, fromCoordinates);
-                char? pieceToCapture = GetPieceOnSquare(currentFen, toCoordinates);
-
-                bool pawnTakes = moveNotation.Contains('x') && char.ToLower(piece.Value) == 'p';
-                if (pawnTakes)
-                {
-                    bool isEnpassant = !pieceToCapture.HasValue;
-                    if (isEnpassant)
-                    {
-                        // Remove pawn from behind
-                        Piece.Coordinates<int> numberToCoordinates = BoardHelper.GetNumberCoordinates(toCoordinates);
-                        numberToCoordinates.Y += color.Equals(Piece.ColorType.White) ? -1 : 1;
-                        newFen = RemovePieceFromFEN(newFen, BoardHelper.GetLetterCoordinates(numberToCoordinates));
-                    }
-                    else
-                        newFen = RemovePieceFromFEN(newFen, toCoordinates);
-                }
-
-                newFen = RemovePieceFromFEN(newFen, fromCoordinates);
-                if (promotion)
-                {
-                    char promotedPiece = color.Equals(Piece.ColorType.White) ? Char.ToUpper(promotionComponents[1][0]) : Char.ToLower(promotionComponents[1][0]);
-                    newFen = AddPieceToFEN(newFen, toCoordinates, promotedPiece);
-                }
-                else
-                    newFen = AddPieceToFEN(newFen, toCoordinates, piece.Value);
-            }
-
-
-            return UpdateFenColorToPlay(newFen);
-        }
-
         public static string MakeMoveWithCoordinates(string currentFen, string moveNotationCoordinates, bool updateColorToPlay = true)
         {
             string newFen = currentFen;
@@ -449,6 +297,23 @@ namespace ChessMemoryApp.Model.CourseMaker
             return fen.Split(' ')[1];
         }
 
+        public static string SetColorToPlayInFen(string fen, Piece.ColorType color)
+        {
+            string[] fenComponents = fen.Split(' ');
+            string fenColor = FenSettings.FenColor.GetColorFromPieceColor(color);
+            string newFen = "";
+
+            for (int i = 0; i < fenComponents.Length; i++)
+            {
+                if (i == 1)
+                    newFen += fenColor + " ";
+                else
+                    newFen += fenComponents[i] + " ";
+            }
+
+            return newFen[..^1];
+        }
+
         public static Piece.ColorType GetColorTypeToPlayFromFen(string fen)
         {
             return GetColorToPlayFromFen(fen) == "w" ? Piece.ColorType.White : Piece.ColorType.Black;
@@ -482,37 +347,6 @@ namespace ChessMemoryApp.Model.CourseMaker
             }
 
             return xCoordinate;
-        }
-
-        /// <summary>
-        /// Converts for example Nf3 to g2f3 based on the given fen
-        /// </summary>
-        /// <param name="fen"></param>
-        /// <param name="moveNotation">Nf3</param>
-        /// <returns>"g2f3"</returns>
-        public static string ConvertToMoveNotationCoordinates(string fen, string moveNotation)
-        {
-            Piece.ColorType color = GetColorFromFen(fen);
-            if (moveNotation == "0-0" || moveNotation == "O-O")
-            {
-                if (color == Piece.ColorType.Black)
-                    return "e8g8";
-                else
-                    return "e1g1";
-            }
-            else if (moveNotation == "0-0-0" || moveNotation == "O-O-O")
-            {
-                if (color == Piece.ColorType.Black)
-                    return "e8c8";
-                else
-                    return "e1c1";
-            }
-
-            moveNotation = moveNotation.Replace("+", "").Replace("#", "");
-            string fromCoordinates = GetLetterFromCoordinates(fen, moveNotation);
-            string toCoordinates = BoardHelper.GetToCoordinatesString(moveNotation);
-
-            return fromCoordinates + toCoordinates;
         }
 
         /// <summary>
@@ -728,24 +562,6 @@ namespace ChessMemoryApp.Model.CourseMaker
         }
 
         #endregion
-
-        public static bool IsSquareControlledByEnemy(string squareCoordinates, string fen)
-        {
-            Piece.ColorType enemyColor = Piece.GetOppositeColor(GetColorTypeToPlayFromFen(fen));
-            Dictionary<string, char> enemyPieces = GetPiecesByColorFromFen(fen, enemyColor);
-
-            foreach (var enemyPiece in enemyPieces)
-            {
-                if (char.ToLower(enemyPiece.Value) == 'k')
-                    continue;
-
-                HashSet<string> availableMoves = Piece.GetAvailableMoves(enemyPiece.Value, enemyPiece.Key, fen);
-                if (availableMoves.Contains(squareCoordinates))
-                    return true;
-            }
-
-            return false;
-        }
 
         public static bool IsValidFen(string fen)
         {

@@ -45,7 +45,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
                 return;
             }
 
-            Move move = GetRelativeMove(Course.MoveNavigation.Next, chessboard.currentFen);
+            Move move = GetRelativeMove(Course.MoveNavigation.Next, chessboard.GetFen());
             if (move != null)
                 RequestedNextChessableMove?.Invoke(move);
         }

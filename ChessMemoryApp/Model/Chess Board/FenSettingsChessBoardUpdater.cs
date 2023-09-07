@@ -17,7 +17,6 @@ namespace ChessMemoryApp.Model.Chess_Board
     {
         public delegate void UpdatedFenEventHandler(string fen);
         public event UpdatedFenEventHandler UpdatedFen;
-
         private readonly ChessboardGenerator chessboard;
 
         public FenSettingsChessBoardUpdater(ChessboardGenerator chessboard) : base(chessboard.fenSettings)
@@ -29,7 +28,6 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             pieceMover.MadeLichessMove += OnMadeLichessMove;
             pieceMover.MadeChessableMove += OnMadeChessableMove;
-
             moveHistory.RequestingPreviousMove += OnRequestingPreviousMove;
             moveHistory.RequestingFirstMove += OnRequestingFirstMove;
         }
@@ -43,40 +41,39 @@ namespace ChessMemoryApp.Model.Chess_Board
         private void OnRequestingPreviousMove(MoveHistory.Move currentMove, MoveHistory.Move previousMove)
         {
             chessboard.fenSettings = previousMove.fenSettings;
-            UpdatedFen?.Invoke(chessboard.currentFen);
+            UpdatedFen?.Invoke(chessboard.GetFen());
         }
 
         private void OnMadeChessableMove(Move move)
         {
-            string fenColor = chessboard.colorToPlay == Piece.ColorType.Black ? FenSettings.FenColor.WHITE : FenSettings.FenColor.BLACK;
+            string fenColor = chessboard.boardColorOrientation == Piece.ColorType.Black ? FenSettings.FenColor.WHITE : FenSettings.FenColor.BLACK;
             chessboard.fenSettings.SetColorToPlay(fenColor);
-
+            string fen = chessboard.GetFen();
             UpdateFenCastleSettings(move.MoveNotation, FenSettings.FenColor.GetPieceColor(fenColor));
             UpdatePawnPlyCount(move.MoveNotation);
-            UpdateEnPassant(move.MoveNotation, chessboard.currentFen);
-            UpdatedFen?.Invoke(chessboard.currentFen);
+            UpdateEnPassant(move.MoveNotation, fen);
+            UpdatedFen?.Invoke(fen);
         }
 
         private void OnMadeLichessMove(string fen, ExplorerMove move)
         {
-            string fenColor = chessboard.colorToPlay == Piece.ColorType.Black ? FenSettings.FenColor.BLACK : FenSettings.FenColor.WHITE;
-
-            chessboard.fenSettings.SetColorToPlay(fenColor);
+            string fenColor = chessboard.boardColorOrientation == Piece.ColorType.Black ? FenSettings.FenColor.BLACK : FenSettings.FenColor.WHITE;
+            string chessBoardFen = chessboard.GetFen();
+            fenSettings.SetColorToPlay(fenColor);
             UpdateFenCastleSettings(move.MoveNotation, FenSettings.FenColor.GetPieceColor(fenColor));
             UpdatePawnPlyCount(move.MoveNotation);
             UpdateEnPassant(move.MoveNotation, fen);
-            chessboard.fenSettings.IncreaseMoveCount();
-            UpdatedFen?.Invoke(chessboard.currentFen);
+            fenSettings.IncreaseMoveCount();
+            UpdatedFen?.Invoke(chessBoardFen);
         }
 
         private void UpdateFenSettingsOnRookMove(Piece.ColorType color)
         {
+            string fen = chessboard.GetFen();
             char rank = color == Piece.ColorType.White ? '1' : '8';
-
-            char? king = FenHelper.GetPieceOnSquare(chessboard.currentFen, "e" + rank);
-            char? kingSideRook = FenHelper.GetPieceOnSquare(chessboard.currentFen, "h" + rank);
-            char? queenSideRook = FenHelper.GetPieceOnSquare(chessboard.currentFen, "a" + rank);
-
+            char? king = FenHelper.GetPieceOnSquare(fen, "e" + rank);
+            char? kingSideRook = FenHelper.GetPieceOnSquare(fen, "h" + rank);
+            char? queenSideRook = FenHelper.GetPieceOnSquare(fen, "a" + rank);
             bool movedKingSideRook = king.HasValue && !kingSideRook.HasValue;
             bool movedQueenSideRook = king.HasValue && !queenSideRook.HasValue;
 

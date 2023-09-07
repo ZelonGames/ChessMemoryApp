@@ -1,5 +1,6 @@
 ﻿using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.CourseMaker;
+using ChessMemoryApp.Model.Variations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,14 @@ namespace ChessMemoryApp.Model.UI_Components
         public delegate void CustomVariationButtonClickedEventHandler(string fen);
         public event CustomVariationButtonClickedEventHandler CustomVariationButtonClicked;
 
+        private readonly CustomVariation customVariation;
         private readonly FenChessboard chessBoard;
         public readonly string fen;
 
-        public CustomVariationMoveButton(FenChessboard chessBoard, string fen, string moveNotation, int buttonIndex) :
+        public CustomVariationMoveButton(CustomVariation customVariation, FenChessboard chessBoard, string fen, string moveNotation, int buttonIndex) :
             base(moveNotation, buttonIndex)
         {
+            this.customVariation = customVariation;
             this.chessBoard = chessBoard;
             this.fen = fen;
             PointerGestureRecognizer.PointerEntered += PointerGestureRecognizer_PointerEntered;
@@ -34,15 +37,15 @@ namespace ChessMemoryApp.Model.UI_Components
 
         private void PointerGestureRecognizer_PointerExited(object sender, PointerEventArgs e)
         {
-            if (!FenHelper.IsValidFen(chessBoard.currentFen))
+            if (!FenHelper.IsValidFen(customVariation.PreviewFen))
                 chessBoard.ClearPieces();
             else
-                chessBoard.LoadTemporaryFen(chessBoard.currentFen);
+                chessBoard.LoadChessBoardFromFen(customVariation.PreviewFen);
         }
 
         private void PointerGestureRecognizer_PointerEntered(object sender, PointerEventArgs e)
         {
-            chessBoard.LoadTemporaryFen(fen);
+            chessBoard.LoadChessBoardFromFen(fen);
         }
     }
 }

@@ -41,7 +41,8 @@ public partial class MainPage : ContentPage
         chessBoard.LoadSquares();
         chessBoard.LoadChessBoardFromFen(selectedCourse.PreviewFen);
 
-        var fenChessBoard = new FenChessboard(fenChessBoardLayout, new Size(200, 200), chessBoard.colorToPlay);
+        // TODO: Fix colorToPlay
+        var fenChessBoard = new FenChessboard(fenChessBoardLayout, new Size(200, 200), chessBoard.boardColorOrientation);
         fenChessBoard.LoadSquares();
         #endregion
 
@@ -84,7 +85,7 @@ public partial class MainPage : ContentPage
             editingVariation.ReloadListButtons();
             chessBoard.LoadChessBoardFromFen(editingVariation.GetLastFen());
             chessBoard.fenSettings = editingVariation.GetLastFenSettings();
-            lichessFenLabel.FenSettingsUpdater_UpdatedFen(editingVariation.GetLastFenSettings().GetLichessFen(chessBoard.currentFen));
+            lichessFenLabel.FenSettingsUpdater_UpdatedFen(editingVariation.GetLastFenSettings().GetLichessFen(chessBoard.GetFen()));
             var backupMoves = new List<MoveHistory.Move>(editingVariation.moves);
             editingVariation.moves.Clear();
             foreach (var move in backupMoves)
@@ -92,7 +93,7 @@ public partial class MainPage : ContentPage
             fenChessBoard.LoadChessBoardFromFen(editingVariation.PreviewFen);
         }
 
-        lichessMoveExplorer.GetLichessMoves(chessBoard.currentFen);
+        lichessMoveExplorer.GetLichessMoves(chessBoard.GetFen());
     }
 
     private async void LabelLichessFromPlayer_Tapped(object sender, TappedEventArgs e)
@@ -101,21 +102,23 @@ public partial class MainPage : ContentPage
         LichessRequestHelper.openingsFromPlayer = checkBoxLichessFromPlayer.IsChecked;
 
         Piece.ColorType color = FenHelper.GetColorFromFen(labelLichessFen.Text);
-        bool isYourTurn = chessBoard.colorToPlay == color;
+        bool isYourTurn = chessBoard.boardColorOrientation == color;
 
         if (isYourTurn)
             return;
 
+        string fen = chessBoard.GetFen();
+
         var task = Task.Run(async () =>
         {
             OpeningExplorer openingExplorer = await LichessRequestHelper.GetOpeningMoves(
-                chessBoard.fenSettings, chessBoard.currentFen);
+                chessBoard.fenSettings, fen);
 
             return openingExplorer;
         });
 
         OpeningExplorer openingExplorer = await task;
-        variationLoader.LoadLichessVariations(chessBoard.currentFen, openingExplorer);
+        variationLoader.LoadLichessVariations(fen, openingExplorer);
     }
 }
 

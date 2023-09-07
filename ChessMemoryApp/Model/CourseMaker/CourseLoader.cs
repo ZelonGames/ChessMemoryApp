@@ -52,29 +52,6 @@ namespace ChessMemoryApp.Model.CourseMaker
             }
         }
 
-        public void UpdateVariationMoveColor(string courseName)
-        {
-            string jsonData = File.ReadAllText(GetFilePath(courseName));
-            var course = JsonConvert.DeserializeObject<Course>(jsonData);
-            foreach (var chapter in course.GetChapters().Values)
-            {
-                foreach (var variation in chapter.GetVariations().Values)
-                {
-                    string previousFen = FenHelper.STARTING_FEN;
-                    for (int i = 0; i < variation.GetAmountOfMoves(); i++)
-                    {
-                        string fen = variation.GetMove(i).UpdateFenAndColor(previousFen, i);
-                        Move nextMove = variation.GetMove(i + 1);
-                        nextMove?.TempUpdateFEN(fen);
-
-                        previousFen = fen;
-                    }
-                }
-            }
-
-            SaveCourseAsJson(course);
-        }
-
         public void AddOrUpdateCourse(string courseName, string chapterName, int chessableCourseID)
         {
             Course course;
