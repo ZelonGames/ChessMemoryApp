@@ -30,8 +30,9 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         public event MadeMoveFenEventHandler MadeMoveFen;
 
         public readonly MoveNotationGenerator moveNotationHelper;
-
         public readonly bool memorizingMode;
+
+        private ChessboardGenerator ChessBoard => moveNotationHelper.chessBoard;
 
         public PieceMover(MoveNotationGenerator moveNotationHelper, bool memorizingMode)
         {
@@ -47,7 +48,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void CustomVariationMoveNavigator_RevealedMove(string fen)
         {
-            GetChessboard().LoadChessBoardFromFen(fen);
+            ChessBoard.LoadChessBoardFromFen(fen);
         }
 
         public void SubscribeToEvents(CourseMoveNavigator courseMoveNavigator)
@@ -56,22 +57,15 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             courseMoveNavigator.RequestedNextChessableMove += OnNextChessableMove;
         }
 
-        public ChessboardGenerator GetChessboard()
-        {
-            return moveNotationHelper.chessBoard;
-        }
-
         private void CustomVariationMoveNavigator_GuessedCorrectMove(MoveHistory.Move moveToMake)
         {
             string fromCoordinates = BoardHelper.GetFromCoordinatesString(moveToMake.moveNotationCoordinates);
             string toCoordinates = BoardHelper.GetToCoordinatesString(moveToMake.moveNotationCoordinates);
-
-            bool madeCastleMove;
-            string fen = GetChessboard().GetFen();
-            TryMakeCastleMove(fen, fromCoordinates, toCoordinates, out madeCastleMove);
+            string fen = ChessBoard.GetFen();
+            bool madeCastleMove = TryMakeCastleMove(fromCoordinates, toCoordinates);
 
             if (!madeCastleMove)
-                MakeTeleportMove(fromCoordinates, toCoordinates);
+                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
 
             MovedPiece?.Invoke(fen);
             moveNotationHelper.ResetClicks();
@@ -79,94 +73,78 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void OnNextChessableMove(Move move)
         {
-            string previousFen = GetChessboard().GetFen();
-            GetChessboard().LoadChessBoardFromFen(move.Fen);
+            string previousFen = ChessBoard.GetFen();
+            ChessBoard.LoadChessBoardFromFen(move.Fen);
             MadeChessableMove?.Invoke(move);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, previousFen, move.Fen);
         }
 
         private void OnNextLichessMove(string fen, ExplorerMove move)
         {
-            string previousFen = GetChessboard().GetFen();
-            GetChessboard().LoadChessBoardFromFen(fen);
+            string previousFen = ChessBoard.GetFen();
+            ChessBoard.LoadChessBoardFromFen(fen);
             MadeLichessMove?.Invoke(fen, move);
-            Piece.ColorType color = Piece.GetColorFromChessboard(GetChessboard());
+            Piece.ColorType color = Piece.GetColorFromChessboard(ChessBoard);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Lichess, color, move.MoveNotation, previousFen, fen);
         }
 
         public void OnPreviousMove(MoveHistory.Move historyMove)
         {
-            GetChessboard().LoadChessBoardFromFen(historyMove.fen);
-        }
-
-        private void MakeTeleportMove(string fromCoordinates, string toCoordinates)
-        {
-            // TODO: Use chessboard instead of fenhelper
-            char? removedPiece; 
-            string newFen = FenHelper.RemovePieceFromFEN(GetChessboard().GetFen(), fromCoordinates, out removedPiece);
-            if (!removedPiece.HasValue)
-                return;
-            newFen = FenHelper.AddPieceToFEN(newFen, toCoordinates, removedPiece.Value);
-            moveNotationHelper.chessBoard.LoadChessBoardFromFen(newFen);
+            ChessBoard.LoadChessBoardFromFen(historyMove.fen);
         }
 
         /// <summary>
-        /// returns true if the move should and was made
+        /// 
         /// </summary>
         /// <param name="fen"></param>
         /// <param name="fromCoordinates"></param>
         /// <param name="toCoordinates"></param>
-        /// <returns></returns>
-        private void TryMakeCastleMove(string fen, string fromCoordinates, string toCoordinates, out bool madeMove)
+        /// <returns>returns true if the move was made</returns>
+        private bool TryMakeCastleMove(string fromCoordinates, string toCoordinates)
         {
-            char? piece = FenHelper.GetPieceOnSquare(fen, fromCoordinates);
-            if (!piece.HasValue || piece.HasValue && piece.Value != 'k' && piece.Value != 'K')
-            {
-                madeMove = false;
-                return;
-            }
+            Piece piece = ChessBoard.GetPiece(fromCoordinates);
+            if (piece == null || piece != null && piece.pieceType != 'k' && piece.pieceType != 'K')
+                return false;
+
+            string moveNotationCoordinates = fromCoordinates + toCoordinates;
 
             // Short Castle White
-            char? rook = FenHelper.GetPieceOnSquare(fen, "h1");
-            if (rook.HasValue && rook.Value == 'R' && fromCoordinates + toCoordinates == "e1g1")
+            Piece rook = ChessBoard.GetPiece("h1");
+            if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1g1")
             {
-                MakeTeleportMove(fromCoordinates, toCoordinates);
-                MakeTeleportMove("h1", "f1");
-                madeMove = true;
-                return;
+                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
+                ChessBoard.MovePiece("h1", "f1");
+                return true;
             }
 
             // Long Castle White
-            rook = FenHelper.GetPieceOnSquare(fen, "a1");
-            if (rook.HasValue && rook.Value == 'R' && fromCoordinates + toCoordinates == "e1c1")
+            rook = ChessBoard.GetPiece("a1");
+            if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1c1")
             {
-                MakeTeleportMove(fromCoordinates, toCoordinates);
-                MakeTeleportMove("a1", "d1");
-                madeMove = true;
-                return;
+                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
+                ChessBoard.MovePiece("a1", "d1");
+                return true;
             }
 
-            // Short Castle White
-            rook = FenHelper.GetPieceOnSquare(fen, "h8");
-            if (rook.HasValue && rook.Value == 'r' && fromCoordinates + toCoordinates == "e8g8")
+            // Short Castle Black
+            rook = ChessBoard.GetPiece("h8");
+            if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8g8")
             {
-                MakeTeleportMove(fromCoordinates, toCoordinates);
-                MakeTeleportMove("h8", "f8");
-                madeMove = true;
-                return;
+                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
+                ChessBoard.MovePiece("h8", "f8");
+                return true;
             }
 
-            // Long Castle White
-            rook = FenHelper.GetPieceOnSquare(fen, "a8");
-            if (rook.HasValue && rook.Value == 'r' && fromCoordinates + toCoordinates == "e8c8")
+            // Long Castle Black
+            rook = ChessBoard.GetPiece("a8");
+            if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8c8")
             {
-                MakeTeleportMove(fromCoordinates, toCoordinates);
-                MakeTeleportMove("a8", "d8");
-                madeMove = true;
-                return;
+                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
+                ChessBoard.MovePiece("a8", "d8");
+                return true;
             }
 
-            madeMove = false;
+            return false;
         }
     }
 }

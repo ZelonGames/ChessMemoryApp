@@ -56,7 +56,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public static string GetFromCoordinatesString(string numberCoordinates)
         {
-            return numberCoordinates.Substring(0, 2);
+            return numberCoordinates[..2];
         }
 
         public static Piece.Coordinates<char> GetToCoordinates(string numberCoordinates)
