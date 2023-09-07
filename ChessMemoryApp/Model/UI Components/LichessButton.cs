@@ -34,6 +34,10 @@ namespace ChessMemoryApp.Model.UI_Components
         public LichessButton(ChessboardGenerator chessBoard, Button button, ExplorerMove move)
         {
             initialFen = chessBoard.GetFen();
+            if (move.MoveNotation == "O-O")
+            {
+
+            }
             previewFen = FenHelper.MakeMoveWithCoordinates(initialFen, move.MoveNotationCoordinates);
 
             this.chessBoard = chessBoard;

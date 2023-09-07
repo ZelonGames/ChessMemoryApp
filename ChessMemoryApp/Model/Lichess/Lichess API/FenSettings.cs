@@ -226,6 +226,10 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>returns null or the coordinates of the square</returns>
         public string GetEnPassantSquare()
         {
             return enPassantSquare != null && enPassantSquare.Length == 2 ? enPassantSquare : "-";

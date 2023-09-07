@@ -218,28 +218,28 @@ namespace ChessMemoryApp.Model.CourseMaker
             bool isMovingPieceKing = piece.HasValue && char.ToLower(piece.Value) == 'k';
             if (isMovingPieceKing)
             {
-                if (moveNotationCoordinates == "e1h1")
+                if (moveNotationCoordinates == "e1h1" || moveNotationCoordinates == "e1g1")
                 {
                     // White king side castle
                     newFen = TeleportPiece(currentFen, "e1g1", false);
                     newFen = TeleportPiece(newFen, "h1f1", false);
                     isCastlingMove = true;
                 }
-                else if (moveNotationCoordinates == "e1a1")
+                else if (moveNotationCoordinates == "e1a1" || moveNotationCoordinates == "e1c1")
                 {
                     // White queen side castle
                     newFen = TeleportPiece(currentFen, "e1c1", false);
                     newFen = TeleportPiece(newFen, "a1d1", false);
                     isCastlingMove = true;
                 }
-                else if (moveNotationCoordinates == "e8h8")
+                else if (moveNotationCoordinates == "e8h8" || moveNotationCoordinates == "e8g8")
                 {
                     // Black king side castle
                     newFen = TeleportPiece(currentFen, "e8g8", false);
                     newFen = TeleportPiece(newFen, "h8f8", false);
                     isCastlingMove = true;
                 }
-                else if (moveNotationCoordinates == "e8a8")
+                else if (moveNotationCoordinates == "e8a8" || moveNotationCoordinates == "e8c8")
                 {
                     // Black queen side castle
                     newFen = TeleportPiece(currentFen, "e8c8", false);
@@ -249,7 +249,7 @@ namespace ChessMemoryApp.Model.CourseMaker
             }
 
             if (isCastlingMove)
-                return updateColorToPlay ? UpdateFenColorToPlay(currentFen) : newFen;
+                return updateColorToPlay ? UpdateFenColorToPlay(newFen) : newFen;
             #endregion
 
             char? capturedPiece = GetPieceOnSquare(currentFen, toCoordinates);

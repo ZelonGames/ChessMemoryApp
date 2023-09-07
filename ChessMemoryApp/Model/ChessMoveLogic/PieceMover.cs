@@ -65,7 +65,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             bool madeCastleMove = TryMakeCastleMove(fromCoordinates, toCoordinates);
 
             if (!madeCastleMove)
-                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
+                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
 
             MovedPiece?.Invoke(fen);
             moveNotationHelper.ResetClicks();
@@ -112,8 +112,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             Piece rook = ChessBoard.GetPiece("h1");
             if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1g1")
             {
-                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
-                ChessBoard.MovePiece("h1", "f1");
+                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
+                ChessBoard.MakeMove("h1", "f1");
                 return true;
             }
 
@@ -121,8 +121,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             rook = ChessBoard.GetPiece("a1");
             if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1c1")
             {
-                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
-                ChessBoard.MovePiece("a1", "d1");
+                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
+                ChessBoard.MakeMove("a1", "d1");
                 return true;
             }
 
@@ -130,8 +130,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             rook = ChessBoard.GetPiece("h8");
             if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8g8")
             {
-                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
-                ChessBoard.MovePiece("h8", "f8");
+                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
+                ChessBoard.MakeMove("h8", "f8");
                 return true;
             }
 
@@ -139,8 +139,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             rook = ChessBoard.GetPiece("a8");
             if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8c8")
             {
-                ChessBoard.MovePiece(fromCoordinates, toCoordinates);
-                ChessBoard.MovePiece("a8", "d8");
+                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
+                ChessBoard.MakeMove("a8", "d8");
                 return true;
             }
 

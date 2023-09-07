@@ -24,6 +24,33 @@ namespace ChessMemoryApp.Model.Chess_Board
             return letterCoordinates[coordinate.X - 1].ToString() + coordinate.Y;
         }
 
+        public static string GetMoveNotationFromCoordinates<T>(T chessBoard, string moveNotationCoordinates) where T : ChessboardGenerator
+        {
+            string fromCoordinates = GetFromCoordinatesString(moveNotationCoordinates);
+            string toCoordinates = GetToCoordinatesString(moveNotationCoordinates);
+            Piece capturedPiece = chessBoard.GetPiece(toCoordinates);
+            Piece movedPiece = chessBoard.GetPiece(fromCoordinates);
+            
+            if (movedPiece == null)
+                return null;
+
+            Dictionary<string, Piece> piecesOfSameType = GetPiecesOfType(chessBoard, movedPiece.pieceType);
+            if (piecesOfSameType.Count == 1)
+            {
+                char piecePrefix = movedPiece is Pawn ? fromCoordinates[0] : char.ToUpper(movedPiece.pieceType);
+                return capturedPiece != null ? piecePrefix + "x" + toCoordinates : piecePrefix + toCoordinates;
+            }
+
+            string moveNotation = "";
+
+            foreach (var piece in piecesOfSameType)
+            {
+
+            }
+
+            return moveNotation;
+        }
+
         public static Piece.Coordinates<int> GetNumberCoordinates(string letterCoordinates)
         {
             string allLetterCoordinates = "abcdefgh";
@@ -59,6 +86,11 @@ namespace ChessMemoryApp.Model.Chess_Board
             return numberCoordinates[..2];
         }
 
+        public static string GetToCoordinatesString(string numberCoordinates)
+        {
+            return numberCoordinates[^2..];
+        }
+
         public static Piece.Coordinates<char> GetToCoordinates(string numberCoordinates)
         {
             numberCoordinates = GetToCoordinatesString(numberCoordinates);
@@ -68,16 +100,11 @@ namespace ChessMemoryApp.Model.Chess_Board
             return new Piece.Coordinates<char>(x, y);
         }
 
-        public static string GetToCoordinatesString(string numberCoordinates)
-        {
-            return numberCoordinates.Substring(numberCoordinates.Length - 2);
-        }
-
         public static Dictionary<string, Square> GetControlledSquaresByColor<T>(T chessBoard, Piece.ColorType color) where T : ChessboardGenerator
         {
             var squares = new Dictionary<string, Square>();
 
-            foreach (var piece in chessBoard.Pieces)
+            foreach (var piece in chessBoard.pieces)
             {
                 if (piece.Value.color == color)
                 {
@@ -92,7 +119,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public static bool IsSquareControlledByColor<T>(T chessBoard, Piece.ColorType color, string squareCoordinates) where T : ChessboardGenerator
         {
-            foreach (var piece in chessBoard.Pieces)
+            foreach (var piece in chessBoard.pieces)
             {
                 if (piece.Value.color == color)
                 {
@@ -112,7 +139,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             var pieces = new Dictionary<string, Piece>();
 
-            foreach (var piece in chessBoard.Pieces)
+            foreach (var piece in chessBoard.pieces)
             {
                 if (piece.Value.pieceType == pieceType)
                     pieces.Add(piece.Key, piece.Value);
@@ -255,7 +282,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
             string fromCoordinates = GetLetterFromCoordinates(chessBoard, moveNotation);
-            string toCoordinates = BoardHelper.GetToCoordinatesString(moveNotation);
+            string toCoordinates = GetToCoordinatesString(moveNotation);
 
             return fromCoordinates + toCoordinates;
         }

@@ -10,12 +10,13 @@ namespace ChessMemoryApp.Model.Chess_Board
     {
         public delegate void ChessBoardLoadedEventHandler(string fen);
         public event ChessBoardLoadedEventHandler Loaded;
+        public delegate void MovedPieceEventHandler(string fromCoordinates, string toCoordinates);
+        public event MovedPieceEventHandler MovedPiece;
 
         public delegate void SizeChangedEventHandler(double size, Rect bounds);
         public event SizeChangedEventHandler SizeChanged;
 
-        private readonly Dictionary<string, Piece> pieces = new();
-        public Dictionary<string, Piece> Pieces => pieces;
+        public Dictionary<string, Piece> pieces = new();
         public readonly Dictionary<string, Square> squares = new();
 
         protected readonly AbsoluteLayout chessBoardListLayout;
@@ -247,11 +248,91 @@ namespace ChessMemoryApp.Model.Chess_Board
             return squares[coordinates];
         }
 
-        public void MovePiece(string fromCoordinates, string toCoordinates)
+        public void MakeMove(string fromCoordinates, string toCoordinates)
+        {
+            Piece movedPiece = GetPiece(fromCoordinates);
+
+            if (TryMakeCastleMove(fromCoordinates, toCoordinates))
+            {
+                MovedPiece?.Invoke(fromCoordinates, toCoordinates);
+                return;
+            }
+
+            Piece capturedPiece = GetPiece(toCoordinates);
+            if (movedPiece is Pawn)
+            {
+                string enPassantSquare = fenSettings.GetEnPassantSquare();
+                if (enPassantSquare == toCoordinates)
+                {
+                    // The captured pawn is behind the moved piece after an en passant move
+                    int captureDirection = movedPiece.color == Piece.ColorType.White ? -1 : 1;
+                    Piece.Coordinates<int> numberCoordinates = BoardHelper.GetNumberCoordinates(toCoordinates);
+                    numberCoordinates.Y += captureDirection;
+                    string captureCoordinates = BoardHelper.GetLetterCoordinates(numberCoordinates);
+                    capturedPiece = GetPiece(captureCoordinates);
+                }
+            }
+            
+            if (capturedPiece != null)
+                RemovePiece(capturedPiece);
+
+            RemovePiece(movedPiece);
+            AddPieceToSquare(movedPiece.pieceType, toCoordinates);
+
+            MovedPiece?.Invoke(fromCoordinates, toCoordinates);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fromCoordinates"></param>
+        /// <param name="toCoordinates"></param>
+        /// <returns>returns true if a castle move was made</returns>
+        private bool TryMakeCastleMove(string fromCoordinates, string toCoordinates)
         {
             Piece piece = GetPiece(fromCoordinates);
-            RemovePiece(piece);
-            AddPieceToSquare(piece.pieceType, toCoordinates);
+            if (piece == null || piece != null && piece.pieceType != 'k' && piece.pieceType != 'K')
+                return false;
+
+            string moveNotationCoordinates = fromCoordinates + toCoordinates;
+
+            // Short Castle White
+            Piece rook = GetPiece("h1");
+            if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1g1")
+            {
+                MakeMove(fromCoordinates, toCoordinates);
+                MakeMove("h1", "f1");
+                return true;
+            }
+
+            // Long Castle White
+            rook = GetPiece("a1");
+            if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1c1")
+            {
+                MakeMove(fromCoordinates, toCoordinates);
+                MakeMove("a1", "d1");
+                return true;
+            }
+
+            // Short Castle Black
+            rook = GetPiece("h8");
+            if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8g8")
+            {
+                MakeMove(fromCoordinates, toCoordinates);
+                MakeMove("h8", "f8");
+                return true;
+            }
+
+            // Long Castle Black
+            rook = GetPiece("a8");
+            if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8c8")
+            {
+                MakeMove(fromCoordinates, toCoordinates);
+                MakeMove("a8", "d8");
+                return true;
+            }
+
+            return false;
         }
 
         public Piece AddPieceToSquare(char pieceType, string squareCoordinates)
@@ -276,6 +357,19 @@ namespace ChessMemoryApp.Model.Chess_Board
             return null;
         }
 
+        public Dictionary<string, Piece> GetPieceOfType(char pieceType)
+        {
+            var pieces = new Dictionary<string, Piece>();
+
+            foreach (var piece in this.pieces)
+            {
+                if (piece.Value.pieceType == pieceType)
+                    pieces.Add(piece.Key, piece.Value);
+            }
+
+            return pieces;
+        }
+
         public Piece GetPiece(string coordinates)
         {
             pieces.TryGetValue(coordinates, out Piece piece);
@@ -297,7 +391,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public string GetFen()
         {
-            string fen = BoardHelper.GetPositionFenFromChessBoardPieces(Pieces);
+            string fen = BoardHelper.GetPositionFenFromChessBoardPieces(pieces);
             fen += fenSettings.GetAppliedSettings(FenSettings.SpaceEncoding.SPACE);
 
             return fen;

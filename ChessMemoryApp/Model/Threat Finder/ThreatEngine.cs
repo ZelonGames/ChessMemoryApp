@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChessMemoryApp.Model.Chess_Board;
+using ChessMemoryApp.Model.ChessMoveLogic;
 
 namespace ChessMemoryApp.Model.Threat_Finder
 {
     public class ThreatEngine
     {
-        private Dictionary<string, int> repeatedPositions = new();
         private FamilyTree<CalculatedMoveInfo> tree = new();
         private List<Stack<FamilyTree<CalculatedMoveInfo>>> lines;
         private readonly ChessboardGenerator chessboard;
@@ -20,12 +20,15 @@ namespace ChessMemoryApp.Model.Threat_Finder
         public ThreatEngine(ChessboardGenerator chessboard, int depth)
         {
             this.chessboard = chessboard;
+            var fenSettingsUpdater = new FenSettingsChessBoardUpdater(chessboard);
+            fenSettingsUpdater.UseChessBoardMovedPiece();
             this.depth = depth;
         }
 
         public void CalculateMoves(string fen)
         {
             CalculateMovesRecursive(fen, tree);
+            chessboard.LoadChessBoardFromFen(fen);
         }
 
         public List<Stack<FamilyTree<CalculatedMoveInfo>>> GetLines()
@@ -37,7 +40,8 @@ namespace ChessMemoryApp.Model.Threat_Finder
 
         private void CalculateMovesRecursive(string fen, FamilyTree<CalculatedMoveInfo> parent)
         {
-            if (IsDrawnByRepetition(fen))
+            chessboard.LoadChessBoardFromFen(fen);
+            if (IsDrawnByRepetition(parent))
                 return;
 
             List<string> threats = GetThreats(fen);
@@ -50,25 +54,33 @@ namespace ChessMemoryApp.Model.Threat_Finder
             for (int i = 0; i < parent.Children.Count; i++)
             {
                 FamilyTree<CalculatedMoveInfo> child = parent.Children[i];
-                string newFen = FenHelper.MakeMoveWithCoordinates(fen, child.value.moveNotationCoordinates);
-                if (IsDrawnByRepetition(newFen))
+                string fromCoordinates = BoardHelper.GetFromCoordinatesString(child.value.moveNotationCoordinates);
+                string toCoordinates = BoardHelper.GetToCoordinatesString(child.value.moveNotationCoordinates);
+                chessboard.MakeMove(fromCoordinates, toCoordinates);
+                if (IsDrawnByRepetition(child))
                     continue;
 
                 if (child.Depth <= depth)
-                    CalculateMovesRecursive(newFen, child);
+                    CalculateMovesRecursive(chessboard.GetFen(), child);
             }
         }
 
-        private bool IsDrawnByRepetition(string fen)
+        private static bool IsDrawnByRepetition(FamilyTree<CalculatedMoveInfo> currentNode)
         {
-            if (repeatedPositions.ContainsKey(fen))
+            var repeatedPositions = new Dictionary<string, int>();
+
+            do
             {
-                if (repeatedPositions[fen] == 3)
+                if (repeatedPositions.ContainsKey(currentNode.value.fen))
+                    repeatedPositions[currentNode.value.fen]++;
+                else
+                    repeatedPositions.Add(currentNode.value.fen, 1);
+
+                if (repeatedPositions[currentNode.value.fen] == 3)
                     return true;
-                repeatedPositions[fen]++;
-            }
-            else
-                repeatedPositions.Add(fen, 1);
+
+                currentNode = currentNode.Parent;
+            } while (currentNode.Parent != null);
 
             return false;
         }
@@ -86,6 +98,7 @@ namespace ChessMemoryApp.Model.Threat_Finder
         public List<string> GetThreats(string fen)
         {
             chessboard.LoadPiecesFromFen(fen);
+            var oldPieces = new Dictionary<string, Piece>(chessboard.pieces);
 
             var threats = new HashSet<string>();
             Piece.ColorType colorToPlay = FenHelper.GetColorTypeToPlayFromFen(fen);
@@ -101,7 +114,7 @@ namespace ChessMemoryApp.Model.Threat_Finder
                 foreach (var toCoordinates in availableMoves)
                 {
                     string moveNotation = fromCoordinates + toCoordinates;
-                    string newFen = FenHelper.MakeMoveWithCoordinates(fen, moveNotation, false);
+                    chessboard.MakeMove(fromCoordinates, toCoordinates);
                     Dictionary<string, AttackedPiece> newAttackedPieces = GetAttackedPieces();
                     Dictionary<string, AttackedPiece> newAttackedPiecesByPiece = GetAttackedPiecesByPiece(chessboard.GetPiece(toCoordinates));
 
@@ -128,6 +141,8 @@ namespace ChessMemoryApp.Model.Threat_Finder
                     #endregion
                 }
             }
+
+            chessboard.pieces = oldPieces;
 
             return threats.ToList();
         }

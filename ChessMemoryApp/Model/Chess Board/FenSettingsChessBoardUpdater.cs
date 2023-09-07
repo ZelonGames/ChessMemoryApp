@@ -24,12 +24,22 @@ namespace ChessMemoryApp.Model.Chess_Board
             this.chessboard = chessboard;
         }
 
+        public void UseChessBoardMovedPiece()
+        {
+            chessboard.MovedPiece += OnMovedPiece;
+        }
+
         public void SubscribeToEvents(PieceMover pieceMover, MoveHistory moveHistory)
         {
             pieceMover.MadeLichessMove += OnMadeLichessMove;
             pieceMover.MadeChessableMove += OnMadeChessableMove;
             moveHistory.RequestingPreviousMove += OnRequestingPreviousMove;
             moveHistory.RequestingFirstMove += OnRequestingFirstMove;
+        }
+
+        private void OnMovedPiece(string fromCoordinates, string toCoordinates)
+        {
+            string moveNotationCoordinates = fromCoordinates + toCoordinates;
         }
 
         private void OnRequestingFirstMove(MoveHistory.Move firstMove)
