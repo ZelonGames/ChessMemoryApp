@@ -27,8 +27,10 @@ namespace ChessMemoryApp.Model.Threat_Finder
 
         public void CalculateMoves(string fen)
         {
-            CalculateMovesRecursive(fen, tree);
             chessboard.LoadChessBoardFromFen(fen);
+            var oldPieces = new Dictionary<string, Piece>(chessboard.pieces);
+            CalculateMovesRecursive(fen, tree);
+            chessboard.pieces = oldPieces;
         }
 
         public List<Stack<FamilyTree<CalculatedMoveInfo>>> GetLines()
@@ -40,7 +42,6 @@ namespace ChessMemoryApp.Model.Threat_Finder
 
         private void CalculateMovesRecursive(string fen, FamilyTree<CalculatedMoveInfo> parent)
         {
-            chessboard.LoadChessBoardFromFen(fen);
             if (IsDrawnByRepetition(parent))
                 return;
 

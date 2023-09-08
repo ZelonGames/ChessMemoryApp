@@ -34,7 +34,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         public readonly bool arePiecesAndSquaresClickable;
         private readonly ColumnDefinition columnChessBoard;
 
-        public MoveNotationGenerator MoveNotationHelper { get; private set; }
+        public MoveNotationGenerator moveNotationHelper;
 
         public ChessboardGenerator(AbsoluteLayout chessBoardListLayout, ColumnDefinition columnChessBoard, bool playAsBlack)
         {
@@ -60,11 +60,6 @@ namespace ChessMemoryApp.Model.Chess_Board
         public ChessboardGenerator()
         {
             arePiecesAndSquaresClickable = false;
-        }
-
-        public void SetMoveNotationHelper(MoveNotationGenerator moveNotationHelper)
-        {
-            this.MoveNotationHelper = moveNotationHelper;
         }
 
         public void UpdateBoardSize(double size)
@@ -233,8 +228,8 @@ namespace ChessMemoryApp.Model.Chess_Board
 
             string coordinates = BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(column, row));
             var square = new Square(contentViewSquare, coordinates, arePiecesAndSquaresClickable);
-            if (MoveNotationHelper != null)
-                square.SetMoveNotationGenerator(MoveNotationHelper);
+            if (moveNotationHelper != null)
+                square.SetMoveNotationGenerator(moveNotationHelper);
             string letterCoordinates = square.coordinates;
 
             chessBoardListLayout.Add(square.contentView);

@@ -21,6 +21,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         public MoveNotationGenerator(ChessboardGenerator chessBoard)
         {
             this.chessBoard = chessBoard;
+            this.chessBoard.moveNotationHelper = this;
         }
 
         public bool IsFirstClick => firstClick == null;
@@ -68,13 +69,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             string letterCoordinate = BoardHelper.GetLetterCoordinates(coordinate);
             secondClick = letterCoordinate;
             MoveNotationCompleted?.Invoke(firstClick, secondClick);
+            ResetClicks();
         }
-
-    }
-
-    public interface IMoveNotationHelper
-    {
-        void ResetEvents();
-        void OnPictureBoxClicked(object sender, EventArgs e);
     }
 }

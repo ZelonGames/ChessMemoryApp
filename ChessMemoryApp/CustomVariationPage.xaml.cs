@@ -32,7 +32,6 @@ public partial class CustomVariationPage : ContentPage
         var commentLoader = new CommentLoader(editorComment);
         var commentManager = new CommentManager(editorComment, chessboard);
 
-        chessboard.SetMoveNotationHelper(moveNotationHelper);
         chessboard.LoadSquares();
         chessboard.LoadChessBoardFromFen(customVariation.GetStartingFen());
 

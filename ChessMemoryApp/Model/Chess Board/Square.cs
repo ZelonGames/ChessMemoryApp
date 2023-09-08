@@ -34,7 +34,7 @@ namespace ChessMemoryApp.Model
                 pointer.PointerEntered += Pointer_PointerEntered;
                 pointer.PointerExited += Pointer_PointerExited;
                 contentView.GestureRecognizers.Add(pointer);
-                UIEventHelper.ContentViewClickSubscribe(this.contentView, OnPictureBoxClicked);
+                UIEventHelper.ContentViewClickSubscribe(this.contentView, OnSquareClicked);
             }
         }
 
@@ -71,7 +71,7 @@ namespace ChessMemoryApp.Model
             contentView.Content = null;
         }
 
-        public void OnPictureBoxClicked(object sender, EventArgs e)
+        public void OnSquareClicked(object sender, EventArgs e)
         {
             if (moveNotationHelper == null)
                 return;

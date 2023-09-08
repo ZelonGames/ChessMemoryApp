@@ -105,19 +105,19 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         public void OnPieceClicked(object sender, EventArgs e)
         {
-            if (chessBoard.MoveNotationHelper == null)
+            if (chessBoard.moveNotationHelper == null)
                 return;
 
             bool clickedOnPiece = chessBoard.GetPiece((coordinates)) != null;
 
-            if (clickedOnPiece && chessBoard.MoveNotationHelper.IsFirstClick)
+            if (clickedOnPiece && chessBoard.moveNotationHelper.IsFirstClick)
             {
-                chessBoard.MoveNotationHelper.SetFirstClick(BoardHelper.GetNumberCoordinates(coordinates));
+                chessBoard.moveNotationHelper.SetFirstClick(BoardHelper.GetNumberCoordinates(coordinates));
                 chessBoard.GetSquare(coordinates).HighlightSquare();
             }
             else
             {
-                chessBoard.MoveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(coordinates));
+                chessBoard.moveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(coordinates));
                 Square.HighlightedSquare?.LowlightSquare();
             }
         }
