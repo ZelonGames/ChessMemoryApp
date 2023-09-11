@@ -41,7 +41,7 @@ namespace ChessMemoryApp.Model.Variations
         private VerticalStackLayout verticalStackLayout;
 
         [JsonIgnore]
-        private FenChessboard chessBoard;
+        private FenChessboard chessBoardUI;
 
         public CustomVariation()
         {
@@ -53,16 +53,17 @@ namespace ChessMemoryApp.Model.Variations
             Course = course;
         }
 
+        // TODO: don't use UI chessboard
         public CustomVariation(FenChessboard chessBoard, VerticalStackLayout verticalStackLayout, Course course)
         {
-            this.chessBoard = chessBoard;
+            this.chessBoardUI = chessBoard;
             this.verticalStackLayout = verticalStackLayout;
             Course = course;
         }
 
         public void Initialize(FenChessboard chessBoard, VerticalStackLayout verticalStackLayout)
         {
-            this.chessBoard = chessBoard;
+            this.chessBoardUI = chessBoard;
             this.verticalStackLayout = verticalStackLayout;
         }
 
@@ -116,7 +117,7 @@ namespace ChessMemoryApp.Model.Variations
             {
                 string fen = moves[i].fen.Split(' ')[0] + moves[i].fenSettings.GetAppliedSettings(" ");
 
-                var listButton = new CustomVariationMoveButton(this, chessBoard, fen, moves[i].moveNotation, i);
+                var listButton = new CustomVariationMoveButton(this, chessBoardUI, fen, moves[i].moveNotation, i);
                 listButton.CustomVariationButtonClicked += ListButton_CustomVariationButtonClicked;
                 verticalStackLayout.Add(listButton.button);
             }
@@ -124,7 +125,7 @@ namespace ChessMemoryApp.Model.Variations
 
         private void ListButton_CustomVariationButtonClicked(string fen)
         {
-            chessBoard.LoadChessBoardFromFen(fen);
+            chessBoardUI.chessBoardData.AddPiecesFromFen(fen);
             PreviewFen = fen;
         }
 

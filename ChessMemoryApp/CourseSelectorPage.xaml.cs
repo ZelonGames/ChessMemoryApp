@@ -51,10 +51,11 @@ public partial class CourseSelectorPage : ContentPage
         #region Load Chessboards from courses
         foreach (var course in courses)
         {
-            var courseBoard = new CourseChessboard(course.Value, coursesLayout, boardSize, course.Value.PlayAsBlack);
+            var chessBoard = new ChessboardGenerator(course.Value.PlayAsBlack);
+            chessBoard.AddPiecesFromFen(course.Value.PreviewFen);
+            var courseBoard = new CourseChessboard(chessBoard, course.Value, coursesLayout, boardSize);
             courseBoard.Clicked += CourseBoard_Clicked;
-            courseBoard.LoadChessBoardFromFen(course.Value.PreviewFen);
-            string fen = courseBoard.GetFen();
+            courseBoard.Render();
             customVariationBoards.Add(courseBoard);
             if (startingCourseCount == 0)
                 await CourseService.Add(course.Value);

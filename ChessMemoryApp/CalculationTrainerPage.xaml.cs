@@ -3,6 +3,7 @@ using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.ChessMoveLogic;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Model.Threat_Finder;
+using ChessMemoryApp.Model.UI_Components;
 
 namespace ChessMemoryApp;
 
@@ -23,13 +24,20 @@ public partial class CalculationTrainerPage : ContentPage
 
     private void OnAppearing(object sender, EventArgs e)
     {
-        var chessboard = new ChessboardGenerator(mainChessBoard, columnChessBoard, false);
+        //var chessboard = new ChessboardGenerator(mainChessBoard, columnChessBoard, false);
+
+        var chessBoard = new ChessboardGenerator(false);
+        var uiChessBoard = new UIChessBoard(chessBoard, mainChessBoard, columnChessBoard);
+        chessBoard.AddPiecesFromFen(FenHelper.STARTING_FEN);
+        uiChessBoard.Render();
+
+        /*
         var moveNotationGenerator = new MoveNotationGenerator(chessboard);
         var threatCalculationTeacher = new ThreatCalculationTeacher(chessboard);
         chessboard.LoadSquares();
         chessboard.LoadChessBoardFromFen(FenHelper.STARTING_FEN);
+        */
 
-
-        SizeChanged += chessboard.UpdateSquaresViewSize;
+        SizeChanged += uiChessBoard.UpdateSquaresViewSize;
     }
 }

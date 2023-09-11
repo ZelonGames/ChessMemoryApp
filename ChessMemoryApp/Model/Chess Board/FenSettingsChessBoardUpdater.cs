@@ -45,9 +45,12 @@ namespace ChessMemoryApp.Model.Chess_Board
             moveHistory.RequestingFirstMove += OnRequestingFirstMove;
         }
 
-        private void OnMovedPiece(string fromCoordinates, string toCoordinates)
+        private void OnMovedPiece(MovedPieceData movedPieceData)
         {
-            string moveNotationCoordinates = fromCoordinates + toCoordinates;
+            if (!movedPieceData.updateBoardState)
+                return;
+
+            string moveNotationCoordinates = movedPieceData.fromCoordinates + movedPieceData.toCoordinates;
 
             UpdateFenCastleSettings(moveNotationCoordinates, chessboard.boardColorOrientation);
             UpdateEnPassant(moveNotationCoordinates);
@@ -56,25 +59,37 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         private void OnRequestingFirstMove(MoveHistory.Move firstMove)
         {
-            chessboard.fenSettings = firstMove.fenSettings;
+            chessboard.fenSettings = fenSettings = firstMove.fenSettings.Copy();
             UpdatedFen?.Invoke(firstMove.fen + " " + firstMove.fenSettings.AppliedFenSettings);
         }
 
         private void OnRequestingPreviousMove(MoveHistory.Move currentMove, MoveHistory.Move previousMove)
         {
-            chessboard.fenSettings = previousMove.fenSettings;
+            chessboard.fenSettings = fenSettings = previousMove.fenSettings.Copy();
             UpdatedFen?.Invoke(chessboard.GetFen());
         }
 
         private void OnMadeChessableMove(Move move)
         {
             Piece.ColorType fenColor = Piece.GetOppositeColor(chessboard.boardColorOrientation);
-            chessboard.fenSettings.SetColorToPlay(FenSettings.FenColor.GetColorFromPieceColor(fenColor));
+            fenSettings.SetColorToPlay(FenSettings.FenColor.GetColorFromPieceColor(fenColor));
             string fen = chessboard.GetFen();
-            UpdateFenCastleSettings(move.MoveNotation, Piece.GetOppositeColor(chessboard.boardColorOrientation));
+            UpdateFenCastleSettings(move.MoveNotation, chessboard.boardColorOrientation);
             UpdatePawnPlyCount(move.MoveNotation);
             UpdateEnPassant(move.MoveNotation, fen);
             UpdatedFen?.Invoke(fen);
+        }
+
+        private void OnMadeLichessMove(string fen, ExplorerMove move)
+        {
+            string chessBoardFen = chessboard.GetFen();
+            Piece.ColorType fenColor = chessboard.boardColorOrientation;
+            UpdateFenCastleSettings(move.MoveNotation, Piece.GetOppositeColor(chessboard.boardColorOrientation));
+            UpdatePawnPlyCount(move.MoveNotation);
+            UpdateEnPassant(move.MoveNotation, fen);
+            fenSettings.SetColorToPlay(FenSettings.FenColor.GetColorFromPieceColor(fenColor));
+            fenSettings.IncreaseMoveCount();
+            UpdatedFen?.Invoke(chessBoardFen);
         }
 
         private void UpdateEnPassant(string lastMoveNotationCoordinates)
@@ -118,17 +133,6 @@ namespace ChessMemoryApp.Model.Chess_Board
             fenSettings.DisableEnPassant();
         }
 
-        private void OnMadeLichessMove(string fen, ExplorerMove move)
-        {
-            string chessBoardFen = chessboard.GetFen();
-            fenSettings.SetColorToPlay(FenSettings.FenColor.GetColorFromPieceColor(chessboard.boardColorOrientation));
-            UpdateFenCastleSettings(move.MoveNotation, chessboard.boardColorOrientation);
-            UpdatePawnPlyCount(move.MoveNotation);
-            UpdateEnPassant(move.MoveNotation, fen);
-            fenSettings.IncreaseMoveCount();
-            UpdatedFen?.Invoke(chessBoardFen);
-        }
-
         private void UpdateFenSettingsOnRookMove(Piece.ColorType color)
         {
             string fen = chessboard.GetFen();
@@ -168,7 +172,7 @@ namespace ChessMemoryApp.Model.Chess_Board
                 moveNotation == "e8g8" || moveNotation == "e8h8" ||
                 moveNotation == "e8c8" || moveNotation == "e8a8")
             {
-                if (fenSettings.GetColorToPlaySetting().Equals(FenSettings.FenColor.BLACK))
+                if (color == Piece.ColorType.White)
                 {
                     fenSettings.DisableWhiteKingSideCastling();
                     fenSettings.DisableWhiteQueenSideCastling();

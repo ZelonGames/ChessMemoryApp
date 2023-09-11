@@ -14,11 +14,6 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         }
 
-        public Rook(ChessboardGenerator chessBoard, char pieceType, bool useImage = true) : base(chessBoard, pieceType, useImage)
-        {
-
-        }
-
         public override HashSet<string> GetAvailableMoves()
         {
             var availableMoves = new HashSet<string>();

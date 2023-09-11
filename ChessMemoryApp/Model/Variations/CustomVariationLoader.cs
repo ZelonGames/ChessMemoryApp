@@ -24,12 +24,12 @@ namespace ChessMemoryApp.Model.Variations
         public event Action LoadingLichess;
 
         public readonly List<LichessButton> lichessButtons = new();
-        public readonly ChessboardGenerator chessBoard;
+        public readonly UIChessBoard chessBoard;
         public readonly VerticalStackLayout verticalStackLayout;
 
         public bool IsLoadingLichess { get; private set; }
 
-        public VariationLoader(VerticalStackLayout verticalStackLayout, ChessboardGenerator chessBoard)
+        public VariationLoader(VerticalStackLayout verticalStackLayout, UIChessBoard chessBoard)
         {
             this.verticalStackLayout = verticalStackLayout;
             this.chessBoard = chessBoard;
@@ -41,7 +41,7 @@ namespace ChessMemoryApp.Model.Variations
             pieceMover.MadeChessableMove += OnMadeChessableMove;
             moveHistory.RequestedPreviousMove += OnRequestedPreviousMove;
 
-            LichessButton.RequestedNewFen += (fen, move) => { ClearLichessMoves(); };
+            LichessButton.Clicked += (fen, move) => { ClearLichessMoves(); };
         }
 
         private async void OnRequestedPreviousMove(MoveHistory.Move historyMove)
@@ -78,7 +78,7 @@ namespace ChessMemoryApp.Model.Variations
             var task = Task.Run(async () =>
             {
                 OpeningExplorer openingExplorer = await LichessRequestHelper.GetOpeningMoves(
-                    chessBoard.fenSettings, chessBoard.GetFen());
+                    chessBoard.chessBoardData.fenSettings, chessBoard.chessBoardData.GetFen());
 
                 return openingExplorer;
             });

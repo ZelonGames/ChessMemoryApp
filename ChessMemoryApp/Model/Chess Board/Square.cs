@@ -66,7 +66,7 @@ namespace ChessMemoryApp.Model
             this.moveNotationHelper = moveNotationHelper;
         }
 
-        public void RemovePiece()
+        public void ClearContent()
         {
             contentView.Content = null;
         }

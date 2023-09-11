@@ -15,14 +15,14 @@ namespace ChessMemoryApp.Model.UI_Components
         public event CustomVariationButtonClickedEventHandler CustomVariationButtonClicked;
 
         private readonly CustomVariation customVariation;
-        private readonly FenChessboard chessBoard;
+        private readonly FenChessboard chessBoardUI;
         public readonly string fen;
 
         public CustomVariationMoveButton(CustomVariation customVariation, FenChessboard chessBoard, string fen, string moveNotation, int buttonIndex) :
             base(moveNotation, buttonIndex)
         {
             this.customVariation = customVariation;
-            this.chessBoard = chessBoard;
+            this.chessBoardUI = chessBoard;
             this.fen = fen;
             PointerGestureRecognizer.PointerEntered += PointerGestureRecognizer_PointerEntered;
             PointerGestureRecognizer.PointerExited += PointerGestureRecognizer_PointerExited;
@@ -35,17 +35,18 @@ namespace ChessMemoryApp.Model.UI_Components
             CustomVariationButtonClicked?.Invoke(fen);
         }
 
+        // TODO: Reload Chess piece UI better
         private void PointerGestureRecognizer_PointerExited(object sender, PointerEventArgs e)
         {
             if (!FenHelper.IsValidFen(customVariation.PreviewFen))
-                chessBoard.ClearPieces();
+                chessBoardUI.chessBoardData.ClearBoard();
             else
-                chessBoard.LoadChessBoardFromFen(customVariation.PreviewFen);
+                chessBoardUI.chessBoardData.AddPiecesFromFen(customVariation.PreviewFen);
         }
 
         private void PointerGestureRecognizer_PointerEntered(object sender, PointerEventArgs e)
         {
-            chessBoard.LoadChessBoardFromFen(fen);
+            chessBoardUI.chessBoardData.AddPiecesFromFen(fen);
         }
     }
 }

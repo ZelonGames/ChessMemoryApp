@@ -14,7 +14,7 @@ namespace ChessMemoryApp.Model.UI_Components
         public readonly Course course;
         private string url;
 
-        public ChessableUrlLabel(Label label, ChessboardGenerator chessboard, Course course)
+        public ChessableUrlLabel(Label label, UIChessBoard chessboard, Course course)
         {
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;

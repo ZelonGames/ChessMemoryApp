@@ -8,7 +8,7 @@
 
     <ShellContent
         Title="Chess Openings"
-        ContentTemplate="{DataTemplate local:CalculationTrainerPage}"
-        Route="CalculationTrainerPage"/>
+        ContentTemplate="{DataTemplate local:CourseSelectorPage}"
+        Route="CourseSelectorPage"/>
 
 </Shell>

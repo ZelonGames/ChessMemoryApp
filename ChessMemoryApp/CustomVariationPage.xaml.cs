@@ -24,24 +24,26 @@ public partial class CustomVariationPage : ContentPage
     {
         CustomVariation customVariation = customVariationViewModel.CustomVariation;
         Course course = customVariation.Course;
-        var chessboard = new ChessboardGenerator(mainChessBoard, columnChessBoard, course.PlayAsBlack);
-        var moveNotationHelper = new MoveNotationGenerator(chessboard);
+
+        var chessBoard = new ChessboardGenerator(course.PlayAsBlack);
+        var chessBoardUI = new UIChessBoard(chessBoard, mainChessBoard, columnChessBoard);
+        var moveNotationHelper = new MoveNotationGenerator(chessBoard);
         var customVariationMoveNavigator = new CustomVariationMoveNavigator(customVariation);
         var pieceMover = new PieceMover(moveNotationHelper, customVariationMoveNavigator, true);
-        var chessableUrlLabel = new ChessableUrlLabel(chessableUrl, chessboard, course);
+        var chessableUrlLabel = new ChessableUrlLabel(chessableUrl, chessBoardUI, course);
         var commentLoader = new CommentLoader(editorComment);
-        var commentManager = new CommentManager(editorComment, chessboard);
+        var commentManager = new CommentManager(editorComment, chessBoard);
 
-        chessboard.LoadSquares();
-        chessboard.LoadChessBoardFromFen(customVariation.GetStartingFen());
+        chessBoard.AddPiecesFromFen(customVariation.GetStartingFen());
+        chessBoardUI.Render();
 
         customVariationMoveNavigator.SubscribeToEvents(moveNotationHelper, buttonStart, buttonPrevious, buttonNext, buttonEnd);
         moveNotationHelper.SubscribeToEvents(customVariationMoveNavigator);
         commentLoader.SubscribeToEvents(customVariationMoveNavigator);
         commentManager.SubscribeToEvents(buttonCommentManager, commentLoader);
 
-        SizeChanged += chessboard.UpdateSquaresViewSize;
+        SizeChanged += chessBoardUI.UpdateSquaresViewSize;
 
-        await commentLoader.LoadComment(chessboard.GetFen());
+        await commentLoader.LoadComment(chessBoard.GetFen());
     }
 }

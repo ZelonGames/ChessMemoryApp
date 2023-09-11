@@ -1,6 +1,7 @@
 ﻿using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.CourseMaker;
+using ChessMemoryApp.Model.UI_Components;
 using ChessMemoryApp.Services;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using static SQLite.TableMapping;
 
 namespace ChessMemoryApp.Model
 {
-    public class SelectorPageController<T> where T : ChessboardGenerator
+    public class SelectorPageController<T> where T : UIChessBoard
     {
         public Size BoardSize { get; private set; }
         private readonly List<T> chessBoards = new();

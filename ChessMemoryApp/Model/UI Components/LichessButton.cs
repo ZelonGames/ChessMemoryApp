@@ -18,33 +18,30 @@ namespace ChessMemoryApp.Model.UI_Components
     /// </summary>
     public class LichessButton
     {
-        public readonly ChessboardGenerator chessBoard;
+        public readonly UIChessBoard chessBoard;
         public readonly ExplorerMove move;
         public readonly Button button;
 
         public delegate void RequestNewFenEventHandler(string fen, ExplorerMove move);
-        public static event RequestNewFenEventHandler RequestedNewFen;
+        public static event RequestNewFenEventHandler Clicked;
 
+        private MovedPieceData? reversedMovedPieceData = null;
         private bool isClickingButton = false;
         private readonly string initialFen;
         private readonly string previewFen;
 
         public string Text => button.Text;
 
-        public LichessButton(ChessboardGenerator chessBoard, Button button, ExplorerMove move)
+        public LichessButton(UIChessBoard chessBoard, Button button, ExplorerMove move)
         {
-            initialFen = chessBoard.GetFen();
-            if (move.MoveNotation == "O-O")
-            {
-
-            }
+            initialFen = chessBoard.chessBoardData.GetFen();
             previewFen = FenHelper.MakeMoveWithCoordinates(initialFen, move.MoveNotationCoordinates);
 
             this.chessBoard = chessBoard;
             this.move = move;
             this.button = button;
 
-            button.Clicked += RequestNewFen;
+            button.Clicked += OnClicked;
 
             var pointer = new PointerGestureRecognizer();
             pointer.PointerEntered += OnPointerEntered;
@@ -55,20 +52,19 @@ namespace ChessMemoryApp.Model.UI_Components
         private void OnPointerExited(object sender, PointerEventArgs e)
         {
             if (!isClickingButton)
-                chessBoard.LoadChessBoardFromFen(initialFen);
+                chessBoard.chessBoardData.AddPiecesFromFen(initialFen);
         }
 
         private void OnPointerEntered(object sender, PointerEventArgs e)
         {
             if (!isClickingButton)
-                chessBoard.LoadChessBoardFromFen(previewFen);
+                chessBoard.chessBoardData.AddPiecesFromFen(previewFen);
         }
 
-        public void RequestNewFen(object sender, EventArgs e)
+        public void OnClicked(object sender, EventArgs e)
         {
-            chessBoard.LoadChessBoardFromFen(previewFen);
             isClickingButton = true;
-            RequestedNewFen?.Invoke(previewFen, move);
+            Clicked?.Invoke(previewFen, move);
         }
     }
 }

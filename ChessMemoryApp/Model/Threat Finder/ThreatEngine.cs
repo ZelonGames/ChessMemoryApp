@@ -27,7 +27,7 @@ namespace ChessMemoryApp.Model.Threat_Finder
 
         public void CalculateMoves(string fen)
         {
-            chessboard.LoadChessBoardFromFen(fen);
+            chessboard.AddPiecesFromFen(fen);
             var oldPieces = new Dictionary<string, Piece>(chessboard.pieces);
             CalculateMovesRecursive(fen, tree);
             chessboard.pieces = oldPieces;
@@ -57,7 +57,7 @@ namespace ChessMemoryApp.Model.Threat_Finder
                 FamilyTree<CalculatedMoveInfo> child = parent.Children[i];
                 string fromCoordinates = BoardHelper.GetFromCoordinatesString(child.value.moveNotationCoordinates);
                 string toCoordinates = BoardHelper.GetToCoordinatesString(child.value.moveNotationCoordinates);
-                chessboard.MakeMove(fromCoordinates, toCoordinates);
+                chessboard.MakeMove(fromCoordinates + toCoordinates);
                 if (IsDrawnByRepetition(child))
                     continue;
 
@@ -98,7 +98,7 @@ namespace ChessMemoryApp.Model.Threat_Finder
 
         public List<string> GetThreats(string fen)
         {
-            chessboard.LoadPiecesFromFen(fen);
+            chessboard.AddPiecesFromFen(fen);
             var oldPieces = new Dictionary<string, Piece>(chessboard.pieces);
 
             var threats = new HashSet<string>();
@@ -115,7 +115,7 @@ namespace ChessMemoryApp.Model.Threat_Finder
                 foreach (var toCoordinates in availableMoves)
                 {
                     string moveNotation = fromCoordinates + toCoordinates;
-                    chessboard.MakeMove(fromCoordinates, toCoordinates);
+                    chessboard.MakeMove(moveNotation);
                     Dictionary<string, AttackedPiece> newAttackedPieces = GetAttackedPieces();
                     Dictionary<string, AttackedPiece> newAttackedPiecesByPiece = GetAttackedPiecesByPiece(chessboard.GetPiece(toCoordinates));
 

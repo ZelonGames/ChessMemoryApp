@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.Chess_Board
 {
-    public class ChessableChessboard : ChessboardGenerator
+    public class ChessableChessboard : UIChessBoard
     {
         public delegate void CourseChessBoardHandler(Course course);
         public delegate void ChessableClickHandler(string fen);
@@ -22,8 +22,8 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public string fen;
 
-        public ChessableChessboard(AbsoluteLayout chessBoardLayout, Size size, bool playAsBlack) :
-            base(chessBoardLayout, size, playAsBlack)
+        public ChessableChessboard(ChessboardGenerator chessboard, AbsoluteLayout chessBoardLayout, Size size) :
+            base(chessboard, chessBoardLayout, size)
         {
             tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;

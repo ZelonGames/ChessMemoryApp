@@ -2,128 +2,44 @@
 using ChessMemoryApp.Model.ChessMoveLogic;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Model.Lichess.Lichess_API;
-using ChessMemoryApp.Model.UI_Helpers;
 
 namespace ChessMemoryApp.Model.Chess_Board
 {
     public class ChessboardGenerator
     {
-        public delegate void ChessBoardLoadedEventHandler(string fen);
-        public event ChessBoardLoadedEventHandler Loaded;
-        public delegate void MovedPieceEventHandler(string fromCoordinates, string toCoordinates);
-        public event MovedPieceEventHandler MovedPiece;
-
-        public delegate void SizeChangedEventHandler(double size, Rect bounds);
-        public event SizeChangedEventHandler SizeChanged;
+        public event Action<MovedPieceData> MovedPiece;
+        public event Action<MovedPieceData> ChangedPieces;
 
         public Dictionary<string, Piece> pieces = new();
-        public readonly Dictionary<string, Square> squares = new();
-
-        protected readonly AbsoluteLayout chessBoardListLayout;
-
         public FenSettings fenSettings = new();
-        public Piece.Coordinates<double> offset = new();
-        public Size BoardSize { get; private set; }
 
-        public bool IsEmpty => pieces.Count == 0;
         public Piece.ColorType boardColorOrientation;
-
-        public static readonly Color white = Color.FromArgb("#f0d9b5");
-        public static readonly Color black = Color.FromArgb("#b58863");
-
-        public readonly bool arePiecesAndSquaresClickable;
-        private readonly ColumnDefinition columnChessBoard;
-
         public MoveNotationGenerator moveNotationHelper;
+        public bool IsEmpty => pieces.Count == 0;
 
-        public ChessboardGenerator(AbsoluteLayout chessBoardListLayout, ColumnDefinition columnChessBoard, bool playAsBlack)
+        public ChessboardGenerator(bool playAsBlack)
         {
-            this.columnChessBoard = columnChessBoard;
             boardColorOrientation = playAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
             fenSettings.EnableAllCastleMoves();
             fenSettings.SetColorToPlay(FenSettings.FenColor.GetColorFromPieceColor(Piece.GetOppositeColor(boardColorOrientation)));
-            arePiecesAndSquaresClickable = true;
-            this.chessBoardListLayout = chessBoardListLayout;
         }
 
-        public ChessboardGenerator(AbsoluteLayout chessBoardListLayout, Size size, bool playAsBlack)
+        // TODO: Remove this
+        public ChessboardGenerator(Piece.ColorType boardColorOrientation) :
+            this(boardColorOrientation == Piece.ColorType.Black)
         {
-            arePiecesAndSquaresClickable = false;
-            this.chessBoardListLayout = chessBoardListLayout;
-            BoardSize = size;
 
-            boardColorOrientation = playAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
-            fenSettings.EnableAllCastleMoves();
-            fenSettings.SetColorToPlay(FenSettings.FenColor.GetColorFromChessBoard(this));
         }
 
-        public ChessboardGenerator()
-        {
-            arePiecesAndSquaresClickable = false;
-        }
-
-        public void UpdateBoardSize(double size)
-        {
-            BoardSize = new Size(size, size);
-        }
-
-        public virtual void UpdateSquaresBounds()
-        {
-            foreach (var square in squares)
-                UpdateSquareBounds(square.Key, square.Value);
-        }
-
-        private void UpdateSquareBounds(string letterCoordinates, Square square)
-        {
-            Piece.Coordinates<int> coordinates = BoardHelper.GetNumberCoordinates(letterCoordinates);
-
-            int xCoordinates = coordinates.X - 1;
-            int yCoordinates = 8 - coordinates.Y;
-
-            if (boardColorOrientation == Piece.ColorType.Black)
-            {
-                xCoordinates = 8 - coordinates.X;
-                yCoordinates = coordinates.Y - 1;
-            }
-
-            square.contentView.WidthRequest = square.contentView.HeightRequest = BoardSize.Width / 8d;
-            square.contentView.TranslationX = offset.X + xCoordinates * square.contentView.WidthRequest;
-            square.contentView.TranslationY = offset.Y + yCoordinates * square.contentView.HeightRequest;
-        }
-
-        public void UpdateSquaresViewSize(object sender, EventArgs e)
-        {
-            double chessBoardSize = chessBoardListLayout.Bounds.Height;
-            columnChessBoard.Width = chessBoardSize;
-            UpdateBoardSize(chessBoardSize);
-
-            foreach (var square in squares)
-            {
-                square.Value.contentView.WidthRequest = square.Value.contentView.HeightRequest = chessBoardSize / 8f;
-                UpdateSquareBounds(square.Key, square.Value);
-            }
-
-            SizeChanged?.Invoke(chessBoardSize, chessBoardListLayout.Bounds);
-        }
-
-        public void LoadChessBoardFromFen(string fen)
+        public void AddPiecesFromFen(string fen)
         {
             if (!FenHelper.IsValidFen(fen))
                 return;
 
-            if (squares.Count == 0)
-                LoadSquares();
-
-            LoadPiecesFromFen(fen);
-            Loaded?.Invoke(fen);
-        }
-
-        public void LoadPiecesFromFen(string newFen)
-        {
             var piecesToRemove = new List<Piece>();
             var piecesToAdd = new Dictionary<string, char>();
 
-            Dictionary<string, char?> newPieces = FenHelper.GetPiecesFromFen(newFen);
+            Dictionary<string, char?> newPieces = FenHelper.GetPiecesFromFen(fen);
 
             if (!IsEmpty)
             {
@@ -159,101 +75,37 @@ namespace ChessMemoryApp.Model.Chess_Board
                 RemovePiece(pieceToRemove);
 
             foreach (var pieceToAdd in piecesToAdd)
-                AddPieceToSquare(pieceToAdd.Value, pieceToAdd.Key);
-        }
+                TryAddPieceToSquare(pieceToAdd.Value, pieceToAdd.Key);
 
-        public void ClearPieces()
-        {
-            foreach (var piece in pieces.Values)
-                RemovePiece(piece);
+            var removedPieces = new Dictionary<string, char>();
+            foreach (var pieceToRemove in piecesToRemove)
+                removedPieces.Add(pieceToRemove.coordinates, pieceToRemove.pieceType);
 
-            pieces.Clear();
+            ChangedPieces?.Invoke(new MovedPieceData(removedPieces, piecesToAdd, "", "", false));
         }
 
         public void RemovePiece(Piece piece)
         {
-            piece.ResetEvents();
-            UILogicHelper.RemovePieceFromSquare(this, piece);
             pieces.Remove(piece.coordinates);
-        }
-
-        public void ClearSquares()
-        {
-            foreach (var square in squares.Values)
-            {
-                square.contentView.Content = null;
-                square.contentView.GestureRecognizers.Clear();
-                chessBoardListLayout.Remove(square.contentView);
-            }
-
-            squares.Clear();
         }
 
         public void ClearBoard()
         {
-            ClearPieces();
-            ClearSquares();
+            pieces.Clear();
         }
 
-        public void LoadSquares()
+        private TeleportedPieceResult TeleportPiece(string moveNotationCoordinates)
         {
-            for (int row = 0; row < 8; row++)
-            {
-                for (int column = 0; column < 8; column++)
-                {
-                    int newColumn = column + 1;
-                    int newRow = row + 1;
+            var removedPieces = new Dictionary<string, char>();
+            var addedPieces = new Dictionary<string, char>();
+            string toCoordinates = BoardHelper.GetToCoordinatesString(moveNotationCoordinates);
+            string fromCoordinates = BoardHelper.GetFromCoordinatesString(moveNotationCoordinates);
 
-                    Color color = (newRow + newColumn) % 2 != 0 ? white : black;
-                    AddChessBoardSquare(color, newColumn, newRow);
-                }
-            }
+            pieces.TryGetValue(fromCoordinates, out Piece movedPiece);
+            if (movedPiece == null)
+                return new TeleportedPieceResult();
 
-            UpdateSquaresBounds();
-        }
-
-        private Square AddChessBoardSquare(Color color, int column, int row)
-        {
-            double squareSize = BoardSize.Width / 8;
-
-            // Create a new box view for the current square
-            var contentViewSquare = new ContentView()
-            {
-                BackgroundColor = color,
-                WidthRequest = squareSize,
-                HeightRequest = squareSize,
-                TranslationX = offset.X + column * squareSize,
-                TranslationY = offset.Y + (row - 1) * squareSize,
-            };
-
-            string coordinates = BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(column, row));
-            var square = new Square(contentViewSquare, coordinates, arePiecesAndSquaresClickable);
-            if (moveNotationHelper != null)
-                square.SetMoveNotationGenerator(moveNotationHelper);
-            string letterCoordinates = square.coordinates;
-
-            chessBoardListLayout.Add(square.contentView);
-            squares.Add(letterCoordinates, square);
-
-            return square;
-        }
-
-        public Square GetSquare(string coordinates)
-        {
-            return squares[coordinates];
-        }
-
-        public void MakeMove(string fromCoordinates, string toCoordinates)
-        {
-            Piece movedPiece = GetPiece(fromCoordinates);
-
-            if (TryMakeCastleMove(fromCoordinates, toCoordinates))
-            {
-                MovedPiece?.Invoke(fromCoordinates, toCoordinates);
-                return;
-            }
-
-            Piece capturedPiece = GetPiece(toCoordinates);
+            pieces.TryGetValue(toCoordinates, out Piece capturedPiece);
             if (movedPiece is Pawn)
             {
                 string enPassantSquare = fenSettings.GetEnPassantSquare();
@@ -264,17 +116,49 @@ namespace ChessMemoryApp.Model.Chess_Board
                     Piece.Coordinates<int> numberCoordinates = BoardHelper.GetNumberCoordinates(toCoordinates);
                     numberCoordinates.Y += captureDirection;
                     string captureCoordinates = BoardHelper.GetLetterCoordinates(numberCoordinates);
-                    capturedPiece = GetPiece(captureCoordinates);
+                    capturedPiece = pieces[captureCoordinates];
                 }
             }
-            
+
             if (capturedPiece != null)
+            {
+                removedPieces.Add(capturedPiece.coordinates, capturedPiece.pieceType);
                 RemovePiece(capturedPiece);
+            }
 
+            removedPieces.Add(movedPiece.coordinates, movedPiece.pieceType);
             RemovePiece(movedPiece);
-            AddPieceToSquare(movedPiece.pieceType, toCoordinates);
+            TryAddPieceToSquare(movedPiece.pieceType, toCoordinates);
+            addedPieces.Add(toCoordinates, pieces[toCoordinates].pieceType);
 
-            MovedPiece?.Invoke(fromCoordinates, toCoordinates);
+            return new TeleportedPieceResult(removedPieces, addedPieces, true);
+        }
+
+        public MovedPieceData MakeMove(string moveNotationCoordinates, bool updateBoardState = true)
+        {
+            MovedPieceData movedPieceData;
+            string fromCoordinates = BoardHelper.GetFromCoordinatesString(moveNotationCoordinates);
+            string toCoordinates = BoardHelper.GetToCoordinatesString(moveNotationCoordinates);
+
+            TeleportedPieceResult teleportedPieceResult = TryMakeCastleMove(fromCoordinates, toCoordinates);
+            if (teleportedPieceResult.madeMove)
+            {
+                movedPieceData = new MovedPieceData(teleportedPieceResult.removedPieces, teleportedPieceResult.addedPieces, fromCoordinates, toCoordinates, updateBoardState);
+                MovedPiece?.Invoke(movedPieceData);
+                ChangedPieces?.Invoke(movedPieceData);
+                return movedPieceData;
+            }
+
+            teleportedPieceResult = TeleportPiece(fromCoordinates + toCoordinates);
+            if (teleportedPieceResult.madeMove)
+            {
+                movedPieceData = new MovedPieceData(teleportedPieceResult.removedPieces, teleportedPieceResult.addedPieces, fromCoordinates, toCoordinates, updateBoardState);
+                MovedPiece?.Invoke(movedPieceData);
+                ChangedPieces?.Invoke(movedPieceData);
+                return movedPieceData;
+            }
+
+            return new MovedPieceData();
         }
 
         /// <summary>
@@ -283,73 +167,66 @@ namespace ChessMemoryApp.Model.Chess_Board
         /// <param name="fromCoordinates"></param>
         /// <param name="toCoordinates"></param>
         /// <returns>returns true if a castle move was made</returns>
-        private bool TryMakeCastleMove(string fromCoordinates, string toCoordinates)
+        private TeleportedPieceResult TryMakeCastleMove(string fromCoordinates, string toCoordinates)
         {
-            Piece piece = GetPiece(fromCoordinates);
-            if (piece == null || piece != null && piece.pieceType != 'k' && piece.pieceType != 'K')
-                return false;
+            var removedPieces = new Dictionary<string, char>();
+            var addedPieces = new Dictionary<string, char>();
+            TeleportedPieceResult teleportedPieceResult;
+
+            pieces.TryGetValue(fromCoordinates, out Piece king);
+            if (king == null || king is not King)
+                return new TeleportedPieceResult();
 
             string moveNotationCoordinates = fromCoordinates + toCoordinates;
+            char row = king.color == Piece.ColorType.White ? '1' : '8';
 
-            // Short Castle White
-            Piece rook = GetPiece("h1");
-            if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1g1")
+            // Short Castle
+            Piece rook = pieces["h" + row];
+            if (rook != null && moveNotationCoordinates == $"e{row}g{row}" || moveNotationCoordinates == $"e{row}h{row}")
             {
-                MakeMove(fromCoordinates, toCoordinates);
-                MakeMove("h1", "f1");
-                return true;
+                toCoordinates = "g" + row;
+                teleportedPieceResult = TeleportPiece(fromCoordinates + toCoordinates);
+                removedPieces.UnionWith(teleportedPieceResult.removedPieces);
+                addedPieces.UnionWith(teleportedPieceResult.addedPieces);
+
+                teleportedPieceResult = TeleportPiece($"h{row}f{row}");
+                removedPieces.UnionWith(teleportedPieceResult.removedPieces);
+                addedPieces.UnionWith(teleportedPieceResult.addedPieces);
+
+                return new TeleportedPieceResult(removedPieces, addedPieces, true);
             }
 
-            // Long Castle White
-            rook = GetPiece("a1");
-            if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1c1")
+            // Long Castle
+            rook = pieces["a" + row];
+            if (rook != null && moveNotationCoordinates == $"e{row}c{row}" || moveNotationCoordinates == $"e{row}a{row}")
             {
-                MakeMove(fromCoordinates, toCoordinates);
-                MakeMove("a1", "d1");
-                return true;
+                toCoordinates = "c" + row;
+                teleportedPieceResult = TeleportPiece(fromCoordinates + toCoordinates);
+                removedPieces.UnionWith(teleportedPieceResult.removedPieces);
+                addedPieces.UnionWith(teleportedPieceResult.addedPieces);
+
+                teleportedPieceResult = TeleportPiece($"a{row}d{row}");
+                removedPieces.UnionWith(teleportedPieceResult.removedPieces);
+                addedPieces.UnionWith(teleportedPieceResult.addedPieces);
+
+                return new TeleportedPieceResult(removedPieces, addedPieces, true);
             }
 
-            // Short Castle Black
-            rook = GetPiece("h8");
-            if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8g8")
-            {
-                MakeMove(fromCoordinates, toCoordinates);
-                MakeMove("h8", "f8");
-                return true;
-            }
-
-            // Long Castle Black
-            rook = GetPiece("a8");
-            if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8c8")
-            {
-                MakeMove(fromCoordinates, toCoordinates);
-                MakeMove("a8", "d8");
-                return true;
-            }
-
-            return false;
+            return new TeleportedPieceResult();
         }
 
-        public Piece AddPieceToSquare(char pieceType, string squareCoordinates)
+        public Piece TryAddPieceToSquare(char pieceType, string squareCoordinates)
         {
-            bool pieceImageFileExists = Piece.pieceFileNames.TryGetValue(pieceType, out _);
+            if (pieces.ContainsKey(squareCoordinates))
+                return null;
 
-            if (pieceImageFileExists)
-            {
-                string className = Piece.pieceNames[char.ToUpper(pieceType)];
-                Type type = Type.GetType("ChessMemoryApp.Model.Chess_Board.Pieces." + className);
-                Piece piece = (Piece)Activator.CreateInstance(type, this, pieceType);
-                piece.coordinates = squareCoordinates;
-                pieces.Add(piece.coordinates, piece);
+            string className = Piece.pieceNames[char.ToUpper(pieceType)];
+            Type type = Type.GetType("ChessMemoryApp.Model.Chess_Board.Pieces." + className);
+            Piece piece = (Piece)Activator.CreateInstance(type, this, pieceType);
+            piece.coordinates = squareCoordinates;
+            pieces.Add(piece.coordinates, piece);
 
-                Square square = GetSquare(squareCoordinates);
-                if (square != null)
-                    square.contentView.Content = piece.image;
-
-                return piece;
-            }
-
-            return null;
+            return piece;
         }
 
         public Dictionary<string, Piece> GetPieceOfType(char pieceType)
@@ -375,10 +252,10 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             var pieces = new List<Piece>();
 
-            foreach (var piece in pieces)
+            foreach (var piece in this.pieces)
             {
-                if (piece.color == color)
-                    pieces.Add(piece);
+                if (piece.Value.color == color)
+                    pieces.Add(piece.Value);
             }
 
             return pieces;

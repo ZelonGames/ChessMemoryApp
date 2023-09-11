@@ -23,8 +23,8 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         private bool hasMoved = false;
 
-        public CustomVariationChessboard(CustomVariation customVariation, AbsoluteLayout chessBoardListLayout, Size size, bool playAsBlack) : 
-            base(customVariation.Course, chessBoardListLayout, size, playAsBlack)
+        public CustomVariationChessboard(ChessboardGenerator chessBoard, CustomVariation customVariation, AbsoluteLayout chessBoardListLayout, Size size) : 
+            base(chessBoard, customVariation.Course, chessBoardListLayout, size)
         {
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
             this.customVariation = customVariation;
@@ -53,8 +53,8 @@ namespace ChessMemoryApp.Model.Chess_Board
             }
         }
 
-        public CustomVariationChessboard(AbsoluteLayout chessBoardLayout, Size size, bool playAsBlack) :
-            base(null, chessBoardLayout, size, playAsBlack)
+        public CustomVariationChessboard(ChessboardGenerator chessBoard, AbsoluteLayout chessBoardListLayout, Size size) :
+            base(chessBoard, null, chessBoardListLayout, size)
         {
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
         }

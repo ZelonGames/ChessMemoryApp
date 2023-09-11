@@ -48,12 +48,12 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void CustomVariationMoveNavigator_RevealedMove(string fen)
         {
-            ChessBoard.LoadChessBoardFromFen(fen);
+            ChessBoard.AddPiecesFromFen(fen);
         }
 
         public void SubscribeToEvents(CourseMoveNavigator courseMoveNavigator)
         {
-            LichessButton.RequestedNewFen += OnNextLichessMove;
+            LichessButton.Clicked += OnNextLichessMove;
             courseMoveNavigator.RequestedNextChessableMove += OnNextChessableMove;
         }
 
@@ -62,11 +62,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             string fromCoordinates = BoardHelper.GetFromCoordinatesString(moveToMake.moveNotationCoordinates);
             string toCoordinates = BoardHelper.GetToCoordinatesString(moveToMake.moveNotationCoordinates);
             string fen = ChessBoard.GetFen();
-            bool madeCastleMove = TryMakeCastleMove(fromCoordinates, toCoordinates);
-
-            if (!madeCastleMove)
-                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
-
+            ChessBoard.MakeMove(fromCoordinates + toCoordinates);
             MovedPiece?.Invoke(fen);
             moveNotationHelper.ResetClicks();
         }
@@ -74,7 +70,14 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         private void OnNextChessableMove(Move move)
         {
             string previousFen = ChessBoard.GetFen();
-            ChessBoard.LoadChessBoardFromFen(move.Fen);
+            Piece.ColorType pieceColor = Piece.GetColorFromChessboard(ChessBoard);
+            if (move.MoveNotation == "Ba4")
+            {
+
+            }
+
+            string moveNotationCoordinates = BoardHelper.GetMoveNotationCoordinates(ChessBoard, move.MoveNotation, pieceColor);
+            ChessBoard.MakeMove(moveNotationCoordinates);
             MadeChessableMove?.Invoke(move);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, previousFen, move.Fen);
         }
@@ -82,7 +85,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         private void OnNextLichessMove(string fen, ExplorerMove move)
         {
             string previousFen = ChessBoard.GetFen();
-            ChessBoard.LoadChessBoardFromFen(fen);
+            ChessBoard.MakeMove(move.MoveNotationCoordinates);
             MadeLichessMove?.Invoke(fen, move);
             Piece.ColorType color = Piece.GetColorFromChessboard(ChessBoard);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Lichess, color, move.MoveNotation, previousFen, fen);
@@ -90,61 +93,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         public void OnPreviousMove(MoveHistory.Move historyMove)
         {
-            ChessBoard.LoadChessBoardFromFen(historyMove.fen);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fen"></param>
-        /// <param name="fromCoordinates"></param>
-        /// <param name="toCoordinates"></param>
-        /// <returns>returns true if the move was made</returns>
-        private bool TryMakeCastleMove(string fromCoordinates, string toCoordinates)
-        {
-            Piece piece = ChessBoard.GetPiece(fromCoordinates);
-            if (piece == null || piece != null && piece.pieceType != 'k' && piece.pieceType != 'K')
-                return false;
-
-            string moveNotationCoordinates = fromCoordinates + toCoordinates;
-
-            // Short Castle White
-            Piece rook = ChessBoard.GetPiece("h1");
-            if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1g1")
-            {
-                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
-                ChessBoard.MakeMove("h1", "f1");
-                return true;
-            }
-
-            // Long Castle White
-            rook = ChessBoard.GetPiece("a1");
-            if (rook != null && rook.color == Piece.ColorType.White && moveNotationCoordinates == "e1c1")
-            {
-                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
-                ChessBoard.MakeMove("a1", "d1");
-                return true;
-            }
-
-            // Short Castle Black
-            rook = ChessBoard.GetPiece("h8");
-            if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8g8")
-            {
-                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
-                ChessBoard.MakeMove("h8", "f8");
-                return true;
-            }
-
-            // Long Castle Black
-            rook = ChessBoard.GetPiece("a8");
-            if (rook != null && rook.color == Piece.ColorType.Black && moveNotationCoordinates == "e8c8")
-            {
-                ChessBoard.MakeMove(fromCoordinates, toCoordinates);
-                ChessBoard.MakeMove("a8", "d8");
-                return true;
-            }
-
-            return false;
+            ChessBoard.AddPiecesFromFen(historyMove.fen);
         }
     }
 }

@@ -18,9 +18,9 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         {
             var availableMoves = new HashSet<string>();
 
-            var rook = new Rook(chessBoard, color == ColorType.White ? 'R' : 'r', false);
+            var rook = new Rook(chessBoard, color == ColorType.White ? 'R' : 'r');
             rook.coordinates = coordinates;
-            var bishop = new Bishop(chessBoard, color == ColorType.White ? 'B' : 'b', false);
+            var bishop = new Bishop(chessBoard, color == ColorType.White ? 'B' : 'b');
             bishop.coordinates = coordinates;
 
             availableMoves.UnionWith(rook.GetAvailableMoves());

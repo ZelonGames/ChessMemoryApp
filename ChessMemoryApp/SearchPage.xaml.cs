@@ -71,9 +71,11 @@ public partial class SearchPage : ContentPage
             if (i > filteredVariations.Count - 1)
                 break;
 
-            var customVariationBoard = new ChessableChessboard(coursesLayout, boardSize, searchViewModel.Course.PlayAsBlack);
+            var chessBoard = new ChessboardGenerator(searchViewModel.Course.PlayAsBlack);
+            var customVariationBoard = new ChessableChessboard(chessBoard, coursesLayout, boardSize);
             customVariationBoard.fen = filteredVariations[i].lastSearchMove.Fen;
-            customVariationBoard.LoadChessBoardFromFen(customVariationBoard.fen);
+            chessBoard.AddPiecesFromFen(customVariationBoard.fen);
+            customVariationBoard.Render();
             customVariationBoard.Clicked += OnBoardClicked;
             customVariationBoards.Add(customVariationBoard);
         }

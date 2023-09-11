@@ -1,4 +1,5 @@
 ﻿using ChessMemoryApp.Model.Chess_Board.Pieces;
+using ChessMemoryApp.Model.UI_Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,11 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.Chess_Board
 {
-    public class FenChessboard : ChessboardGenerator
+    public class FenChessboard : UIChessBoard
     {
-        // TODO: fix colortoplay
-        public FenChessboard(AbsoluteLayout chessBoardListLayout, Size size, Piece.ColorType colorToPlay) : 
-            base(chessBoardListLayout, size, colorToPlay == Piece.ColorType.Black)
+        public FenChessboard(ChessboardGenerator chessBoard, AbsoluteLayout chessBoardListLayout, Size size) : 
+            base(chessBoard, chessBoardListLayout, size)
         {
-            this.boardColorOrientation = colorToPlay;
             chessBoardListLayout.WidthRequest = size.Width;
             chessBoardListLayout.HeightRequest = size.Height + 10;
         }

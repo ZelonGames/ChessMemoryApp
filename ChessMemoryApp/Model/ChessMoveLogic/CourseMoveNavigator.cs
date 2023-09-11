@@ -41,7 +41,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             if (variationLoader.lichessButtons.Count > 0)
             {
                 // Simulate that you are clicking on the first lichess button
-                variationLoader.lichessButtons.First().RequestNewFen(null, null);
+                variationLoader.lichessButtons.First().OnClicked(null, null);
                 return;
             }
 

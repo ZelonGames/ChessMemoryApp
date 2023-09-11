@@ -13,22 +13,6 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 {
     public abstract class Piece
     {
-        public static readonly Dictionary<char, string> pieceFileNames = new()
-        {
-            { 'p', "pawn_black" },
-            { 'P', "pawn_white" },
-            { 'r', "rook_black" },
-            { 'R', "rook_white" },
-            { 'n', "knight_black" },
-            { 'N', "knight_white" },
-            { 'b', "bishop_black" },
-            { 'B', "bishop_white" },
-            { 'q', "queen_black" },
-            { 'Q', "queen_white" },
-            { 'k', "king_black" },
-            { 'K', "king_white" },
-        };
-
         public static readonly Dictionary<char, string> pieceNames = new()
         {
             { nameof(Pawn)[0], nameof(Pawn) },
@@ -39,7 +23,6 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             { nameof(King)[0], nameof(King) },
         };
 
-
         public enum ColorType
         {
             White = 1,
@@ -47,7 +30,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             Empty = 0,
         }
 
-        public class Coordinates<T> where T : struct, IComparable, IComparable<T>, IEquatable<T>, IConvertible
+        public class Coordinates<T> where T : struct
         {
             public T X { get; set; }
             public T Y { get; set; }
@@ -63,29 +46,15 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         public HashSet<string> availableMoves = new();
         public string coordinates;
-        public readonly Image image;
         public readonly char pieceType;
         public readonly ColorType color;
         protected readonly ChessboardGenerator chessBoard;
 
-
-        public Piece(ChessboardGenerator chessBoard, char pieceChar, bool useImage = true)
+        public Piece(ChessboardGenerator chessBoard, char pieceType)
         {
             this.chessBoard = chessBoard;
-            this.pieceType = pieceChar;
-            this.color = char.IsUpper(pieceChar) ? ColorType.White : ColorType.Black;
-
-            if (useImage)
-            {
-                pieceFileNames.TryGetValue(pieceChar, out string fileName);
-                image = new Image()
-                {
-                    Source = ImageSource.FromFile(fileName + ".png"),
-                };
-
-                if (chessBoard.arePiecesAndSquaresClickable)
-                    UIEventHelper.ImageClickSubscribe(this.image, OnPieceClicked);
-            }
+            this.pieceType = pieceType;
+            this.color = char.IsUpper(pieceType) ? ColorType.White : ColorType.Black;
         }
 
         public static ColorType GetColorOfPieceFromFen(string fen, string coordinates)
@@ -95,31 +64,6 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
                 return ColorType.Empty;
 
             return char.IsUpper(piece.Value) ? ColorType.White : ColorType.Black;
-        }
-
-        public void ResetEvents()
-        {
-            UIEventHelper.ImageClickUnSubscribe(image, OnPieceClicked);
-            image.GestureRecognizers.Clear();
-        }
-
-        public void OnPieceClicked(object sender, EventArgs e)
-        {
-            if (chessBoard.moveNotationHelper == null)
-                return;
-
-            bool clickedOnPiece = chessBoard.GetPiece((coordinates)) != null;
-
-            if (clickedOnPiece && chessBoard.moveNotationHelper.IsFirstClick)
-            {
-                chessBoard.moveNotationHelper.SetFirstClick(BoardHelper.GetNumberCoordinates(coordinates));
-                chessBoard.GetSquare(coordinates).HighlightSquare();
-            }
-            else
-            {
-                chessBoard.moveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(coordinates));
-                Square.HighlightedSquare?.LowlightSquare();
-            }
         }
 
         public static ColorType GetColorFromChessboard(ChessboardGenerator chessBoard)
@@ -158,10 +102,6 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         /// <summary>
         /// Adds a move that a piece can go to if it's a valid move.
         /// </summary>
-        /// <param name="availableMoves">The list of moves the piece can go to</param>
-        /// <param name="fen">The state of the board</param>
-        /// <param name="pieceCoordinates">The position of the piece you are adding moves to</param>
-        /// <param name="squareCoordinates">The move you want to try to add to the piece</param>
         /// <returns></returns>
         protected TryAddMoveResult TryAddMove<T>(HashSet<string> availableMoves, T chessBoard, string squareCoordinates) where T : ChessboardGenerator
         {
@@ -174,7 +114,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
                 };
             }
 
-            Piece pieceOnSquare = chessBoard.GetPiece(squareCoordinates);
+            chessBoard.pieces.TryGetValue(squareCoordinates, out Piece pieceOnSquare);
             bool isPieceOnSquare = pieceOnSquare != null;
             bool isEnemyPieceOnSquare = isPieceOnSquare && pieceOnSquare.color != color;
 

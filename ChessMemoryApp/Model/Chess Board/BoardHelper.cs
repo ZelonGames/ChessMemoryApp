@@ -24,13 +24,61 @@ namespace ChessMemoryApp.Model.Chess_Board
             return letterCoordinates[coordinate.X - 1].ToString() + coordinate.Y;
         }
 
+        public static string GetMoveNotationCoordinates(ChessboardGenerator chessBoard, string moveNotation, Piece.ColorType pieceColor)
+        {
+            moveNotation = moveNotation.Split('=')[0].Replace("#", "").Replace("+", "");
+            char row = pieceColor == Piece.ColorType.White ? '1' : '8';
+
+            if (moveNotation == "O-O")
+                return $"e{row}g{row}";
+            else if (moveNotation == "O-O-O")
+                return $"e{row}c{row}";
+
+            string toCoordinates = GetToCoordinatesString(moveNotation);
+            char pieceType = moveNotation[0];
+            bool isPawnMove = char.IsLower(pieceType);
+
+            if (isPawnMove)
+                pieceType = pieceColor == Piece.ColorType.White ? 'P' : 'p';
+            else
+                pieceType = pieceColor == Piece.ColorType.White ? pieceType : char.ToLower(pieceType);
+
+            // Coordinates are never specified if you move a pawn
+            // Otherwise this would fail to something like dxe4 because dx is of length 2
+            bool isCoordinateSpecified = !isPawnMove && moveNotation.Replace(toCoordinates, "").Length >= 2;
+            Dictionary<string, Piece> potentialPieces = GetPiecesOfType(chessBoard, pieceType);
+
+            if (isCoordinateSpecified)
+            {
+                char coordinateChar = moveNotation[1];
+
+                foreach (var piece in potentialPieces)
+                {
+                    if (piece.Value.coordinates[0] == coordinateChar ||
+                        piece.Value.coordinates[1] == coordinateChar)
+                        return piece.Value.coordinates + toCoordinates;
+                }
+            }
+            else
+            {
+                foreach (var piece in potentialPieces)
+                {
+                    bool canPieceGoToDestination = piece.Value.GetAvailableMoves().Contains(toCoordinates);
+                    if (canPieceGoToDestination)
+                        return piece.Value.coordinates + toCoordinates;
+                }
+            }
+
+            return null;
+        }
+
         public static string GetMoveNotationFromCoordinates<T>(T chessBoard, string moveNotationCoordinates) where T : ChessboardGenerator
         {
             string fromCoordinates = GetFromCoordinatesString(moveNotationCoordinates);
             string toCoordinates = GetToCoordinatesString(moveNotationCoordinates);
             Piece capturedPiece = chessBoard.GetPiece(toCoordinates);
             Piece movedPiece = chessBoard.GetPiece(fromCoordinates);
-            
+
             if (movedPiece == null)
                 return null;
 
@@ -100,9 +148,9 @@ namespace ChessMemoryApp.Model.Chess_Board
             return new Piece.Coordinates<char>(x, y);
         }
 
-        public static Dictionary<string, Square> GetControlledSquaresByColor<T>(T chessBoard, Piece.ColorType color) where T : ChessboardGenerator
+        public static HashSet<string> GetControlledSquaresByColor(ChessboardGenerator chessBoard, Piece.ColorType color)
         {
-            var squares = new Dictionary<string, Square>();
+            var squares = new HashSet<string>();
 
             foreach (var piece in chessBoard.pieces)
             {
@@ -110,14 +158,14 @@ namespace ChessMemoryApp.Model.Chess_Board
                 {
                     HashSet<string> coveredSquares = piece.Value.GetAvailableMoves();
                     foreach (var coveredSquare in coveredSquares)
-                        squares.Add(coveredSquare, chessBoard.GetSquare(coveredSquare));
+                        squares.Add(coveredSquare);
                 }
             }
 
             return squares;
         }
 
-        public static bool IsSquareControlledByColor<T>(T chessBoard, Piece.ColorType color, string squareCoordinates) where T : ChessboardGenerator
+        public static bool IsSquareControlledByColor(ChessboardGenerator chessBoard, Piece.ColorType color, string squareCoordinates)
         {
             foreach (var piece in chessBoard.pieces)
             {
@@ -135,13 +183,14 @@ namespace ChessMemoryApp.Model.Chess_Board
             return false;
         }
 
-        public static Dictionary<string, Piece> GetPiecesOfType<T>(T chessBoard, char pieceType) where T : ChessboardGenerator
+        public static Dictionary<string, Piece> GetPiecesOfType(ChessboardGenerator chessBoard, char pieceType, bool colorSpecific = true)
         {
             var pieces = new Dictionary<string, Piece>();
 
             foreach (var piece in chessBoard.pieces)
             {
-                if (piece.Value.pieceType == pieceType)
+                if (colorSpecific && piece.Value.pieceType == pieceType ||
+                    !colorSpecific && char.ToLower(piece.Value.pieceType) == char.ToLower(pieceType))
                     pieces.Add(piece.Key, piece.Value);
             }
 
@@ -164,16 +213,16 @@ namespace ChessMemoryApp.Model.Chess_Board
                 if (kingSide)
                 {
                     chessBoard.RemovePiece(chessBoard.GetPiece("e" + rank));
-                    chessBoard.AddPieceToSquare(king, "g" + rank);
+                    chessBoard.TryAddPieceToSquare(king, "g" + rank);
                     chessBoard.RemovePiece(chessBoard.GetPiece("h" + rank));
-                    chessBoard.AddPieceToSquare(rook, "f" + rank);
+                    chessBoard.TryAddPieceToSquare(rook, "f" + rank);
                 }
                 else
                 {
                     chessBoard.RemovePiece(chessBoard.GetPiece("e" + rank));
-                    chessBoard.AddPieceToSquare(king, "c" + rank);
+                    chessBoard.TryAddPieceToSquare(king, "c" + rank);
                     chessBoard.RemovePiece(chessBoard.GetPiece("a" + rank));
-                    chessBoard.AddPieceToSquare(rook, "d" + rank);
+                    chessBoard.TryAddPieceToSquare(rook, "d" + rank);
                 }
 
                 return;
@@ -217,10 +266,10 @@ namespace ChessMemoryApp.Model.Chess_Board
                 if (promotion)
                 {
                     char promotedPiece = chessBoard.boardColorOrientation == Piece.ColorType.White ? char.ToUpper(promotionComponents[1][0]) : char.ToLower(promotionComponents[1][0]);
-                    chessBoard.AddPieceToSquare(promotedPiece, toCoordinates);
+                    chessBoard.TryAddPieceToSquare(promotedPiece, toCoordinates);
                 }
                 else
-                    chessBoard.AddPieceToSquare(piece.pieceType, toCoordinates);
+                    chessBoard.TryAddPieceToSquare(piece.pieceType, toCoordinates);
             }
         }
 
