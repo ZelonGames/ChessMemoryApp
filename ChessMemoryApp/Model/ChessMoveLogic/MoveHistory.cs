@@ -44,7 +44,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             if (historyMoves.Count > 0)
                 return;
 
-            CourseMaker.Move move = courseMoveNavigator.GetRelativeMove(Course.MoveNavigation.Current, chessBoard.GetFen());
+            CourseMaker.Move move = courseMoveNavigator.course.GetRelativeMove(chessBoard.GetPositionFen(), Course.MoveNavigation.Current);
             historyMoves.Add(new Move(
                 MoveSource.Chessable,
                 chessBoard.fenSettings,

@@ -261,7 +261,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             return pieces;
         }
 
-        public string GetFen()
+        public string GetPositionFen()
         {
             string fen = BoardHelper.GetPositionFenFromChessBoardPieces(pieces);
             fen += fenSettings.GetAppliedSettings(FenSettings.SpaceEncoding.SPACE);

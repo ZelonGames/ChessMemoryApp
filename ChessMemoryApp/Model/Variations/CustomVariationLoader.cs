@@ -18,7 +18,7 @@ namespace ChessMemoryApp.Model.Variations
     /// <summary>
     /// Makes sure to load lichess moves using Lichess API at the right moments
     /// </summary>
-    public class VariationLoader
+    public class LichessMoveLoader
     {
         public event Action FinishedLoadingLichess;
         public event Action LoadingLichess;
@@ -29,7 +29,7 @@ namespace ChessMemoryApp.Model.Variations
 
         public bool IsLoadingLichess { get; private set; }
 
-        public VariationLoader(VerticalStackLayout verticalStackLayout, UIChessBoard chessBoard)
+        public LichessMoveLoader(VerticalStackLayout verticalStackLayout, UIChessBoard chessBoard)
         {
             this.verticalStackLayout = verticalStackLayout;
             this.chessBoard = chessBoard;
@@ -78,7 +78,7 @@ namespace ChessMemoryApp.Model.Variations
             var task = Task.Run(async () =>
             {
                 OpeningExplorer openingExplorer = await LichessRequestHelper.GetOpeningMoves(
-                    chessBoard.chessBoardData.fenSettings, chessBoard.chessBoardData.GetFen());
+                    chessBoard.chessBoardData.fenSettings, chessBoard.chessBoardData.GetPositionFen());
 
                 return openingExplorer;
             });

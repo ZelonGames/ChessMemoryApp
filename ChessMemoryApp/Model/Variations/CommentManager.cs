@@ -68,7 +68,7 @@ namespace ChessMemoryApp.Model.Variations
             {
                 var comment = new Comment()
                 {
-                    Fen = chessboard.GetFen(),
+                    Fen = chessboard.GetPositionFen(),
                     Text = text,
                 };
 

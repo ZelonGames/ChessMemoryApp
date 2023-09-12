@@ -34,7 +34,7 @@ namespace ChessMemoryApp.Model.UI_Components
 
         public LichessButton(UIChessBoard chessBoard, Button button, ExplorerMove move)
         {
-            initialFen = chessBoard.chessBoardData.GetFen();
+            initialFen = chessBoard.chessBoardData.GetPositionFen();
             previewFen = FenHelper.MakeMoveWithCoordinates(initialFen, move.MoveNotationCoordinates);
 
             this.chessBoard = chessBoard;

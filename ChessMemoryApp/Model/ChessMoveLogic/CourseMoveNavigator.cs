@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace ChessMemoryApp.Model.ChessMoveLogic
 {
     /// <summary>
-    /// Gets the previous or next move from the selected course
+    /// Gets the previous or next move from the selected course or from Lichess
     /// </summary>
     public class CourseMoveNavigator
     {
@@ -23,37 +23,32 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         public event PreviousMoveEventHandler RequestedPreviousMove;
 
         private readonly ChessboardGenerator chessboard;
-        private readonly VariationLoader variationLoader;
-        private readonly Course course;
+        private readonly LichessMoveLoader lichessMoveLoader;
+        public readonly Course course;
 
-        public CourseMoveNavigator(ChessboardGenerator chessboard, VariationLoader variationLoader, Course course)
+        public CourseMoveNavigator(ChessboardGenerator chessboard, LichessMoveLoader lichessMoveLoader, Course course)
         {
             this.chessboard = chessboard;
-            this.variationLoader = variationLoader;
+            this.lichessMoveLoader = lichessMoveLoader;
             this.course = course;
         }
 
         public void OnButtonNextClicked(object sender, EventArgs args)
         {
-            if (variationLoader.IsLoadingLichess)
+            if (lichessMoveLoader.IsLoadingLichess)
                 return;
 
-            if (variationLoader.lichessButtons.Count > 0)
+            if (lichessMoveLoader.lichessButtons.Count > 0)
             {
                 // Simulate that you are clicking on the first lichess button
-                variationLoader.lichessButtons.First().OnClicked(null, null);
-                return;
+                lichessMoveLoader.lichessButtons.First().OnClicked(null, null);
             }
-
-            Move move = GetRelativeMove(Course.MoveNavigation.Next, chessboard.GetFen());
-            if (move != null)
-                RequestedNextChessableMove?.Invoke(move);
-        }
-
-        public Move GetRelativeMove(Course.MoveNavigation moveNavigation, string fen)
-        {
-            fen = fen.Split(' ')[0];
-            return course.GetRelativeMove(fen, moveNavigation);
+            else
+            {
+                Move move = course.GetRelativeMove(chessboard.GetPositionFen(), Course.MoveNavigation.Next);
+                if (move != null)
+                    RequestedNextChessableMove?.Invoke(move);
+            }
         }
 
         public void SubscribeToEvents(Button buttonNext)

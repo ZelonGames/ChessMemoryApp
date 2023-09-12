@@ -17,7 +17,7 @@ namespace ChessMemoryApp;
 public partial class MainPage : ContentPage
 {
     private readonly MainViewModel mainViewModel;
-    private VariationLoader variationLoader;
+    private LichessMoveLoader lichessMovesLoader;
     private ChessboardGenerator chessBoard;
     private UIChessBoard chessBoardUI;
 
@@ -53,8 +53,8 @@ public partial class MainPage : ContentPage
 
         #region Initialize Chess Logic Objects
         var moveNotationGenerator = new MoveNotationGenerator(chessBoard);
-        variationLoader = new VariationLoader(variationsList, chessBoardUI);
-        var courseMoveNavigator = new CourseMoveNavigator(chessBoard, variationLoader, selectedCourse);
+        lichessMovesLoader = new LichessMoveLoader(variationsList, chessBoardUI);
+        var courseMoveNavigator = new CourseMoveNavigator(chessBoard, lichessMovesLoader, selectedCourse);
         var pieceMover = new PieceMover(moveNotationGenerator, false);
         var moveHistory = new MoveHistory(chessBoard);
         var fenSettingsUpdater = new FenSettingsChessBoardUpdater(chessBoard);
@@ -77,7 +77,7 @@ public partial class MainPage : ContentPage
         moveHistory.SubscribeToEvents(pieceMover, buttonStart, buttonPrevious);
         fenSettingsUpdater.SubscribeToEvents(pieceMover, moveHistory);
         lichessMoveExplorer.SubscribeToEvents(pieceMover);
-        variationLoader.SubscribeToEvents(lichessMoveExplorer, pieceMover, moveHistory);
+        lichessMovesLoader.SubscribeToEvents(lichessMoveExplorer, pieceMover, moveHistory);
         customVariation.SubscribeToEvents(moveHistory);
         customVariationSaver.SubscribeToEvents(buttonSaveVariation);
         lichessFenLabel.SubscribeToEvents(fenSettingsUpdater);
@@ -90,7 +90,7 @@ public partial class MainPage : ContentPage
             editingVariation.ReloadListButtons();
             chessBoard.AddPiecesFromFen(editingVariation.GetLastFen());
             chessBoard.fenSettings = editingVariation.GetLastFenSettings();
-            lichessFenLabel.FenSettingsUpdater_UpdatedFen(editingVariation.GetLastFenSettings().GetLichessFen(chessBoard.GetFen()));
+            lichessFenLabel.OnUpdatedFen(editingVariation.GetLastFenSettings().GetLichessFen(chessBoard.GetPositionFen()));
             var backupMoves = new List<MoveHistory.Move>(editingVariation.moves);
             editingVariation.moves.Clear();
             foreach (var move in backupMoves)
@@ -98,7 +98,7 @@ public partial class MainPage : ContentPage
             fenChessBoard.AddPiecesFromFen(editingVariation.PreviewFen);
         }
 
-        lichessMoveExplorer.GetLichessMoves(chessBoard.GetFen());
+        lichessMoveExplorer.GetLichessMoves(chessBoard.GetPositionFen());
     }
 
     private async void LabelLichessFromPlayer_Tapped(object sender, TappedEventArgs e)
@@ -112,7 +112,7 @@ public partial class MainPage : ContentPage
         if (isYourTurn)
             return;
 
-        string fen = chessBoard.GetFen();
+        string fen = chessBoard.GetPositionFen();
 
         var task = Task.Run(async () =>
         {
@@ -123,7 +123,7 @@ public partial class MainPage : ContentPage
         });
 
         OpeningExplorer openingExplorer = await task;
-        variationLoader.LoadLichessVariations(fen, openingExplorer);
+        lichessMovesLoader.LoadLichessVariations(fen, openingExplorer);
     }
 }
 

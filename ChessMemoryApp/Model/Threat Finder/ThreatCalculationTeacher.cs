@@ -21,7 +21,7 @@ namespace ChessMemoryApp.Model.Threat_Finder
 
         private void OnMoveNotationCompleted(string firstClick, string secondClick)
         {
-            chosenThreats.Add(chessBoard.GetFen(), firstClick + secondClick);
+            chosenThreats.Add(chessBoard.GetPositionFen(), firstClick + secondClick);
         }
 
         public void CalculateNextMove()

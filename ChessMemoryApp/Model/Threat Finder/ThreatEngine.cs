@@ -62,7 +62,7 @@ namespace ChessMemoryApp.Model.Threat_Finder
                     continue;
 
                 if (child.Depth <= depth)
-                    CalculateMovesRecursive(chessboard.GetFen(), child);
+                    CalculateMovesRecursive(chessboard.GetPositionFen(), child);
             }
         }
 

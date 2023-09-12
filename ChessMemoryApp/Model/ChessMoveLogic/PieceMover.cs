@@ -29,24 +29,24 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         public delegate void MadeMoveFenEventHandler(MoveHistory.MoveSource moveSource, Piece.ColorType color, string moveNotation, string previousFen, string currentFen);
         public event MadeMoveFenEventHandler MadeMoveFen;
 
-        public readonly MoveNotationGenerator moveNotationHelper;
+        public readonly MoveNotationGenerator moveNotationGenerator;
         public readonly bool memorizingMode;
 
-        private ChessboardGenerator ChessBoard => moveNotationHelper.chessBoard;
+        private ChessboardGenerator ChessBoard => moveNotationGenerator.chessBoard;
 
-        public PieceMover(MoveNotationGenerator moveNotationHelper, bool memorizingMode)
+        public PieceMover(MoveNotationGenerator moveNotationGenerator, bool memorizingMode)
         {
-            this.moveNotationHelper = moveNotationHelper;
+            this.moveNotationGenerator = moveNotationGenerator;
             this.memorizingMode = memorizingMode;
         }
-        public PieceMover(MoveNotationGenerator moveNotationHelper, CustomVariationMoveNavigator customVariationMoveNavigator, bool memorizingMode)
-            : this(moveNotationHelper, memorizingMode)
+        public PieceMover(MoveNotationGenerator moveNotationGenerator, CustomVariationMoveNavigator customVariationMoveNavigator, bool memorizingMode)
+            : this(moveNotationGenerator, memorizingMode)
         {
-            customVariationMoveNavigator.GuessedCorrectMove += CustomVariationMoveNavigator_GuessedCorrectMove;
-            customVariationMoveNavigator.RevealedMove += CustomVariationMoveNavigator_RevealedMove;
+            customVariationMoveNavigator.GuessedCorrectMove += OnGuessedCorrectMove;
+            customVariationMoveNavigator.RevealedMove += OnRevealedMove;
         }
 
-        private void CustomVariationMoveNavigator_RevealedMove(string fen)
+        private void OnRevealedMove(string fen)
         {
             ChessBoard.AddPiecesFromFen(fen);
         }
@@ -57,26 +57,22 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             courseMoveNavigator.RequestedNextChessableMove += OnNextChessableMove;
         }
 
-        private void CustomVariationMoveNavigator_GuessedCorrectMove(MoveHistory.Move moveToMake)
+        private void OnGuessedCorrectMove(MoveHistory.Move moveToMake)
         {
             string fromCoordinates = BoardHelper.GetFromCoordinatesString(moveToMake.moveNotationCoordinates);
             string toCoordinates = BoardHelper.GetToCoordinatesString(moveToMake.moveNotationCoordinates);
-            string fen = ChessBoard.GetFen();
+            string fen = ChessBoard.GetPositionFen();
             ChessBoard.MakeMove(fromCoordinates + toCoordinates);
             MovedPiece?.Invoke(fen);
-            moveNotationHelper.ResetClicks();
+            moveNotationGenerator.ResetClicks();
         }
 
         private void OnNextChessableMove(Move move)
         {
-            string previousFen = ChessBoard.GetFen();
+            string previousFen = ChessBoard.GetPositionFen();
             Piece.ColorType pieceColor = Piece.GetColorFromChessboard(ChessBoard);
-            if (move.MoveNotation == "Ba4")
-            {
-
-            }
-
             string moveNotationCoordinates = BoardHelper.GetMoveNotationCoordinates(ChessBoard, move.MoveNotation, pieceColor);
+
             ChessBoard.MakeMove(moveNotationCoordinates);
             MadeChessableMove?.Invoke(move);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, previousFen, move.Fen);
@@ -84,7 +80,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
         private void OnNextLichessMove(string fen, ExplorerMove move)
         {
-            string previousFen = ChessBoard.GetFen();
+            string previousFen = ChessBoard.GetPositionFen();
             ChessBoard.MakeMove(move.MoveNotationCoordinates);
             MadeLichessMove?.Invoke(fen, move);
             Piece.ColorType color = Piece.GetColorFromChessboard(ChessBoard);

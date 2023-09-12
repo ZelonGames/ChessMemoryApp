@@ -32,10 +32,10 @@ namespace ChessMemoryApp.Model.UI_Components
         /// <param name="subscribers">FenSettingsUpdater</param>
         public void SubscribeToEvents(FenSettingsChessBoardUpdater fenSettingsUpdater)
         {
-            fenSettingsUpdater.UpdatedFen += FenSettingsUpdater_UpdatedFen;
+            fenSettingsUpdater.UpdatedFen += OnUpdatedFen;
         }
 
-        public void FenSettingsUpdater_UpdatedFen(string fen)
+        public void OnUpdatedFen(string fen)
         {
             url = FenHelper.ConvertFenToLichessUrl(fen, chessBoard.fenSettings, Piece.GetOppositeColor(chessBoard.boardColorOrientation));
             label.Text = fen.Split(' ')[0] + chessBoard.fenSettings.GetAppliedSettings(FenSettings.SpaceEncoding.SPACE);

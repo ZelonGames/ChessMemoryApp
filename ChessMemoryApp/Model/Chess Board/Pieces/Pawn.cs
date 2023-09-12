@@ -66,7 +66,7 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             }
 
             // En Passant
-            string enPassantSquare = FenHelper.GetEnPassantSquareFromFen(chessBoard.GetFen());
+            string enPassantSquare = FenHelper.GetEnPassantSquareFromFen(chessBoard.GetPositionFen());
             if (enPassantSquare != null)
                 availableMoves.Add(enPassantSquare);
 

@@ -104,7 +104,7 @@ namespace ChessMemoryApp.Model.UI_Components
         {
             RenderSquares();
             RenderPiecesFromChessBoard();
-            Loaded?.Invoke(chessBoardData.GetFen());
+            Loaded?.Invoke(chessBoardData.GetPositionFen());
         }
 
         private void OnChangedPieces(MovedPieceData movedPieceData)

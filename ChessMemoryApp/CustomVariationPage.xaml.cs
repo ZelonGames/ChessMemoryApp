@@ -44,6 +44,6 @@ public partial class CustomVariationPage : ContentPage
 
         SizeChanged += chessBoardUI.UpdateSquaresViewSize;
 
-        await commentLoader.LoadComment(chessBoard.GetFen());
+        await commentLoader.LoadComment(chessBoard.GetPositionFen());
     }
 }
