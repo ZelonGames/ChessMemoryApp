@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.ChessMoveLogic
 {
+    /// <summary>
+    /// Navigates the moves from a variation that has been built from a Chessable dataset
+    /// </summary>
     public class CustomVariationMoveNavigator
     {
         public delegate void RevealedMoveEventHandler(string fen);
@@ -24,10 +27,6 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             this.customVariation = customVariation;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="subscribers">MoveNotationGenerator, Button</param>
         public void SubscribeToEvents(MoveNotationGenerator moveNotationGenerator, Button buttonStart, Button buttonPrevious, Button buttonNext, Button buttonEnd)
         {
             moveNotationGenerator.MoveNotationCompleted += MoveNotationGenerator_MoveNotationCompleted;

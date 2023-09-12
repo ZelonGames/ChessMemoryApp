@@ -35,7 +35,7 @@ namespace ChessMemoryApp.Model.Variations
             this.chessBoard = chessBoard;
         }
 
-        public void SubscribeToEvents(LichessMoveExplorer lichessMoveExplorer, PieceMover pieceMover, MoveHistory moveHistory)
+        public void SubscribeToEvents(LichessMoveExplorer lichessMoveExplorer, PieceMoverAuto pieceMover, MoveHistory moveHistory)
         {
             lichessMoveExplorer.RecevedLichessMoves += LoadLichessVariations;
             pieceMover.MadeChessableMove += OnMadeChessableMove;

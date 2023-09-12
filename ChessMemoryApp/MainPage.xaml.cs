@@ -52,10 +52,10 @@ public partial class MainPage : ContentPage
         #endregion
 
         #region Initialize Chess Logic Objects
-        var moveNotationGenerator = new MoveNotationGenerator(chessBoard);
+        var moveNotationGenerator = new MoveNotationGenerator(chessBoardUI);
         lichessMovesLoader = new LichessMoveLoader(variationsList, chessBoardUI);
         var courseMoveNavigator = new CourseMoveNavigator(chessBoard, lichessMovesLoader, selectedCourse);
-        var pieceMover = new PieceMover(moveNotationGenerator, false);
+        var pieceMover = new PieceMoverAuto(chessBoard);
         var moveHistory = new MoveHistory(chessBoard);
         var fenSettingsUpdater = new FenSettingsChessBoardUpdater(chessBoard);
         var lichessMoveExplorer = new LichessMoveExplorer(chessBoard);

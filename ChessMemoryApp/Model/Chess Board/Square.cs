@@ -18,6 +18,7 @@ namespace ChessMemoryApp.Model
         public string coordinates;
         public readonly Color initialColor;
         private MoveNotationGenerator moveNotationHelper;
+        public event Action<Square> Clicked;
 
         public static Square HighlightedSquare { get; private set; }
 
@@ -40,6 +41,9 @@ namespace ChessMemoryApp.Model
 
         public void HighlightSquare()
         {
+            if (HighlightedSquare != null)
+                return;
+
             HighlightedSquare = this;
             contentView.BackgroundColor = GetDarkerColor();
         }
@@ -73,14 +77,7 @@ namespace ChessMemoryApp.Model
 
         public void OnSquareClicked(object sender, EventArgs e)
         {
-            if (moveNotationHelper == null)
-                return;
-
-            if (!moveNotationHelper.IsFirstClick)
-            {
-                moveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(coordinates));
-                HighlightedSquare?.LowlightSquare();
-            }
+            Clicked?.Invoke(this);
         }
 
         private Color GetDarkerColor()

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.UI_Helpers.Main_Page;
+using ChessMemoryApp.Model.UI_Components;
 
 namespace ChessMemoryApp.Model.ChessMoveLogic
 {
@@ -14,32 +15,53 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         public delegate void MoveNotationCompletedEventHandler(string firstClick, string secondClick);
         public event MoveNotationCompletedEventHandler MoveNotationCompleted;
 
-        public readonly ChessboardGenerator chessBoard;
+        public readonly UIChessBoard chessBoard;
         private string firstClick = null;
         private string secondClick = null;
 
-        public MoveNotationGenerator(ChessboardGenerator chessBoard)
+        private bool IsFirstClick => firstClick == null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="chessBoard">The chess board to generate move notations on</param>
+        public MoveNotationGenerator(UIChessBoard chessBoard)
         {
             this.chessBoard = chessBoard;
-            this.chessBoard.moveNotationHelper = this;
+            this.chessBoard.ClickedPiece += OnClickedPiece;
+            this.chessBoard.ClickedSquare += OnClickedSquare;
         }
 
-        public bool IsFirstClick => firstClick == null;
-
-        public string ConvertCastleMoveNotation()
+        private void OnClickedSquare(Square clickedSquare)
         {
-            return "";
+            // The first click has to be on a piece
+            if (!IsFirstClick)
+            {
+                SetSecondClick(BoardHelper.GetNumberCoordinates(clickedSquare.coordinates));
+                Square.HighlightedSquare?.LowlightSquare();
+            }
         }
+
+        private void OnClickedPiece(PieceUI clickedPiece)
+        {
+            if (IsFirstClick)
+            {
+                SetFirstClick(BoardHelper.GetNumberCoordinates(clickedPiece.coordinates));
+                chessBoard.squares[clickedPiece.coordinates].HighlightSquare();
+            }
+            else
+            {
+                SetSecondClick(BoardHelper.GetNumberCoordinates(clickedPiece.coordinates));
+                Square.HighlightedSquare?.LowlightSquare();
+            }
+        }
+
 
         public void ResetClicks()
         {
             firstClick = secondClick = null;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="subscribers">CustomVariationMoveNavigator</param>
         public void SubscribeToEvents(CustomVariationMoveNavigator customVariationMoveNavigator)
         {
             customVariationMoveNavigator.GuessedWrongMove += OnResetMove;
@@ -52,13 +74,13 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             firstClick = secondClick = null;
         }
 
-        public void SetFirstClick(Piece.Coordinates<int> coordinate)
+        private void SetFirstClick(Piece.Coordinates<int> coordinate)
         {
             string letterCoordinate = BoardHelper.GetLetterCoordinates(coordinate);
             firstClick = letterCoordinate;
         }
 
-        public void SetSecondClick(Piece.Coordinates<int> coordinate, bool selectedPiece = false)
+        private void SetSecondClick(Piece.Coordinates<int> coordinate, bool selectedPiece = false)
         {
             if (UIHelper.GetCheckBox_PlayAsBlack_Value())
             {

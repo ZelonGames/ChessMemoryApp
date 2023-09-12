@@ -55,7 +55,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             historyFens.Add(move.Fen.Split(' ')[0]);
         }
 
-        public void SubscribeToEvents(PieceMover pieceMover, Button buttonStart, Button buttonPrevious)
+        public void SubscribeToEvents(PieceMoverAuto pieceMover, Button buttonStart, Button buttonPrevious)
         {
             pieceMover.MadeMoveFen += OnMadeMoveFen;
             RequestedPreviousMove += pieceMover.OnPreviousMove;

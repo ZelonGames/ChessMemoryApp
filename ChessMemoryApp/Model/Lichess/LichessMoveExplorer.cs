@@ -21,7 +21,7 @@ namespace ChessMemoryApp.Model.Lichess
             this.chessBoard = chessBoard;
         }
 
-        public void SubscribeToEvents(PieceMover pieceMover)
+        public void SubscribeToEvents(PieceMoverAuto pieceMover)
         {
             pieceMover.MovedPiece += GetLichessMoves;
         }

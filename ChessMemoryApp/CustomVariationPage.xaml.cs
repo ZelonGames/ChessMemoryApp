@@ -27,9 +27,9 @@ public partial class CustomVariationPage : ContentPage
 
         var chessBoard = new ChessboardGenerator(course.PlayAsBlack);
         var chessBoardUI = new UIChessBoard(chessBoard, mainChessBoard, columnChessBoard);
-        var moveNotationHelper = new MoveNotationGenerator(chessBoard);
+        var moveNotationGenerator = new MoveNotationGenerator(chessBoardUI);
         var customVariationMoveNavigator = new CustomVariationMoveNavigator(customVariation);
-        var pieceMover = new PieceMover(moveNotationHelper, customVariationMoveNavigator, true);
+        var pieceMover = new PieceMoverManual(chessBoardUI, moveNotationGenerator, customVariationMoveNavigator);
         var chessableUrlLabel = new ChessableUrlLabel(chessableUrl, chessBoardUI, course);
         var commentLoader = new CommentLoader(editorComment);
         var commentManager = new CommentManager(editorComment, chessBoard);
@@ -37,8 +37,8 @@ public partial class CustomVariationPage : ContentPage
         chessBoard.AddPiecesFromFen(customVariation.GetStartingFen());
         chessBoardUI.Render();
 
-        customVariationMoveNavigator.SubscribeToEvents(moveNotationHelper, buttonStart, buttonPrevious, buttonNext, buttonEnd);
-        moveNotationHelper.SubscribeToEvents(customVariationMoveNavigator);
+        customVariationMoveNavigator.SubscribeToEvents(moveNotationGenerator, buttonStart, buttonPrevious, buttonNext, buttonEnd);
+        moveNotationGenerator.SubscribeToEvents(customVariationMoveNavigator);
         commentLoader.SubscribeToEvents(customVariationMoveNavigator);
         commentManager.SubscribeToEvents(buttonCommentManager, commentLoader);
 

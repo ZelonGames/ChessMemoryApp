@@ -14,7 +14,6 @@ namespace ChessMemoryApp.Model.Chess_Board
         public FenSettings fenSettings = new();
 
         public Piece.ColorType boardColorOrientation;
-        public MoveNotationGenerator moveNotationHelper;
         public bool IsEmpty => pieces.Count == 0;
 
         public ChessboardGenerator(bool playAsBlack)

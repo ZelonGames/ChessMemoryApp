@@ -20,32 +20,9 @@ namespace ChessMemoryApp.Model.UI_Helpers.Main_Page
             contentView.GestureRecognizers.Add(tapGestureRecognizer);
         }
 
-        public static void ContentViewClickUnSubscribe(ContentView contentView, EventHandler<TappedEventArgs> handler)
-        {/*
-            TapGestureRecognizer tapGestureRecognizer = new();
-            tapGestureRecognizer.Tapped -= handler;
-                contentView.GestureRecognizers.Add(tapGestureRecognizer);*/
-        }
 
         #endregion
 
-        #region Image Events
-
-        public static void ImageClickSubscribe(Image image, EventHandler<TappedEventArgs> handler)
-        {
-            TapGestureRecognizer tapGestureRecognizer = new();
-            tapGestureRecognizer.Tapped += handler;
-            image.GestureRecognizers.Add(tapGestureRecognizer);
-        }
-
-        public static void ImageClickUnSubscribe(Image image, EventHandler<TappedEventArgs> handler)
-        {/*
-            TapGestureRecognizer tapGestureRecognizer = new();
-            tapGestureRecognizer.Tapped -= handler;
-            image.GestureRecognizers.Where()*/
-        }
-
-        #endregion
 
         #region Button Events
 

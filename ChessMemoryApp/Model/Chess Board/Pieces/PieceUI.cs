@@ -30,6 +30,8 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             { 'K', "king_white" },
         };
 
+        public event Action<PieceUI> Clicked;
+
         public readonly string coordinates;
         public readonly Image image;
         protected readonly UIChessBoard chessBoard;
@@ -61,27 +63,12 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
 
         public void UnsubscribeEvents()
         {
-            UIEventHelper.ImageClickUnSubscribe(image, OnPieceClicked);
             image.GestureRecognizers.Clear();
         }
 
         public void OnPieceClicked(object sender, EventArgs e)
         {
-            if (chessBoard.moveNotationHelper == null)
-                return;
-
-            bool clickedOnPiece = chessBoard.squares[coordinates] != null;
-
-            if (clickedOnPiece && chessBoard.moveNotationHelper.IsFirstClick)
-            {
-                chessBoard.moveNotationHelper.SetFirstClick(BoardHelper.GetNumberCoordinates(coordinates));
-                chessBoard.squares[coordinates].HighlightSquare();
-            }
-            else
-            {
-                chessBoard.moveNotationHelper.SetSecondClick(BoardHelper.GetNumberCoordinates(coordinates));
-                Square.HighlightedSquare?.LowlightSquare();
-            }
+            Clicked?.Invoke(this);
         }
     }
 }

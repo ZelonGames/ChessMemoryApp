@@ -10,6 +10,8 @@ namespace ChessMemoryApp.Model.UI_Components
         public event ChessBoardLoadedEventHandler Loaded;
         public delegate void SizeChangedEventHandler(double size, Rect bounds);
         public event SizeChangedEventHandler SizeChanged;
+        public event Action<PieceUI> ClickedPiece;
+        public event Action<Square> ClickedSquare;
 
         private readonly AbsoluteLayout chessBoardListLayout;
         public readonly Dictionary<string, Square> squares = new();
@@ -25,29 +27,29 @@ namespace ChessMemoryApp.Model.UI_Components
 
         public readonly bool isBoardClickable;
         private readonly ColumnDefinition columnChessBoard;
-
-        public MoveNotationGenerator moveNotationHelper;
         public readonly ChessboardGenerator chessBoardData;
 
-        public UIChessBoard(ChessboardGenerator chessBoard, AbsoluteLayout chessBoardListLayout, ColumnDefinition columnChessBoard)
+        public UIChessBoard(ChessboardGenerator chessBoard, AbsoluteLayout chessBoardListLayout, ColumnDefinition columnChessBoard) :
+            this(chessBoard, chessBoardListLayout)
         {
-            pieceUICollection = new PieceUICollection(this);
-            this.chessBoardData = chessBoard;
             this.columnChessBoard = columnChessBoard;
-            boardColorOrientation = chessBoard.boardColorOrientation;
             isBoardClickable = true;
-            this.chessBoardListLayout = chessBoardListLayout;
             chessBoard.ChangedPieces += OnChangedPieces;
         }
 
-        public UIChessBoard(ChessboardGenerator chessBoard, AbsoluteLayout chessBoardListLayout, Size size)
+        public UIChessBoard(ChessboardGenerator chessBoard, AbsoluteLayout chessBoardListLayout, Size size) :
+            this(chessBoard, chessBoardListLayout)
         {
-            pieceUICollection = new PieceUICollection(this);
-            this.chessBoardData = chessBoard;
-            boardColorOrientation = chessBoard.boardColorOrientation;
-            this.chessBoardListLayout = chessBoardListLayout;
             isBoardClickable = false;
             BoardSize = size;
+        }
+
+        private UIChessBoard(ChessboardGenerator chessBoard, AbsoluteLayout chessBoardListLayout)
+        {
+            this.chessBoardData = chessBoard;
+            this.chessBoardListLayout = chessBoardListLayout;
+            pieceUICollection = new PieceUICollection(this);
+            boardColorOrientation = chessBoard.boardColorOrientation;
         }
 
         public UIChessBoard(ChessboardGenerator chessBoard)
@@ -113,10 +115,26 @@ namespace ChessMemoryApp.Model.UI_Components
                 return;
 
             foreach (var removedPiece in movedPieceData.removedPieces)
+            {
+                pieceUICollection.GetPiece(removedPiece.Key).Clicked -= OnClickedPiece;
                 pieceUICollection.RemovePiece(pieceUICollection.GetPiece(removedPiece.Key));
+            }
 
             foreach (var addedPiece in movedPieceData.addedPieces)
+            {
                 pieceUICollection.AddPieceToSquare(chessBoardData.GetPiece(addedPiece.Key), squares[addedPiece.Key]);
+                pieceUICollection.GetPiece(addedPiece.Key).Clicked += OnClickedPiece;
+            }
+        }
+
+        private void OnClickedPiece(PieceUI clickedPiece)
+        {
+            ClickedPiece?.Invoke(clickedPiece);
+        }
+
+        private void OnClickedSquare(Square clickedSquare)
+        {
+            ClickedSquare?.Invoke(clickedSquare);
         }
 
         private void RenderPiecesFromChessBoard()
@@ -125,7 +143,10 @@ namespace ChessMemoryApp.Model.UI_Components
             foreach (var piece in chessBoardData.pieces)
             {
                 if (!pieceUICollection.PieceExists(piece.Value.coordinates))
+                {
                     pieceUICollection.AddPieceToSquare(piece.Value, squares[piece.Key]);
+                    pieceUICollection.GetPiece(piece.Value.coordinates).Clicked += OnClickedPiece;
+                }
             }
         }
 
@@ -133,6 +154,7 @@ namespace ChessMemoryApp.Model.UI_Components
         {
             foreach (var square in squares.Values)
             {
+                square.Clicked -= OnClickedSquare;
                 square.contentView.Content = null;
                 square.contentView.GestureRecognizers.Clear();
                 chessBoardListLayout.Remove(square.contentView);
@@ -180,11 +202,10 @@ namespace ChessMemoryApp.Model.UI_Components
 
             string coordinates = BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(column, row));
             var square = new Square(contentViewSquare, coordinates, isBoardClickable);
-            if (moveNotationHelper != null)
-                square.SetMoveNotationGenerator(moveNotationHelper);
             string letterCoordinates = square.coordinates;
 
             chessBoardListLayout.Add(square.contentView);
+            square.Clicked += OnClickedSquare;
             squares.Add(letterCoordinates, square);
 
             return square;

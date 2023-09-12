@@ -37,7 +37,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         /// </summary>
         /// <param name="pieceMover"></param>
         /// <param name="moveHistory"></param>
-        public void SubscribeToEvents(PieceMover pieceMover, MoveHistory moveHistory)
+        public void SubscribeToEvents(PieceMoverAuto pieceMover, MoveHistory moveHistory)
         {
             pieceMover.MadeLichessMove += OnMadeLichessMove;
             pieceMover.MadeChessableMove += OnMadeChessableMove;
