@@ -3,6 +3,7 @@ using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.ChessMoveLogic;
 using ChessMemoryApp.Model.CourseMaker;
+using ChessMemoryApp.Model.Search;
 using ChessMemoryApp.ViewModel;
 
 namespace ChessMemoryApp;
