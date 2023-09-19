@@ -72,7 +72,6 @@ public partial class CustomVariationSelectorPage : ContentPage
             customVariationBoard.DeleteClicked += VariationManager.DeleteCustomVariation;
             customVariationBoard.DeleteClicked += CustomVariationBoard_DeleteClicked;
             customVariationBoard.EditClicked += CustomVariationBoard_EditClicked;
-            customVariationBoard.boardColorOrientation = course.PlayAsBlack ? Piece.ColorType.Black : Piece.ColorType.White;
             chessBoard.AddPiecesFromFen(customVariation.Value.PreviewFen);
             customVariationBoard.Render();
             customVariationBoards.Add(customVariationBoard);

@@ -10,6 +10,8 @@ namespace ChessMemoryApp.Model.Chess_Board
 {
     public class PieceUICollection
     {
+        public event Action<PieceUI> ClickedPiece;
+
         private readonly Dictionary<string, PieceUI> piecesUI = new();
         private readonly UIChessBoard chessBoardUI;
 
@@ -33,7 +35,13 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             var pieceUI = new PieceUI(chessBoardUI, pieceData);
             square.contentView.Content = pieceUI.image;
+            pieceUI.Clicked += OnClickedPiece;
             piecesUI.Add(pieceData.coordinates, pieceUI);
+        }
+
+        private void OnClickedPiece(PieceUI clickedPiece)
+        {
+            ClickedPiece?.Invoke(clickedPiece);
         }
 
         public void AddPiece(string coordinates, char pieceType)
@@ -42,7 +50,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             Piece pieceData = chessBoardUI.chessBoardData.GetPiece(coordinates);
 
             var pieceUI = new PieceUI(chessBoardUI, pieceData);
-            Square square = chessBoardUI.squares[pieceData.coordinates];
+            Square square = chessBoardUI.squareCollection.GetSquare(pieceData.coordinates);
             square.contentView.Content = pieceUI.image;
             piecesUI.Add(pieceData.coordinates, pieceUI);
         }
@@ -50,18 +58,19 @@ namespace ChessMemoryApp.Model.Chess_Board
         public void ClearPieces()
         {
             foreach (var piece in piecesUI.Values)
-                RemovePiece(piecesUI[piece.coordinates]);
+                RemovePiece(piece.coordinates);
 
             piecesUI.Clear();
         }
 
-        public void RemovePiece(PieceUI piece)
+        public void RemovePiece(string coordinates)
         {
+            PieceUI piece = GetPiece(coordinates);
             if (piece == null)
                 return;
 
             piece.UnsubscribeEvents();
-            chessBoardUI.squares[piece.coordinates].ClearContent();
+            chessBoardUI.squareCollection.GetSquare(piece.coordinates).ClearContent();
             piecesUI.Remove(piece.coordinates);
         }
     }

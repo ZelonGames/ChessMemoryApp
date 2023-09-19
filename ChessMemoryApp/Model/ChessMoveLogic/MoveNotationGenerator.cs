@@ -28,8 +28,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         public MoveNotationGenerator(UIChessBoard chessBoard)
         {
             this.chessBoard = chessBoard;
-            this.chessBoard.ClickedPiece += OnClickedPiece;
-            this.chessBoard.ClickedSquare += OnClickedSquare;
+            this.chessBoard.pieceUICollection.ClickedPiece += OnClickedPiece;
+            this.chessBoard.squareCollection.ClickedSquare += OnClickedSquare;
         }
 
         private void OnClickedSquare(Square clickedSquare)
@@ -47,7 +47,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             if (IsFirstClick)
             {
                 SetFirstClick(BoardHelper.GetNumberCoordinates(clickedPiece.coordinates));
-                chessBoard.squares[clickedPiece.coordinates].HighlightSquare();
+                chessBoard.squareCollection.GetSquare(clickedPiece.coordinates).HighlightSquare();
             }
             else
             {

@@ -105,13 +105,12 @@ namespace ChessMemoryApp.Model.CourseMaker
         public List<(Variation variation, Move move)> ExcludeVariationsByMoveNotation(Dictionary<string, (Variation variation, Move lastSearchMove)> foundVariations)
         {
             var filteredVariations = new List<(Variation variation, Move move)>();
-            string lastSearchMoveNotation = GetLastMoveNotation();
 
             foreach (var foundVariation in foundVariations.Values)
             {
                 int lastSearchMoveIndex = foundVariation.variation.moves.IndexOf(foundVariation.lastSearchMove);
 
-                #region Filter Variations
+                #region Exclude Variations
                 if (ShouldExcludeVariation(foundVariation.variation, excludingMoveNotations, out var excludedMove))
                 {
                     int lastExcludedMoveIndex = foundVariation.variation.moves.IndexOf(excludedMove);
@@ -121,25 +120,33 @@ namespace ChessMemoryApp.Model.CourseMaker
                 }
                 #endregion
 
-                #region Sort By Amount Of Played Moves
-                int insertIndex = filteredVariations.Count;
-
-                // The last item in filteredVariations is the item that has played the most amount of moves
-                for (int i = filteredVariations.Count - 1; i >= 0; i--)
-                {
-                    int lastFilteredMoveIndex = filteredVariations[i].variation.moves.IndexOf(filteredVariations[i].move);
-
-                    if (lastSearchMoveIndex < lastFilteredMoveIndex)
-                        insertIndex = i;
-                    else
-                        break;
-                }
-                #endregion
-
-                filteredVariations.Insert(insertIndex, (foundVariation.variation, foundVariation.lastSearchMove));
+                SortByAmountOfPlayedMoves(filteredVariations, foundVariation);
             }
 
             return filteredVariations;
+        }
+
+        private void FilterVariations()
+        {
+
+        }
+
+        private void SortByAmountOfPlayedMoves(List<(Variation variation, Move move)> filteredVariations, (Variation variation, Move lastSearchMove) foundVariation)
+        {
+            int lastSearchMoveIndex = foundVariation.variation.moves.IndexOf(foundVariation.lastSearchMove);
+            int insertIndex = filteredVariations.Count;
+
+            for (int i = filteredVariations.Count - 1; i >= 0; i--)
+            {
+                int lastFilteredMoveIndex = filteredVariations[i].variation.moves.IndexOf(filteredVariations[i].move);
+
+                if (lastSearchMoveIndex < lastFilteredMoveIndex)
+                    insertIndex = i;
+                else
+                    break;
+            }
+
+            filteredVariations.Insert(insertIndex, (foundVariation.variation, foundVariation.lastSearchMove));
         }
 
         public string GetLastMoveNotation()

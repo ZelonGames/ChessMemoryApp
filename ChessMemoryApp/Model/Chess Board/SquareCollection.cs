@@ -10,17 +10,28 @@ namespace ChessMemoryApp.Model.Chess_Board
 {
     public class SquareCollection
     {
-        private readonly UIChessBoard chessBoard;
-        public readonly Dictionary<string, Square> squares = new();
+        public event Action<Square> ClickedSquare;
 
-        public SquareCollection(UIChessBoard chessBoard)
+        private readonly UIChessBoard chessBoard;
+        private readonly Dictionary<string, Square> squares = new();
+        public Dictionary<string, Square> Squares => squares;
+        public readonly AbsoluteLayout chessBoardListLayout;
+        public bool HasSquares => squares.Count > 0;
+
+        public SquareCollection(UIChessBoard chessBoard, AbsoluteLayout chessBoardListLayout)
         {
             this.chessBoard = chessBoard;
+            this.chessBoardListLayout = chessBoardListLayout;
         }
-        /*
+
+        public Square GetSquare(string coordinates)
+        {
+            return squares[coordinates];
+        }
+        
         public Square AddChessBoardSquare(Color color, int column, int row)
         {
-            double squareSize = BoardSize.Width / 8;
+            double squareSize = chessBoard.BoardSize.Width / 8;
 
             // Create a new box view for the current square
             var contentViewSquare = new ContentView()
@@ -28,21 +39,37 @@ namespace ChessMemoryApp.Model.Chess_Board
                 BackgroundColor = color,
                 WidthRequest = squareSize,
                 HeightRequest = squareSize,
-                TranslationX = offset.X + column * squareSize,
-                TranslationY = offset.Y + (row - 1) * squareSize,
+                TranslationX = chessBoard.offset.X + column * squareSize,
+                TranslationY = chessBoard.offset.Y + (row - 1) * squareSize,
             };
-
             
             string coordinates = BoardHelper.GetLetterCoordinates(new Piece.Coordinates<int>(column, row));
             var square = new Square(contentViewSquare, coordinates, chessBoard.isBoardClickable);
             string letterCoordinates = square.coordinates;
 
             chessBoardListLayout.Add(square.contentView);
-            square.Clicked += Square_Clicked;
+            square.Clicked += OnClickedSquare;
             squares.Add(letterCoordinates, square);
 
             return square;
         }
-        */
+
+        public void ClearSquares()
+        {
+            foreach (var square in squares.Values)
+            {
+                square.Clicked -= OnClickedSquare;
+                square.contentView.Content = null;
+                square.contentView.GestureRecognizers.Clear();
+                chessBoardListLayout.Remove(square.contentView);
+            }
+
+            squares.Clear();
+        }
+
+        private void OnClickedSquare(Square clickedSquare)
+        {
+            ClickedSquare?.Invoke(clickedSquare);
+        }
     }
 }
