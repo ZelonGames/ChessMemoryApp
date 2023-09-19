@@ -1,4 +1,5 @@
 ﻿using ChessMemoryApp.Model.Chess_Board.Pieces;
+using ChessMemoryApp.Model.CourseMaker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ChessMemoryApp.Model.CourseMaker
+namespace ChessMemoryApp.Model.Search
 {
     public class SearchEngine
     {
