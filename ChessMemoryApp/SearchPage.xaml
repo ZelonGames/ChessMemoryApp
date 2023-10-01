@@ -53,7 +53,7 @@
                    TextColor="White"
                    PlaceholderColor="#64B5F6"
                    
-                   Focused="textBoxFen_Focused"/>
+                   Focused="TextBoxFen_Focused"/>
             <Button x:Name="buttonChessableVariations"
                     Grid.Row="2"
                     Grid.Column="0"

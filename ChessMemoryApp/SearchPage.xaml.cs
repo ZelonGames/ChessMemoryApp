@@ -101,7 +101,7 @@ public partial class SearchPage : ContentPage
         textBoxFen.SelectionLength = textBoxFen.Text.Length;
     }
 
-    private async void textBoxFen_Focused(object sender, FocusEventArgs e)
+    private async void TextBoxFen_Focused(object sender, FocusEventArgs e)
     {
         if (textBoxFen.Text != null)
         {

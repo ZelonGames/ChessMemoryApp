@@ -7,7 +7,7 @@ namespace ChessMemoryApp.Model.UI_Components
     public class UIChessBoard
     {
         public delegate void ChessBoardLoadedEventHandler(string fen);
-        public event ChessBoardLoadedEventHandler Loaded;
+        public event ChessBoardLoadedEventHandler ChangedPieces;
         public delegate void SizeChangedEventHandler(double size, Rect bounds);
         public event SizeChangedEventHandler SizeChanged;
 
@@ -96,7 +96,6 @@ namespace ChessMemoryApp.Model.UI_Components
         {
             RenderSquares();
             RenderPiecesFromChessBoard();
-            Loaded?.Invoke(chessBoardData.GetPositionFen());
         }
 
         private void OnChangedPieces(MovedPieceData movedPieceData)
@@ -109,6 +108,8 @@ namespace ChessMemoryApp.Model.UI_Components
 
             foreach (var addedPiece in movedPieceData.addedPieces)
                 pieceUICollection.AddPieceToSquare(chessBoardData.GetPiece(addedPiece.Key), squareCollection.GetSquare(addedPiece.Key));
+
+            ChangedPieces?.Invoke(chessBoardData.GetPositionFen());
         }
 
         private void RenderPiecesFromChessBoard()

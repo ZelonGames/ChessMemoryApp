@@ -12,11 +12,6 @@ namespace ChessMemoryApp.Model.Search
 {
     public class SearchEngine
     {
-        public const char MOVE_LIMIT_SEPARATOR = '|';
-        private const char PREFIX_EXCLUDE = '!';
-        private const char PREFIX_WHITE = 'w';
-        private const char PREFIX_BLACK = '0';
-
         public readonly string[] moveNotations;
         public readonly string[] excludingMoveNotations;
 
@@ -26,27 +21,11 @@ namespace ChessMemoryApp.Model.Search
         public SearchEngine(Course course, string searchPattern)
         {
             this.course = course;
-            moveNotations = GetMoveNotations(searchPattern);
-            excludingMoveNotations = GetExcludingMoveNotations(searchPattern);
+            moveNotations = SearchEngineHelper.GetMoveNotations(searchPattern);
+            excludingMoveNotations = SearchEngineHelper.GetExcludingMoveNotations(searchPattern);
 
-            string[] inputParts = searchPattern.Split(MOVE_LIMIT_SEPARATOR);
+            string[] inputParts = searchPattern.Split(SearchEngineHelper.MOVE_LIMIT_SEPARATOR);
             plyMoveLimit = inputParts.Length >= 2 ? Convert.ToInt32(inputParts[1]) : 0;
-        }
-
-        public static string[] GetMoveNotations(string moveNotation)
-        {
-            return moveNotation.Split(MOVE_LIMIT_SEPARATOR)[0].Split(' ').Where(x => x[0] != PREFIX_EXCLUDE).ToArray();
-        }
-
-        public static string[] GetExcludingMoveNotations(string moveNotationText)
-        {
-            return moveNotationText.Split(MOVE_LIMIT_SEPARATOR)[0].Split(' ').Where(x => x[0] == PREFIX_EXCLUDE).ToArray();
-        }
-
-        public static string IgnoreSearchPrefixes(string moveNotation)
-        {
-            string pattern = $"{PREFIX_BLACK}|{PREFIX_WHITE}|{PREFIX_EXCLUDE}";
-            return Regex.Replace(moveNotation, pattern, "");
         }
 
         public Dictionary<string, (Variation, Move)> GetVariationsFromSearchPattern()
@@ -73,16 +52,7 @@ namespace ChessMemoryApp.Model.Search
                     if (currentComparingMoveNotationIndex >= moveNotations.Length)
                         break;
 
-                    if (IsCapturingPieceUnSpecified(currentMoveNotation) &&
-                        CapturedPiece(move.MoveNotation) == IgnoreSearchPrefixes(currentMoveNotation))
-                    {
-
-                    }
-                    else if (move.MoveNotation != IgnoreSearchPrefixes(currentMoveNotation))
-                        continue;
-
-                    if (HasSpecifiedColor(currentMoveNotation) &&
-                        !IsMoveCorrectColor(currentMoveNotation, move))
+                    if (!SearchEngineHelper.IsCorrectMove(move, currentMoveNotation))
                         continue;
 
                     currentComparingMoveNotationIndex++;
@@ -109,121 +79,18 @@ namespace ChessMemoryApp.Model.Search
 
             foreach (var foundVariation in foundVariations.Values)
             {
-                int lastSearchMoveIndex = foundVariation.variation.moves.IndexOf(foundVariation.lastSearchMove);
+                if (Excluder.ShouldExcludeVariation(foundVariation, excludingMoveNotations))
+                    continue;
 
-                #region Exclude Variations
-                if (ShouldExcludeVariation(foundVariation.variation, excludingMoveNotations, out var excludedMove))
-                {
-                    int lastExcludedMoveIndex = foundVariation.variation.moves.IndexOf(excludedMove);
-
-                    if (lastExcludedMoveIndex < lastSearchMoveIndex)
-                        continue;
-                }
-                #endregion
-
-                SortByAmountOfPlayedMoves(filteredVariations, foundVariation);
+                filteredVariations.SortByAmountOfPlayedMoves(foundVariation);
             }
 
             return filteredVariations;
         }
 
-        private void FilterVariations()
-        {
-
-        }
-
-        private void SortByAmountOfPlayedMoves(List<(Variation variation, Move move)> filteredVariations, (Variation variation, Move lastSearchMove) foundVariation)
-        {
-            int lastSearchMoveIndex = foundVariation.variation.moves.IndexOf(foundVariation.lastSearchMove);
-            int insertIndex = filteredVariations.Count;
-
-            for (int i = filteredVariations.Count - 1; i >= 0; i--)
-            {
-                int lastFilteredMoveIndex = filteredVariations[i].variation.moves.IndexOf(filteredVariations[i].move);
-
-                if (lastSearchMoveIndex < lastFilteredMoveIndex)
-                    insertIndex = i;
-                else
-                    break;
-            }
-
-            filteredVariations.Insert(insertIndex, (foundVariation.variation, foundVariation.lastSearchMove));
-        }
-
         public string GetLastMoveNotation()
         {
-            return IgnoreSearchPrefixes(moveNotations.Last());
-        }
-
-        private string IgnoreExcludePrefix(string moveNotation)
-        {
-            return moveNotation.Replace(Convert.ToString(PREFIX_EXCLUDE), "");
-        }
-
-        private string CapturedPiece(string moveNotation)
-        {
-            string[] moveNotationParts = moveNotation.Split('x');
-            if (moveNotationParts.Length != 2)
-                return moveNotation;
-
-            return 'x' + moveNotationParts[1];
-        }
-
-        private bool ShouldExcludeVariation(Variation variation, string[] excludingMoveNotations, out Move excludedMove)
-        {
-            foreach (var excludingMoveNotation in excludingMoveNotations)
-            {
-                bool isCapturingPieceUnspecified = IsCapturingPieceUnSpecified(excludingMoveNotation);
-                foreach (var move in variation.moves)
-                {
-                    string moveNotation = move.MoveNotation;
-
-                    if (isCapturingPieceUnspecified && IsCapturingMove(move.MoveNotation))
-                        moveNotation = CapturedPiece(move.MoveNotation);
-
-                    if (moveNotation != IgnoreSearchPrefixes(excludingMoveNotation))
-                        continue;
-
-                    if (HasSpecifiedColor(excludingMoveNotation))
-                    {
-                        if (IsMoveCorrectColor(excludingMoveNotation, move))
-                        {
-                            excludedMove = move;
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        excludedMove = move;
-                        return true;
-                    }
-                }
-            }
-
-            excludedMove = null;
-            return false;
-        }
-
-        private bool HasSpecifiedColor(string moveNotation)
-        {
-            return IgnoreExcludePrefix(moveNotation)[0] is PREFIX_BLACK or PREFIX_WHITE;
-        }
-
-        private bool IsMoveCorrectColor(string moveNotation, Move move)
-        {
-            return (IgnoreExcludePrefix(moveNotation)[0], move.Color) is
-                (PREFIX_BLACK, Piece.ColorType.Black) or
-                (PREFIX_WHITE, Piece.ColorType.White);
-        }
-
-        private bool IsCapturingPieceUnSpecified(string moveNotation)
-        {
-            return IgnoreSearchPrefixes(moveNotation)[0] == 'x';
-        }
-
-        private bool IsCapturingMove(string moveNotation)
-        {
-            return moveNotation.Contains('x');
+            return moveNotations.Last().IgnoreSearchPrefixes();
         }
     }
 }

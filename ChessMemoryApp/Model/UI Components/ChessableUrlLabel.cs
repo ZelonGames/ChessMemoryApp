@@ -19,16 +19,21 @@ namespace ChessMemoryApp.Model.UI_Components
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
             label.GestureRecognizers.Add(tapGestureRecognizer);
-            chessboard.Loaded += ChessBoard_Loaded;
+            chessboard.ChangedPieces += OnChangedPieces;
+            //fenSettingsUpdater.UpdatedFen += OnUpdatedFen;   
 
             this.course = course;
         }
 
-        private void ChessBoard_Loaded(string fen)
+        private void OnUpdatedFen(string fen)
+        {
+            
+        }
+
+        private void OnChangedPieces(string fen)
         {
             url = FenHelper.ConvertFenToChessableUrl(fen, course.chessableCourseID.ToString());
         }
-
 
         private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
         {
