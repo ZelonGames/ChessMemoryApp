@@ -66,11 +66,6 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             return char.IsUpper(piece.Value) ? ColorType.White : ColorType.Black;
         }
 
-        public static ColorType GetColorFromChessboard(ChessboardGenerator chessBoard)
-        {
-            return chessBoard.boardColorOrientation;
-        }
-
         public static ColorType GetOppositeColor(ColorType colorType)
         {
             return colorType == ColorType.White ? ColorType.Black : ColorType.White;

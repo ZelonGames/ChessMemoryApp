@@ -45,7 +45,7 @@ namespace ChessMemoryApp.Model.Chess_Board
 
             // Coordinates are never specified if you move a pawn
             // Otherwise this would fail to something like dxe4 because dx is of length 2
-            bool isCoordinateSpecified = !isPawnMove && moveNotation.Replace(toCoordinates, "").Length >= 2;
+            bool isCoordinateSpecified = !isPawnMove && moveNotation.Replace(toCoordinates, "").Length > 2;
             Dictionary<string, Piece> potentialPieces = GetPiecesOfType(chessBoard, pieceType);
 
             if (isCoordinateSpecified)
@@ -197,7 +197,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             return pieces;
         }
 
-        public static void MakeMove<T>(T chessBoard, string moveNotation) where T : ChessboardGenerator
+        public static void MakeMove<T>(T chessBoard, Piece.ColorType pieceColor, string moveNotation) where T : ChessboardGenerator
         {
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
 
@@ -233,7 +233,7 @@ namespace ChessMemoryApp.Model.Chess_Board
                 string[] promotionComponents = moveNotation.Split('=');
                 bool promotion = promotionComponents.Length == 2;
                 string toCoordinates = promotionComponents[0][^2..];
-                string fromCoordinates = GetLetterFromCoordinates(chessBoard, promotionComponents[0]);
+                string fromCoordinates = GetLetterFromCoordinates(chessBoard, pieceColor, promotionComponents[0]);
 
                 if (fromCoordinates == "")
                     return;
@@ -273,11 +273,11 @@ namespace ChessMemoryApp.Model.Chess_Board
             }
         }
 
-        public static string GetLetterFromCoordinates<T>(T chessBoard, string moveNotation) where T : ChessboardGenerator
+        public static string GetLetterFromCoordinates<T>(T chessBoard, Piece.ColorType pieceColor, string moveNotation) where T : ChessboardGenerator
         {
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
             char pieceType = moveNotation.First();
-            pieceType = chessBoard.boardColorOrientation == Piece.ColorType.White ? char.ToUpper(pieceType) : char.ToLower(pieceType);
+            pieceType = pieceColor == Piece.ColorType.White ? char.ToUpper(pieceType) : char.ToLower(pieceType);
             string letterToCoordinates = moveNotation[^2..];
             char? file = null;
             char? row = null;
@@ -322,7 +322,7 @@ namespace ChessMemoryApp.Model.Chess_Board
         /// <param name="fen"></param>
         /// <param name="moveNotation">Nf3</param>
         /// <returns>"g2f3"</returns>
-        public static string ConvertToMoveNotationCoordinates<T>(T chessBoard, string moveNotation) where T : ChessboardGenerator
+        public static string ConvertToMoveNotationCoordinates<T>(T chessBoard, Piece.ColorType pieceColor, string moveNotation) where T : ChessboardGenerator
         {
             if (moveNotation == "0-0" || moveNotation == "O-O")
                 return chessBoard.boardColorOrientation == Piece.ColorType.Black ? "e8g8" : "e1g1";
@@ -330,7 +330,7 @@ namespace ChessMemoryApp.Model.Chess_Board
                 return chessBoard.boardColorOrientation == Piece.ColorType.Black ? "e8c8" : "e1c1";
 
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
-            string fromCoordinates = GetLetterFromCoordinates(chessBoard, moveNotation);
+            string fromCoordinates = GetLetterFromCoordinates(chessBoard, pieceColor, moveNotation);
             string toCoordinates = GetToCoordinatesString(moveNotation);
 
             return fromCoordinates + toCoordinates;

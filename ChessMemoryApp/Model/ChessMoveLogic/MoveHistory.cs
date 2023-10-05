@@ -88,14 +88,13 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             RequestedPreviousMove?.Invoke(previousMove);
         }
 
-        private void OnMadeMoveFen(MoveSource moveSource, Piece.ColorType color, string moveNotation, string previousFen, string currentFen)
+        private void OnMadeMoveFen(MoveSource moveSource, Piece.ColorType color, string moveNotation, string moveNotationCoordinates, string currentFen)
         {
             if (chessBoard.boardColorOrientation == Piece.ColorType.Black)
                 color = moveSource == MoveSource.Chessable ? Piece.ColorType.Black : Piece.ColorType.White;
             else
                 color = moveSource == MoveSource.Chessable ? Piece.ColorType.White : Piece.ColorType.Black;
-
-            string moveNotationCoordinates = BoardHelper.ConvertToMoveNotationCoordinates(chessBoard, moveNotation);
+            
             historyMoves.Add(new Move(moveSource, chessBoard.fenSettings.Copy(), color, moveNotationCoordinates, moveNotation, currentFen));
             AddedMove?.Invoke(historyMoves.Last());
         }

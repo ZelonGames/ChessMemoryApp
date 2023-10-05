@@ -26,7 +26,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         public event MadeLichessMoveEventHandler MadeLichessMove;
         public event MadeLichessMoveEventHandler MadePreviousLichessMove;
 
-        public delegate void MadeMoveFenEventHandler(MoveHistory.MoveSource moveSource, Piece.ColorType color, string moveNotation, string previousFen, string currentFen);
+        public delegate void MadeMoveFenEventHandler(MoveHistory.MoveSource moveSource, Piece.ColorType color, string moveNotation, string moveNotationCoordinates, string currentFen);
         public event MadeMoveFenEventHandler MadeMoveFen;
 
         private readonly ChessboardGenerator chessBoard;
@@ -45,21 +45,24 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         private void OnNextChessableMove(Move move)
         {
             string previousFen = chessBoard.GetPositionFen();
-            Piece.ColorType pieceColor = Piece.GetColorFromChessboard(chessBoard);
+            Piece.ColorType pieceColor = chessBoard.boardColorOrientation;
             string moveNotationCoordinates = BoardHelper.GetMoveNotationCoordinates(chessBoard, move.MoveNotation, pieceColor);
 
             chessBoard.MakeMove(moveNotationCoordinates);
             MadeChessableMove?.Invoke(move);
-            MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, previousFen, move.Fen);
+            MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, moveNotationCoordinates, move.Fen);
         }
 
         private void OnNextLichessMove(string fen, ExplorerMove move)
         {
             string previousFen = chessBoard.GetPositionFen();
+            var previousPieces = new Dictionary<string, Piece>(chessBoard.pieces);
+
             chessBoard.MakeMove(move.MoveNotationCoordinates);
             MadeLichessMove?.Invoke(fen, move);
-            Piece.ColorType color = Piece.GetColorFromChessboard(chessBoard);
-            MadeMoveFen?.Invoke(MoveHistory.MoveSource.Lichess, color, move.MoveNotation, previousFen, fen);
+            
+            Piece.ColorType color = chessBoard.boardColorOrientation;
+            MadeMoveFen?.Invoke(MoveHistory.MoveSource.Lichess, color, move.MoveNotation, move.MoveNotationCoordinates, fen);
         }
 
         public void OnPreviousMove(MoveHistory.Move historyMove)
