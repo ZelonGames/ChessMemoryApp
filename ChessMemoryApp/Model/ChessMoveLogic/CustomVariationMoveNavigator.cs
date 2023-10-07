@@ -82,7 +82,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         {
             MoveHistory.Move nextMove = GetNextMove();
 
-            if (nextMove.moveNotationCoordinates == firstClick + secondClick)
+            if (nextMove.IsSameMoveNotationCoordinates(firstClick + secondClick))
             {
                 if (currentMove < customVariation.moves.Count - 1)
                     currentMove++;

@@ -123,6 +123,19 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
                 this.moveNotation = moveNotation;
                 this.fen = fen;
             }
+
+            public bool IsSameMoveNotationCoordinates(string moveNotationCoordinates)
+            {
+                if (this.moveNotationCoordinates is "e1h1" or "e1g1" && moveNotationCoordinates is "e1h1" or "e1g1" ||
+                    this.moveNotationCoordinates is "e8h8" or "e8g8" && moveNotationCoordinates is "e8h8" or "e8g8")
+                    return true;
+
+                if (this.moveNotationCoordinates is "e1a1" or "e1c1" && moveNotationCoordinates is "e1c1" or "e1c1" ||
+                    this.moveNotationCoordinates is "e8a8" or "e8c8" && moveNotationCoordinates is "e8c8" or "e8c8")
+                    return true;
+
+                return false;
+            }
         }
     }
 }
