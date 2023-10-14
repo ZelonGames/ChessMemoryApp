@@ -65,9 +65,9 @@ public partial class MainPage : ContentPage
         #endregion
 
         #region Initialize UI Objects
-        new ChessableUrlLabel(chessableUrl, chessBoardUI, selectedCourse);
+        ChessableUrlLabel.Install(chessableUrl, chessBoardUI, selectedCourse);
         var lichessFenLabel = new LichessFenLabel(labelLichessFen, chessBoard);
-        new UILichessButtonsUpdater(customVariation, lichessMovesLoader);
+        UILichessButtonsUpdater.Install(customVariation, lichessMovesLoader);
         #endregion
 
         moveHistory.AddFirstHistoryMove(courseMoveNavigator);

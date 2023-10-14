@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.UI_Components
 {
-    public class UILichessButtonsUpdater
+    public static class UILichessButtonsUpdater
     {
-        private readonly CustomVariation customVariation;
-        private readonly LichessMoveLoader lichessMoveLoader;
+        private static CustomVariation customVariation;
+        private static LichessMoveLoader lichessMoveLoader;
 
-        public UILichessButtonsUpdater(CustomVariation customVariation, LichessMoveLoader lichessMoveLoader)
+        public static void Install(CustomVariation customVariation, LichessMoveLoader lichessMoveLoader)
         {
-            this.customVariation = customVariation;
-            this.lichessMoveLoader = lichessMoveLoader;
+            UILichessButtonsUpdater.customVariation = customVariation;
+            UILichessButtonsUpdater.lichessMoveLoader = lichessMoveLoader;
 
             lichessMoveLoader.FinishedLoadingLichess += OnFinishedLoadingLichess;
         }
 
-        private void OnFinishedLoadingLichess()
+        private static void OnFinishedLoadingLichess()
         {
             int plyMoves = customVariation.moves.Count + FenHelper.GetAmountOfPlayedPlyMoves(customVariation.Course.PreviewFen);
 

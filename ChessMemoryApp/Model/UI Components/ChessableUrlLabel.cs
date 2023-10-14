@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.UI_Components
 {
-    public class ChessableUrlLabel
+    public static class ChessableUrlLabel
     {
-        public readonly Course course;
-        private string url;
+        private static Course course;
+        private static string url;
 
-        public ChessableUrlLabel(Label label, UIChessBoard chessboard, Course course)
+        public static void Install(Label label, UIChessBoard chessboard, Course course)
         {
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
@@ -22,20 +22,15 @@ namespace ChessMemoryApp.Model.UI_Components
             chessboard.ChangedPieces += OnChangedPieces;
             //fenSettingsUpdater.UpdatedFen += OnUpdatedFen;   
 
-            this.course = course;
+            ChessableUrlLabel.course = course;
         }
 
-        private void OnUpdatedFen(string fen)
-        {
-            
-        }
-
-        private void OnChangedPieces(string fen)
+        private static void OnChangedPieces(string fen)
         {
             url = FenHelper.ConvertFenToChessableUrl(fen, course.chessableCourseID.ToString());
         }
 
-        private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+        private static async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
         {
             try
             {
