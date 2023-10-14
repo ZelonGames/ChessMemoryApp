@@ -134,7 +134,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
                     this.moveNotationCoordinates is "e8a8" or "e8c8" && moveNotationCoordinates is "e8c8" or "e8c8")
                     return true;
 
-                return false;
+                return this.moveNotationCoordinates == moveNotationCoordinates;
             }
         }
     }
