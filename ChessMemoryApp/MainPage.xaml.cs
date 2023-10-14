@@ -65,7 +65,7 @@ public partial class MainPage : ContentPage
         #endregion
 
         #region Initialize UI Objects
-        ChessableUrlLabel.Install(chessableUrl, chessBoardUI, selectedCourse);
+        var chessableUrlLabel = new ChessableUrlLabel(chessableUrl, chessBoardUI, selectedCourse);
         var lichessFenLabel = new LichessFenLabel(labelLichessFen, chessBoard);
         UILichessButtonsUpdater.Install(customVariation, lichessMovesLoader);
         #endregion

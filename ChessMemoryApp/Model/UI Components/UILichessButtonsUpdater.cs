@@ -25,8 +25,10 @@ namespace ChessMemoryApp.Model.UI_Components
 
         private static void OnFinishedLoadingLichess()
         {
-            int plyMoves = customVariation.moves.Count + FenHelper.GetAmountOfPlayedPlyMoves(customVariation.Course.PreviewFen);
+            if (customVariation.moves.Count == 0)
+                return;
 
+            int plyMoves = customVariation.moves.Count + FenHelper.GetAmountOfPlayedPlyMoves(customVariation.Course.PreviewFen);
             foreach (LichessButton lichessButton in lichessMoveLoader.lichessButtons)
             {
                 bool isValidLichessButton = false;
@@ -35,7 +37,7 @@ namespace ChessMemoryApp.Model.UI_Components
                     foreach (Variation variation in chapter.GetVariations().Values)
                     {
                         bool isCorrectVariation = 
-                            variation.moves.Count >= plyMoves &&
+                            variation.moves.Count > plyMoves &&
                             variation.moves[plyMoves - 1].MoveNotation == 
                             customVariation.moves.Last().moveNotation;
                         if (!isCorrectVariation)
