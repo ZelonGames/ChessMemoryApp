@@ -1,0 +1,63 @@
+﻿using ChessMemoryApp.Model.Chess_Board;
+using ChessMemoryApp.Model.Chess_Board.Pieces;
+using ChessMemoryApp.Model.CourseMaker;
+using ChessMemoryApp.Model.Variations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ChessMemoryApp.Model.UI_Components
+{
+    public class UILichessButtonsUpdater
+    {
+        private readonly CustomVariation customVariation;
+        private readonly LichessMoveLoader lichessMoveLoader;
+
+        public UILichessButtonsUpdater(CustomVariation customVariation, LichessMoveLoader lichessMoveLoader)
+        {
+            this.customVariation = customVariation;
+            this.lichessMoveLoader = lichessMoveLoader;
+
+            lichessMoveLoader.FinishedLoadingLichess += OnFinishedLoadingLichess;
+        }
+
+        private void OnFinishedLoadingLichess()
+        {
+            int plyMoves = customVariation.moves.Count + FenHelper.GetAmountOfPlayedPlyMoves(customVariation.Course.PreviewFen);
+
+            foreach (LichessButton lichessButton in lichessMoveLoader.lichessButtons)
+            {
+                bool isValidLichessButton = false;
+                foreach (Chapter chapter in customVariation.Course.GetChapters().Values)
+                {
+                    foreach (Variation variation in chapter.GetVariations().Values)
+                    {
+                        bool isCorrectVariation = 
+                            variation.moves.Count >= plyMoves &&
+                            variation.moves[plyMoves - 1].MoveNotation == 
+                            customVariation.moves.Last().moveNotation;
+                        if (!isCorrectVariation)
+                            continue;
+
+                        if (variation.moves[plyMoves].MoveNotation == lichessButton.move.MoveNotation)
+                        {
+                            isValidLichessButton = true;
+                            break;
+                        }
+                    }
+
+                    if (isValidLichessButton)
+                        break;
+                }
+
+                if (!isValidLichessButton)
+                {
+                    lichessButton.listButton.isRedMarked = true;
+                    lichessButton.listButton.UpdateColor();
+                }
+            }
+        }
+    }
+}

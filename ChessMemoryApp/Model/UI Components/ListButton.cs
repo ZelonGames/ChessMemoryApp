@@ -15,9 +15,16 @@ namespace ChessMemoryApp.Model.UI_Components
 
         private readonly int buttonIndex;
 
-        private readonly Color darkColor = Color.FromArgb("#424242");
-        private readonly Color lightColor = Color.FromArgb("#505050");
+        private readonly Color darkGrayColor = Color.FromArgb("#424242");
+        private readonly Color darkRedColor = Color.FromArgb("#421919");
+        private readonly Color lightGrayColor = Color.FromArgb("#505050");
+        private readonly Color lightRedColor = Color.FromArgb("#501919");
         private readonly Color highlightedColor = Color.FromArgb("#D3D3D3");
+
+        private Color DarkColor => isRedMarked ? darkRedColor : darkGrayColor;
+        private Color LightColor => isRedMarked ? lightRedColor : lightGrayColor;
+
+        public bool isRedMarked = false;
 
         public ListButton(string moveNotation, int buttonIndex)
         {
@@ -28,10 +35,7 @@ namespace ChessMemoryApp.Model.UI_Components
             button.CornerRadius = 0;
             button.BorderWidth = 0;
 
-            if (buttonIndex % 2 == 0)
-                button.BackgroundColor = darkColor;
-            else
-                button.BackgroundColor = lightColor;
+            UpdateColor();
 
             PointerGestureRecognizer = new PointerGestureRecognizer();
             PointerGestureRecognizer.PointerEntered += HighlightButton;
@@ -46,13 +50,21 @@ namespace ChessMemoryApp.Model.UI_Components
             button.TextColor = Color.FromArgb("000");
         }
 
+        public void UpdateColor()
+        {
+            if (buttonIndex % 2 == 0)
+                button.BackgroundColor = DarkColor;
+            else
+                button.BackgroundColor = LightColor;
+        }
+
         public void UnHighlightButton(object sender, EventArgs args)
         {
             var button = sender as Button;
             if (buttonIndex % 2 == 0)
-                button.BackgroundColor = darkColor;
+                button.BackgroundColor = DarkColor;
             else
-                button.BackgroundColor = lightColor;
+                button.BackgroundColor = LightColor;
             button.TextColor = Color.FromArgb("fff");
         }
 

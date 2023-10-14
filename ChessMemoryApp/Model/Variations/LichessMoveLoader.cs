@@ -98,9 +98,9 @@ namespace ChessMemoryApp.Model.Variations
             foreach (var move in openingExplorer.Moves)
             {
                 var button = new ListButton(move.MoveNotation + " Wins: " + move.GetWinsInPercent(chessBoard.boardColorOrientation), lichessButtons.Count);
-                var lichessButton = new LichessButton(chessBoard, button.button, move);
+                var lichessButton = new LichessButton(chessBoard, button, move);
                 lichessButtons.Add(lichessButton);
-                verticalStackLayout.Add(lichessButton.button);
+                verticalStackLayout.Add(lichessButton.listButton.button);
             }
         }
 

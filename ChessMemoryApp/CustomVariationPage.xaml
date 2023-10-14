@@ -104,14 +104,15 @@
                         Text=">>"/>
         </Grid>
 
-        <ScrollView x:Name="variationsScrollView"
-                    HorizontalScrollBarVisibility="Never"
-                    VerticalScrollBarVisibility="Always"
-                    Margin="10, 0, 10, 10"
-                    Grid.Row="2"
-                    Grid.Column="3">
-            <VerticalStackLayout x:Name="variationsList" />
-        </ScrollView>
+        <Button x:Name="buttonCopyMoves"
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="10, 0, 10, 0"
+                Padding="3"
+                VerticalOptions="Start"
+                Clicked="OnCopyMovesClicked"
+                Text="Copy Moves"/>
+
     </Grid>
 
 </ContentPage>

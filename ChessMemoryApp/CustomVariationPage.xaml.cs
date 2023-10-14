@@ -11,6 +11,7 @@ namespace ChessMemoryApp;
 public partial class CustomVariationPage : ContentPage
 {
     private readonly CustomVariationViewModel customVariationViewModel;
+    private CustomVariation customVariation;
 
     public CustomVariationPage(CustomVariationViewModel customVariationViewModel)
 	{
@@ -20,9 +21,18 @@ public partial class CustomVariationPage : ContentPage
         Appearing += CustomVariationPage_Appearing;
 	}
 
+    private void OnCopyMovesClicked(object sender, EventArgs e)
+    {
+        string moves = "";
+        foreach (MoveHistory.Move move in customVariation.moves)
+            moves += move.moveNotationCoordinates + " ";
+
+        Clipboard.SetTextAsync(moves);
+    }
+
     private async void CustomVariationPage_Appearing(object sender, EventArgs e)
     {
-        CustomVariation customVariation = customVariationViewModel.CustomVariation;
+        customVariation = customVariationViewModel.CustomVariation;
         Course course = customVariation.Course;
 
         var chessBoard = new ChessboardGenerator(course.PlayAsBlack);

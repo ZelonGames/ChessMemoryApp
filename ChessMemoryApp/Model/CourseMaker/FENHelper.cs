@@ -286,10 +286,22 @@ namespace ChessMemoryApp.Model.CourseMaker
             if (!pieceChar.HasValue)
                 return string.Empty;
 
-
             string newFen = RemovePieceFromFEN(currentFen, fromCoordinates);
             newFen = updateColorToPlay ? UpdateFenColorToPlay(newFen) : newFen;
             return AddPieceToFEN(newFen, toCoordinates, pieceChar.Value);
+        }
+
+        public static int GetAmountOfPlayedPlyMoves(string fen)
+        {
+            string colorToPlay = GetColorToPlayFromFen(fen);
+            int fullMoves = GetFullmoves(fen);
+
+            return colorToPlay == "w" ? fullMoves * 2 : fullMoves * 2 - 1;
+        }
+
+        public static int GetFullmoves(string fen)
+        {
+            return Convert.ToInt32(fen.Split(' ').Last());
         }
 
         public static string GetColorToPlayFromFen(string fen)

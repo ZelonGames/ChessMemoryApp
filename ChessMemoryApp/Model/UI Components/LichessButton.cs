@@ -20,33 +20,32 @@ namespace ChessMemoryApp.Model.UI_Components
     {
         public readonly UIChessBoard chessBoard;
         public readonly ExplorerMove move;
-        public readonly Button button;
+        public readonly ListButton listButton;
 
         public delegate void RequestNewFenEventHandler(string fen, ExplorerMove move);
         public static event RequestNewFenEventHandler Clicked;
 
-        private MovedPieceData? reversedMovedPieceData = null;
         private bool isClickingButton = false;
         private readonly string initialFen;
         private readonly string previewFen;
 
-        public string Text => button.Text;
+        public string Text => listButton.button.Text;
 
-        public LichessButton(UIChessBoard chessBoard, Button button, ExplorerMove move)
+        public LichessButton(UIChessBoard chessBoard, ListButton button, ExplorerMove move)
         {
             initialFen = chessBoard.chessBoardData.GetPositionFen();
             previewFen = FenHelper.MakeMoveWithCoordinates(initialFen, move.MoveNotationCoordinates);
 
             this.chessBoard = chessBoard;
             this.move = move;
-            this.button = button;
+            this.listButton = button;
 
-            button.Clicked += OnClicked;
+            listButton.button.Clicked += OnClicked;
 
             var pointer = new PointerGestureRecognizer();
             pointer.PointerEntered += OnPointerEntered;
             pointer.PointerExited += OnPointerExited;
-            button.GestureRecognizers.Add(pointer);
+            listButton.button.GestureRecognizers.Add(pointer);
         }
 
         private void OnPointerExited(object sender, PointerEventArgs e)
