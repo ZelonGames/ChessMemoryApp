@@ -301,7 +301,7 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         public static int GetFullmoves(string fen)
         {
-            return Convert.ToInt32(fen.Split(' ').Last());
+            return Convert.ToInt32(fen.Split(' ').Last()) - 1;
         }
 
         public static string GetColorToPlayFromFen(string fen)

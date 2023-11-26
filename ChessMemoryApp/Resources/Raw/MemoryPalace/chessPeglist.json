@@ -1,0 +1,328 @@
+{
+  "pegs": [
+    {
+      "number": 11,
+      "peg": "tuta|potatis"
+    },
+    {
+      "number": 12,
+      "peg": "tand|batong"
+    },
+    {
+      "number": 13,
+      "peg": "atom|stämpel"
+    },
+    {
+      "number": 14,
+      "peg": "dörr|batteri"
+    },
+    {
+      "number": 15,
+      "peg": "ödla|paddel"
+    },
+    {
+      "number": 16,
+      "peg": "dusch|watch"
+    },
+    {
+      "number": 17,
+      "peg": "deg|badkar"
+    },
+    {
+      "number": 18,
+      "peg": "TV|stav"
+    },
+    {
+      "number": 19,
+      "peg": "tupp|stubbe"
+    },
+    {
+      "number": 21,
+      "peg": "ande|band"
+    },
+    {
+      "number": 22,
+      "peg": "ugn|banan"
+    },
+    {
+      "number": 23,
+      "peg": "nummerlapp|Nemo"
+    },
+    {
+      "number": 24,
+      "peg": "norrsken|snorkel"
+    },
+    {
+      "number": 25,
+      "peg": "ängel|synål"
+    },
+    {
+      "number": 26,
+      "peg": "en skylt|?"
+    },
+    {
+      "number": 27,
+      "peg": "nyckel|bänk"
+    },
+    {
+      "number": 28,
+      "peg": "näve|sängöverkast"
+    },
+    {
+      "number": 29,
+      "peg": "napp|snabel"
+    },
+    {
+      "number": 31,
+      "peg": "mat|smet"
+    },
+    {
+      "number": 32,
+      "peg": "magnet|måne"
+    },
+    {
+      "number": 33,
+      "peg": "mamma|Mime"
+    },
+    {
+      "number": 34,
+      "peg": "mur|smör"
+    },
+    {
+      "number": 35,
+      "peg": "melon|bomull"
+    },
+    {
+      "number": 36,
+      "peg": "majs|symaskin"
+    },
+    {
+      "number": 37,
+      "peg": "macka|mygga"
+    },
+    {
+      "number": 38,
+      "peg": "muffins|mafia"
+    },
+    {
+      "number": 39,
+      "peg": "moppe|bomb"
+    },
+    {
+      "number": 41,
+      "peg": "radio|bröd"
+    },
+    {
+      "number": 42,
+      "peg": "ring|brunn"
+    },
+    {
+      "number": 43,
+      "peg": "orm|pärm"
+    },
+    {
+      "number": 44,
+      "peg": "rör|borrar"
+    },
+    {
+      "number": 45,
+      "peg": "rulle|Ariel"
+    },
+    {
+      "number": 46,
+      "peg": "orgel|borg"
+    },
+    {
+      "number": 47,
+      "peg": "orkan|prick"
+    },
+    {
+      "number": 48,
+      "peg": "röv|brev"
+    },
+    {
+      "number": 49,
+      "peg": "rep|propp"
+    },
+    {
+      "number": 51,
+      "peg": "eld|blod"
+    },
+    {
+      "number": 52,
+      "peg": "linne|ballong"
+    },
+    {
+      "number": 53,
+      "peg": "limm|blomma"
+    },
+    {
+      "number": 54,
+      "peg": "larm|bilar"
+    },
+    {
+      "number": 55,
+      "peg": "el|öl"
+    },
+    {
+      "number": 56,
+      "peg": "olja|blöja"
+    },
+    {
+      "number": 57,
+      "peg": "lego|pulka"
+    },
+    {
+      "number": 58,
+      "peg": "lava|pulver"
+    },
+    {
+      "number": 59,
+      "peg": "lapp|blåbär"
+    },
+    {
+      "number": 61,
+      "peg": "sked|borste"
+    },
+    {
+      "number": 62,
+      "peg": "hjärna|björn"
+    },
+    {
+      "number": 63,
+      "peg": "schampo|pyjamas"
+    },
+    {
+      "number": 64,
+      "peg": "skärp|björk"
+    },
+    {
+      "number": 65,
+      "peg": "kjol|bjälke"
+    },
+    {
+      "number": 66,
+      "peg": "sjöstjärna|tjej"
+    },
+    {
+      "number": 67,
+      "peg": "choklad|pojke"
+    },
+    {
+      "number": 68,
+      "peg": "tjuv|gevär"
+    },
+    {
+      "number": 69,
+      "peg": "chips|käpp"
+    },
+    {
+      "number": 71,
+      "peg": "kort|skoter"
+    },
+    {
+      "number": 72,
+      "peg": "kanna|bikini"
+    },
+    {
+      "number": 73,
+      "peg": "komet|skum"
+    },
+    {
+      "number": 74,
+      "peg": "gren|sugrör"
+    },
+    {
+      "number": 75,
+      "peg": "kula|skal"
+    },
+    {
+      "number": 76,
+      "peg": "koja|skorssten"
+    },
+    {
+      "number": 77,
+      "peg": "kakao|skugga"
+    },
+    {
+      "number": 78,
+      "peg": "kaffekopp|skarf"
+    },
+    {
+      "number": 79,
+      "peg": "kappa|skopa"
+    },
+    {
+      "number": 81,
+      "peg": "ved|vete"
+    },
+    {
+      "number": 82,
+      "peg": "vinge|svans"
+    },
+    {
+      "number": 83,
+      "peg": "fe-magi|svamp"
+    },
+    {
+      "number": 84,
+      "peg": "varg|fyr"
+    },
+    {
+      "number": 85,
+      "peg": "fiol|bowling"
+    },
+    {
+      "number": 86,
+      "peg": "affisch|fjärt"
+    },
+    {
+      "number": 87,
+      "peg": "våg|påfågel"
+    },
+    {
+      "number": 88,
+      "peg": "våffla|svävare"
+    },
+    {
+      "number": 89,
+      "peg": "vapen"
+    },
+    {
+      "number": 91,
+      "peg": "batteri"
+    },
+    {
+      "number": 92,
+      "peg": "pensel"
+    },
+    {
+      "number": 93,
+      "peg": "pumpa"
+    },
+    {
+      "number": 94,
+      "peg": "bur"
+    },
+    {
+      "number": 95,
+      "peg": "pil"
+    },
+    {
+      "number": 96,
+      "peg": "bajs"
+    },
+    {
+      "number": 97,
+      "peg": "bikini"
+    },
+    {
+      "number": 98,
+      "peg": "bowlingklot"
+    },
+    {
+      "number": 99,
+      "peg": "bubblor"
+    }
+  ]
+}

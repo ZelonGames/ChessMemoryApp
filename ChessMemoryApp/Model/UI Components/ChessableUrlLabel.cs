@@ -1,6 +1,7 @@
 ﻿using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.ChessMoveLogic;
 using ChessMemoryApp.Model.CourseMaker;
+using ChessMemoryApp.Model.Variations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace ChessMemoryApp.Model.UI_Components
 {
     public class ChessableUrlLabel
     {
+        private readonly CustomVariation customVariation;
         private readonly Course course;
         private string url;
 
@@ -25,6 +27,14 @@ namespace ChessMemoryApp.Model.UI_Components
             this.course = course;
         }
 
+        public ChessableUrlLabel(Label label, UIChessBoard chessboard, CustomVariation customVariation)
+        {
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
+            label.GestureRecognizers.Add(tapGestureRecognizer);
+            url = FenHelper.ConvertFenToChessableUrl(customVariation.moves[customVariation.moves.Count - 2].fen, customVariation.Course.chessableCourseID.ToString());
+        }
+
         private void OnChangedPieces(string fen)
         {
             url = FenHelper.ConvertFenToChessableUrl(fen, course.chessableCourseID.ToString());
@@ -34,6 +44,7 @@ namespace ChessMemoryApp.Model.UI_Components
         {
             try
             {
+                
                 await Launcher.OpenAsync(url);
             }
             catch

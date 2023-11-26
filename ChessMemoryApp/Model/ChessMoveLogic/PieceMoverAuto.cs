@@ -19,7 +19,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         public delegate void MovedPieceEventHandler(string fen);
         public event MovedPieceEventHandler MovedPiece;
 
-        public event Action<Move> MadeChessableMove;
+        public delegate void ChessableMoveEventHandler(string moveNotationCoordinates, Move move);
+        public event ChessableMoveEventHandler MadeChessableMove;
         public event Action<Move> MadePreviousChessableMove;
 
         public delegate void MadeLichessMoveEventHandler(string fen, ExplorerMove move);
@@ -48,8 +49,11 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             Piece.ColorType pieceColor = chessBoard.boardColorOrientation;
             string moveNotationCoordinates = BoardHelper.GetMoveNotationCoordinates(chessBoard, move.MoveNotation, pieceColor);
 
+            if (moveNotationCoordinates == null)
+                return;
+
             chessBoard.MakeMove(moveNotationCoordinates);
-            MadeChessableMove?.Invoke(move);
+            MadeChessableMove?.Invoke(moveNotationCoordinates, move);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, moveNotationCoordinates, move.Fen);
         }
 
@@ -61,7 +65,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
             chessBoard.MakeMove(move.MoveNotationCoordinates);
             MadeLichessMove?.Invoke(fen, move);
             
-            Piece.ColorType color = chessBoard.boardColorOrientation;
+            Piece.ColorType color = Piece.GetOppositeColor(chessBoard.boardColorOrientation);
             MadeMoveFen?.Invoke(MoveHistory.MoveSource.Lichess, color, move.MoveNotation, move.MoveNotationCoordinates, fen);
         }
 

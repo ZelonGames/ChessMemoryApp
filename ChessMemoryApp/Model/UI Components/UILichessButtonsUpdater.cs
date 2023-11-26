@@ -43,7 +43,8 @@ namespace ChessMemoryApp.Model.UI_Components
                         if (!isCorrectVariation)
                             continue;
 
-                        if (variation.moves[plyMoves].MoveNotation == lichessButton.move.MoveNotation)
+                        if (variation.moves[plyMoves].MoveNotation == lichessButton.move.MoveNotation &&
+                            variation.moves.Count > plyMoves)
                         {
                             isValidLichessButton = true;
                             break;

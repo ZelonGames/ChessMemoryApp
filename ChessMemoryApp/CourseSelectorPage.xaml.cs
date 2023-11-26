@@ -1,4 +1,4 @@
-using ChessMemoryApp.Model.Chess_Board;
+﻿using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Services;
 using ChessMemoryApp.Model;
@@ -7,6 +7,7 @@ using Microsoft.Maui.Controls.Internals;
 using ChessMemoryApp.Model.Game_Analysing;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.Threat_Finder;
+using ChessMemoryApp.Model.PegList;
 
 namespace ChessMemoryApp;
 
@@ -25,6 +26,32 @@ public partial class CourseSelectorPage : ContentPage
         selectorPageController = new SelectorPageController<CourseChessboard>(customVariationBoards, coursesLayout);
         Appearing += Appeared;
         SizeChanged += selectorPageController.Window_SizeChanged;
+    }
+
+
+
+    private static int GetAmountOfUniquePositions(Dictionary<string, Course> courses)
+    {
+        var positions = new HashSet<string>();
+
+        foreach (Course course in courses.Values)
+        {
+            foreach (var chapter in course.GetChapters())
+            {
+                foreach (var variation in chapter.Value.GetVariations())
+                {
+                    if (variation.Key.Contains("Information"))
+                        continue;
+
+                    foreach (var move in variation.Value.moves)
+                    {
+                        positions.Add(move.Fen);
+                    }
+                }
+            }
+        }
+
+        return positions.Count;
     }
 
     public async void Appeared(object sender, EventArgs e)
@@ -47,6 +74,10 @@ public partial class CourseSelectorPage : ContentPage
         if (startingCourseCount == 0)
             await courseLoader.LoadCoursesFromFile();
         #endregion
+
+        var chessToPeg = new ChessToPegConverter(await PegCollection.LoadPegCollection());
+        Chapter quickstarterGuide = courses["Lifetime Repertoires Kan Sicilian"].GetChapter("Quickstarter Guide");
+        var a = chessToPeg.GetPegListsFromChapter(quickstarterGuide);
 
         #region Load Chessboards from courses
         foreach (var course in courses)

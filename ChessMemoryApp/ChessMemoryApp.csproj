@@ -77,6 +77,9 @@
 	  <None Remove="Resources\Raw\Courses\Smash the Scandinavian Defense.json" />
 	  <None Remove="Resources\Raw\Courses\The Grand Ruy Lopez.json" />
 	  <None Remove="Resources\Raw\lichess_DarkGrisen_2023-08-12.pgn" />
+	  <None Remove="Resources\Raw\MemoryPalace\chessPeglist.json" />
+	  <None Remove="Resources\Raw\MemoryPalace\peglist.json" />
+	  <None Remove="Resources\Raw\MemoryPalace\swe_wordlist.txt" />
 	  <None Remove="resources\raw\testGame.pgn" />
 	  <None Remove="resources\raw\testGame2.pgn" />
 	</ItemGroup>
@@ -117,6 +120,9 @@
 	  <MauiXaml Update="CustomVariationSelectorPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="MemoryPalacePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="SearchPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -127,6 +133,12 @@
 
 	<ItemGroup>
 	  <Folder Include="Resources\Raw\Saved Variations\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Update="Resources\Raw\MemoryPalace\chessPeglist.json">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </MauiAsset>
 	</ItemGroup>
 
 </Project>

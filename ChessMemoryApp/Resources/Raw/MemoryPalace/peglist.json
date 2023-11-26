@@ -1,0 +1,3406 @@
+{
+  "pegs": [
+    {
+      "number": 0,
+      "peg": "zeus"
+    },
+    {
+      "number": 1,
+      "peg": "syster"
+    },
+    {
+      "number": 2,
+      "peg": "assassin"
+    },
+    {
+      "number": 3,
+      "peg": "sesamfrö"
+    },
+    {
+      "number": 11,
+      "peg": "stöt"
+    },
+    {
+      "number": 19,
+      "peg": "stubbe"
+    },
+    {
+      "number": 14,
+      "peg": "styre"
+    },
+    {
+      "number": 28,
+      "peg": "snuva"
+    },
+    {
+      "number": 32,
+      "peg": "sömn"
+    },
+    {
+      "number": 33,
+      "peg": "simmaskin"
+    },
+    {
+      "number": 34,
+      "peg": "smör"
+    },
+    {
+      "number": 37,
+      "peg": "smyga"
+    },
+    {
+      "number": 42,
+      "peg": "siren"
+    },
+    {
+      "number": 44,
+      "peg": "surar"
+    },
+    {
+      "number": 45,
+      "peg": "isrally"
+    },
+    {
+      "number": 63,
+      "peg": "sojamacka"
+    },
+    {
+      "number": 73,
+      "peg": "skum"
+    },
+    {
+      "number": 78,
+      "peg": "skarf"
+    },
+    {
+      "number": 100,
+      "peg": "disease"
+    },
+    {
+      "number": 101,
+      "peg": "Tyst"
+    },
+    {
+      "number": 102,
+      "peg": "Tusen (tusenlapp)"
+    },
+    {
+      "number": 103,
+      "peg": "decimal"
+    },
+    {
+      "number": 104,
+      "peg": "dessert"
+    },
+    {
+      "number": 105,
+      "peg": "diesel (bränsle)"
+    },
+    {
+      "number": 106,
+      "peg": "outsider"
+    },
+    {
+      "number": 107,
+      "peg": "disk"
+    },
+    {
+      "number": 108,
+      "peg": "utsövd"
+    },
+    {
+      "number": 109,
+      "peg": "tespade--"
+    },
+    {
+      "number": 110,
+      "peg": "utedisko--"
+    },
+    {
+      "number": 111,
+      "peg": "udda tårta"
+    },
+    {
+      "number": 112,
+      "peg": "udda ton"
+    },
+    {
+      "number": 113,
+      "peg": "datum (kalenderbok)"
+    },
+    {
+      "number": 114,
+      "peg": "dator"
+    },
+    {
+      "number": 115,
+      "peg": "titel?"
+    },
+    {
+      "number": 116,
+      "peg": "udda doja"
+    },
+    {
+      "number": 117,
+      "peg": "återtåg?"
+    },
+    {
+      "number": 118,
+      "peg": "udda TV"
+    },
+    {
+      "number": 119,
+      "peg": "udda tupp"
+    },
+    {
+      "number": 120,
+      "peg": "tennis"
+    },
+    {
+      "number": 121,
+      "peg": "tant"
+    },
+    {
+      "number": 122,
+      "peg": "dygna"
+    },
+    {
+      "number": 123,
+      "peg": "tung imma"
+    },
+    {
+      "number": 124,
+      "peg": "tyngre?"
+    },
+    {
+      "number": 125,
+      "peg": "tunnel"
+    },
+    {
+      "number": 126,
+      "peg": "tung jojo"
+    },
+    {
+      "number": 127,
+      "peg": "tank"
+    },
+    {
+      "number": 128,
+      "peg": "tunn fe"
+    },
+    {
+      "number": 129,
+      "peg": "tunnbröd"
+    },
+    {
+      "number": 130,
+      "peg": "tom ask"
+    },
+    {
+      "number": 131,
+      "peg": "tomat"
+    },
+    {
+      "number": 132,
+      "peg": "demon"
+    },
+    {
+      "number": 133,
+      "peg": "dum magi"
+    },
+    {
+      "number": 134,
+      "peg": "ät myra"
+    },
+    {
+      "number": 135,
+      "peg": "utmåla?"
+    },
+    {
+      "number": 136,
+      "peg": "tämja?"
+    },
+    {
+      "number": 137,
+      "peg": "dammig"
+    },
+    {
+      "number": 138,
+      "peg": "tom fackla"
+    },
+    {
+      "number": 139,
+      "peg": "dimpa"
+    },
+    {
+      "number": 140,
+      "peg": "trosa"
+    },
+    {
+      "number": 141,
+      "peg": "träd"
+    },
+    {
+      "number": 142,
+      "peg": "terräng"
+    },
+    {
+      "number": 143,
+      "peg": "trumma"
+    },
+    {
+      "number": 144,
+      "peg": "darrar"
+    },
+    {
+      "number": 145,
+      "peg": "troll"
+    },
+    {
+      "number": 146,
+      "peg": "tröja"
+    },
+    {
+      "number": 147,
+      "peg": "dryck"
+    },
+    {
+      "number": 148,
+      "peg": "druva"
+    },
+    {
+      "number": 149,
+      "peg": "trappa"
+    },
+    {
+      "number": 150,
+      "peg": "ett luciatåg"
+    },
+    {
+      "number": 151,
+      "peg": "tält"
+    },
+    {
+      "number": 152,
+      "peg": "odling"
+    },
+    {
+      "number": 153,
+      "peg": "utelamm--"
+    },
+    {
+      "number": 154,
+      "peg": "artilleri"
+    },
+    {
+      "number": 155,
+      "peg": "ett lillfinger"
+    },
+    {
+      "number": 156,
+      "peg": "dölja"
+    },
+    {
+      "number": 157,
+      "peg": "dolk"
+    },
+    {
+      "number": 158,
+      "peg": "tolva (klockan)"
+    },
+    {
+      "number": 159,
+      "peg": "ett löpband"
+    },
+    {
+      "number": 160,
+      "peg": "uteljus--"
+    },
+    {
+      "number": 161,
+      "peg": "tesked"
+    },
+    {
+      "number": 162,
+      "peg": "ett gäng"
+    },
+    {
+      "number": 163,
+      "peg": "ett schema"
+    },
+    {
+      "number": 164,
+      "peg": "duschar?"
+    },
+    {
+      "number": 165,
+      "peg": "ett hjul"
+    },
+    {
+      "number": 166,
+      "peg": "tetjej--"
+    },
+    {
+      "number": 167,
+      "peg": "ett jack"
+    },
+    {
+      "number": 168,
+      "peg": "tetjuv--"
+    },
+    {
+      "number": 169,
+      "peg": "tejp"
+    },
+    {
+      "number": 170,
+      "peg": "taxi"
+    },
+    {
+      "number": 171,
+      "peg": "IDkort"
+    },
+    {
+      "number": 172,
+      "peg": "tecken"
+    },
+    {
+      "number": 173,
+      "peg": "tuggummi"
+    },
+    {
+      "number": 174,
+      "peg": "tiger"
+    },
+    {
+      "number": 175,
+      "peg": "tegel"
+    },
+    {
+      "number": 176,
+      "peg": "utekoja--"
+    },
+    {
+      "number": 177,
+      "peg": "taggig"
+    },
+    {
+      "number": 178,
+      "peg": "takfel--"
+    },
+    {
+      "number": 179,
+      "peg": "dagbok"
+    },
+    {
+      "number": 180,
+      "peg": "tafsa?"
+    },
+    {
+      "number": 181,
+      "peg": "tefat"
+    },
+    {
+      "number": 182,
+      "peg": "duvunge"
+    },
+    {
+      "number": 183,
+      "peg": "tuff mur"
+    },
+    {
+      "number": 184,
+      "peg": "tuffar (tåg)"
+    },
+    {
+      "number": 185,
+      "peg": "tvål"
+    },
+    {
+      "number": 186,
+      "peg": "tvärs"
+    },
+    {
+      "number": 187,
+      "peg": "utväg"
+    },
+    {
+      "number": 188,
+      "peg": "tvivlar"
+    },
+    {
+      "number": 189,
+      "peg": "utefobi--"
+    },
+    {
+      "number": 190,
+      "peg": "tepåse"
+    },
+    {
+      "number": 191,
+      "peg": "tapet"
+    },
+    {
+      "number": 192,
+      "peg": "Tbana"
+    },
+    {
+      "number": 193,
+      "peg": "tuppmöte--"
+    },
+    {
+      "number": 194,
+      "peg": "dubbar"
+    },
+    {
+      "number": 195,
+      "peg": "tabell?"
+    },
+    {
+      "number": 196,
+      "peg": "tappa skit"
+    },
+    {
+      "number": 197,
+      "peg": "ordbok?"
+    },
+    {
+      "number": 198,
+      "peg": "tappa fallskärm"
+    },
+    {
+      "number": 199,
+      "peg": "ät papper"
+    },
+    {
+      "number": 200,
+      "peg": "nässtopp--"
+    },
+    {
+      "number": 201,
+      "peg": "näste"
+    },
+    {
+      "number": 202,
+      "peg": "insnöad"
+    },
+    {
+      "number": 203,
+      "peg": "ensam?"
+    },
+    {
+      "number": 204,
+      "peg": "nosar?"
+    },
+    {
+      "number": 205,
+      "peg": "nässla"
+    },
+    {
+      "number": 206,
+      "peg": "ny sårskorpa"
+    },
+    {
+      "number": 207,
+      "peg": "önska?"
+    },
+    {
+      "number": 208,
+      "peg": "ny soffa"
+    },
+    {
+      "number": 209,
+      "peg": "nyspapper--"
+    },
+    {
+      "number": 210,
+      "peg": "andas"
+    },
+    {
+      "number": 211,
+      "peg": "intet"
+    },
+    {
+      "number": 212,
+      "peg": "antenn"
+    },
+    {
+      "number": 213,
+      "peg": "ungdom?"
+    },
+    {
+      "number": 214,
+      "peg": "natur"
+    },
+    {
+      "number": 215,
+      "peg": "intill?"
+    },
+    {
+      "number": 216,
+      "peg": "nyttja?"
+    },
+    {
+      "number": 217,
+      "peg": "onödig"
+    },
+    {
+      "number": 218,
+      "peg": "notifikation"
+    },
+    {
+      "number": 219,
+      "peg": "nordpolen"
+    },
+    {
+      "number": 220,
+      "peg": "ananas"
+    },
+    {
+      "number": 221,
+      "peg": "nintendo"
+    },
+    {
+      "number": 222,
+      "peg": "ingen nål"
+    },
+    {
+      "number": 223,
+      "peg": "anonym?"
+    },
+    {
+      "number": 224,
+      "peg": "ingen ruta"
+    },
+    {
+      "number": 225,
+      "peg": "en nalle"
+    },
+    {
+      "number": 226,
+      "peg": "ninja"
+    },
+    {
+      "number": 227,
+      "peg": "ingen kamm"
+    },
+    {
+      "number": 228,
+      "peg": "ingen fotboll"
+    },
+    {
+      "number": 229,
+      "peg": "ingen present"
+    },
+    {
+      "number": 230,
+      "peg": "en mössa"
+    },
+    {
+      "number": 231,
+      "peg": "nämnd?"
+    },
+    {
+      "number": 232,
+      "peg": "namn?"
+    },
+    {
+      "number": 233,
+      "peg": "en mumsare"
+    },
+    {
+      "number": 234,
+      "peg": "nummer"
+    },
+    {
+      "number": 235,
+      "peg": "anmäla?"
+    },
+    {
+      "number": 236,
+      "peg": "en maskin"
+    },
+    {
+      "number": 237,
+      "peg": "en mygga"
+    },
+    {
+      "number": 238,
+      "peg": "en maffia?"
+    },
+    {
+      "number": 239,
+      "peg": "en mapp"
+    },
+    {
+      "number": 240,
+      "peg": "en ros"
+    },
+    {
+      "number": 241,
+      "peg": "norrut"
+    },
+    {
+      "number": 242,
+      "peg": "näring?"
+    },
+    {
+      "number": 243,
+      "peg": "enorm"
+    },
+    {
+      "number": 244,
+      "peg": "ångrar?"
+    },
+    {
+      "number": 245,
+      "peg": "en rulle"
+    },
+    {
+      "number": 246,
+      "peg": "energi"
+    },
+    {
+      "number": 247,
+      "peg": "en rock"
+    },
+    {
+      "number": 248,
+      "peg": "nerv"
+    },
+    {
+      "number": 249,
+      "peg": "anropa"
+    },
+    {
+      "number": 250,
+      "peg": "analys"
+    },
+    {
+      "number": 251,
+      "peg": "en eld"
+    },
+    {
+      "number": 252,
+      "peg": "en lina"
+    },
+    {
+      "number": 253,
+      "peg": "en lampa"
+    },
+    {
+      "number": 254
+    },
+    {
+      "number": 255
+    },
+    {
+      "number": 256
+    },
+    {
+      "number": 257
+    },
+    {
+      "number": 258
+    },
+    {
+      "number": 259
+    },
+    {
+      "number": 260
+    },
+    {
+      "number": 261,
+      "peg": "nöjd"
+    },
+    {
+      "number": 262,
+      "peg": "en stjärna"
+    },
+    {
+      "number": 263,
+      "peg": "en sjöman"
+    },
+    {
+      "number": 264,
+      "peg": "njure"
+    },
+    {
+      "number": 265,
+      "peg": "en kjol"
+    },
+    {
+      "number": 266
+    },
+    {
+      "number": 267,
+      "peg": "injaga"
+    },
+    {
+      "number": 268
+    },
+    {
+      "number": 269,
+      "peg": "inköp?"
+    },
+    {
+      "number": 270,
+      "peg": "nix?"
+    },
+    {
+      "number": 271,
+      "peg": "knockout"
+    },
+    {
+      "number": 272,
+      "peg": "naken"
+    },
+    {
+      "number": 273
+    },
+    {
+      "number": 274,
+      "peg": "ankare"
+    },
+    {
+      "number": 275,
+      "peg": "nyckel"
+    },
+    {
+      "number": 276,
+      "peg": "en kurs"
+    },
+    {
+      "number": 277
+    },
+    {
+      "number": 278,
+      "peg": "en kvist"
+    },
+    {
+      "number": 279
+    },
+    {
+      "number": 280,
+      "peg": "nafsa"
+    },
+    {
+      "number": 281,
+      "peg": "infart"
+    },
+    {
+      "number": 282
+    },
+    {
+      "number": 283
+    },
+    {
+      "number": 284,
+      "peg": "ingefära"
+    },
+    {
+      "number": 285,
+      "peg": "anfall"
+    },
+    {
+      "number": 286
+    },
+    {
+      "number": 287
+
+    },
+    {
+      "number": 288
+    },
+    {
+      "number": 289
+    },
+    {
+      "number": 290,
+      "peg": "anpassa"
+    },
+    {
+      "number": 291
+    },
+    {
+      "number": 292,
+      "peg": "nypon"
+    },
+    {
+      "number": 293
+    },
+    {
+      "number": 294,
+      "peg": "nappar"
+    },
+    {
+      "number": 295
+    },
+    {
+      "number": 296
+    },
+    {
+      "number": 297,
+      "peg": "nybygge?"
+    },
+    {
+      "number": 298
+    },
+    {
+      "number": 299
+    },
+    {
+      "number": 300,
+      "peg": "Moses"
+    },
+    {
+      "number": 301,
+      "peg": "mast"
+    },
+    {
+      "number": 302,
+      "peg": "amason?"
+    },
+    {
+      "number": 303,
+      "peg": "museum"
+    },
+    {
+      "number": 304,
+      "peg": "mosar"
+    },
+    {
+      "number": 305,
+      "peg": "mysli"
+    },
+    {
+      "number": 306,
+      "peg": "massage?"
+    },
+    {
+      "number": 307,
+      "peg": "mask"
+    },
+    {
+      "number": 308,
+      "peg": "massiv"
+    },
+    {
+      "number": 309
+    },
+    {
+      "number": 310,
+      "peg": "mötas?"
+    },
+    {
+      "number": 311,
+      "peg": "metod?"
+    },
+    {
+      "number": 312,
+      "peg": "modern?"
+    },
+    {
+      "number": 313,
+      "peg": "modem"
+    },
+    {
+      "number": 314,
+      "peg": "mördare"
+    },
+    {
+      "number": 315,
+      "peg": "metall"
+    },
+    {
+      "number": 316,
+      "peg": "midja"
+    },
+    {
+      "number": 317,
+      "peg": "modig?"
+    },
+    {
+      "number": 318
+    },
+    {
+      "number": 319
+    },
+    {
+      "number": 320,
+      "peg": "minus"
+    },
+    {
+      "number": 321,
+      "peg": "manet"
+    },
+    {
+      "number": 322,
+      "peg": "magnet"
+    },
+    {
+      "number": 323,
+      "peg": "minimal"
+    },
+    {
+      "number": 324,
+      "peg": "månar"
+    },
+    {
+      "number": 325,
+      "peg": "manual?"
+    },
+    {
+      "number": 326,
+      "peg": "människa"
+    },
+    {
+      "number": 327,
+      "peg": "munk"
+    },
+    {
+      "number": 328
+    },
+    {
+      "number": 329
+    },
+    {
+      "number": 330,
+      "peg": "mumsa"
+    },
+    {
+      "number": 331
+    },
+    {
+      "number": 332
+    },
+    {
+      "number": 333,
+      "peg": "måmums"
+    },
+    {
+      "number": 334,
+      "peg": "memoarer"
+    },
+    {
+      "number": 335,
+      "peg": "mumla?"
+    },
+    {
+      "number": 336
+    },
+    {
+      "number": 337
+    },
+    {
+      "number": 338,
+      "peg": "öm maffia"
+    },
+    {
+      "number": 339
+    },
+    {
+      "number": 340
+    },
+    {
+      "number": 341,
+      "peg": "morot"
+    },
+    {
+      "number": 342,
+      "peg": "omringa"
+    },
+    {
+      "number": 343
+    },
+    {
+      "number": 344,
+      "peg": "morrar"
+    },
+    {
+      "number": 345,
+      "peg": "moral"
+    },
+    {
+      "number": 346
+    },
+    {
+      "number": 347,
+      "peg": "mörk?"
+    },
+    {
+      "number": 348
+    },
+    {
+      "number": 349
+    },
+    {
+      "number": 350
+    },
+    {
+      "number": 351,
+      "peg": "melodi"
+    },
+    {
+      "number": 352,
+      "peg": "melon"
+    },
+    {
+      "number": 353,
+      "peg": "malm"
+    },
+    {
+      "number": 354,
+      "peg": "målare"
+    },
+    {
+      "number": 355,
+      "peg": "mållös"
+    },
+    {
+      "number": 356
+    },
+    {
+      "number": 357,
+      "peg": "molekyl"
+    },
+    {
+      "number": 358
+    },
+    {
+      "number": 359
+    },
+    {
+      "number": 360,
+      "peg": "majs"
+    },
+    {
+      "number": 361
+    },
+    {
+      "number": 362,
+      "peg": "mojäng (minecraft)"
+    },
+    {
+      "number": 363,
+      "peg": "mors måltid"
+    },
+    {
+      "number": 364,
+      "peg": "omskära?"
+    },
+    {
+      "number": 365,
+      "peg": "mjöl"
+    },
+    {
+      "number": 366
+    },
+    {
+      "number": 367,
+      "peg": "mjuk"
+    },
+    {
+      "number": 368
+    },
+    {
+      "number": 369
+    },
+    {
+      "number": 370,
+      "peg": "mix?"
+    },
+    {
+      "number": 371,
+      "peg": "makt?"
+    },
+    {
+      "number": 372,
+      "peg": "omogen"
+    },
+    {
+      "number": 373
+    },
+    {
+      "number": 374,
+      "peg": "mikro"
+    },
+    {
+      "number": 375,
+      "peg": "mögel?"
+    },
+    {
+      "number": 376
+    },
+    {
+      "number": 378
+    },
+    {
+      "number": 379
+    },
+    {
+      "number": 380
+    },
+    {
+      "number": 381
+    },
+    {
+      "number": 382,
+      "peg": "muffin"
+    },
+    {
+      "number": 383
+    },
+    {
+      "number": 384
+    },
+    {
+      "number": 385
+    },
+    {
+      "number": 386
+    },
+    {
+      "number": 387,
+      "peg": "maffig?"
+    },
+    {
+      "number": 388
+    },
+    {
+      "number": 389
+    },
+    {
+      "number": 390
+    },
+    {
+      "number": 391,
+      "peg": "moped"
+    },
+    {
+      "number": 392
+    },
+    {
+      "number": 393
+    },
+    {
+      "number": 394,
+      "peg": "mobbar?"
+    },
+    {
+      "number": 395,
+      "peg": "möbel?"
+    },
+    {
+      "number": 396
+    },
+    {
+      "number": 397
+    },
+    {
+      "number": 398
+    },
+    {
+      "number": 399
+    },
+    {
+      "number": 400,
+      "peg": "rosor"
+    },
+    {
+      "number": 401,
+      "peg": "rosett"
+    },
+    {
+      "number": 402,
+      "peg": "russin"
+    },
+    {
+      "number": 403,
+      "peg": "orosmoln"
+    },
+    {
+      "number": 404,
+      "peg": "resår"
+    },
+    {
+      "number": 405,
+      "peg": "urusel"
+    },
+    {
+      "number": 406,
+      "peg": "resurs?"
+    },
+    {
+      "number": 407,
+      "peg": "risig?"
+    },
+    {
+      "number": 408
+    },
+    {
+      "number": 409,
+      "peg": "raspolja?"
+    },
+    {
+      "number": 410,
+      "peg": "rädisa?"
+    },
+    {
+      "number": 411,
+      "peg": "rutit"
+    },
+    {
+      "number": 412,
+      "peg": "rodna"
+    },
+    {
+      "number": 413,
+      "peg": "rytm"
+    },
+    {
+      "number": 414,
+      "peg": "ritar"
+    },
+    {
+      "number": 415,
+      "peg": "rotlös"
+    },
+    {
+      "number": 416,
+      "peg": "redigera"
+    },
+    {
+      "number": 417,
+      "peg": "rötägg?"
+    },
+    {
+      "number": 418
+    },
+    {
+      "number": 419
+    },
+    {
+      "number": 420,
+      "peg": "rensa"
+    },
+    {
+      "number": 421,
+      "peg": "runt"
+    },
+    {
+      "number": 422,
+      "peg": "regn"
+    },
+    {
+      "number": 423,
+      "peg": "ringmur"
+    },
+    {
+      "number": 424,
+      "peg": "rånare"
+    },
+    {
+      "number": 425,
+      "peg": "ringla"
+    },
+    {
+      "number": 426,
+      "peg": "orange?"
+    },
+    {
+      "number": 427,
+      "peg": "rank?"
+    },
+    {
+      "number": 428
+    },
+    {
+      "number": 429
+    },
+    {
+      "number": 430,
+      "peg": "remsa"
+    },
+    {
+      "number": 431,
+      "peg": "rymd?"
+    },
+    {
+      "number": 432,
+      "peg": "roman"
+    },
+    {
+      "number": 433,
+      "peg": "ärmmagi"
+    },
+    {
+      "number": 434,
+      "peg": "armera"
+    },
+    {
+      "number": 435,
+      "peg": "ramla"
+    },
+    {
+      "number": 436
+    },
+    {
+      "number": 437
+    },
+    {
+      "number": 438
+    },
+    {
+      "number": 439,
+      "peg": "ramp"
+    },
+    {
+      "number": 440,
+      "peg": "råris"
+    },
+    {
+      "number": 441,
+      "peg": "rörtank"
+    },
+    {
+      "number": 442,
+      "peg": "raring?"
+    },
+    {
+      "number": 443,
+      "peg": "rörmokare"
+    },
+    {
+      "number": 444,
+      "peg": "rorör"
+    },
+    {
+      "number": 445
+    },
+    {
+      "number": 446,
+      "peg": "råröja"
+    },
+    {
+      "number": 447,
+      "peg": "rörig"
+    },
+    {
+      "number": 448,
+      "peg": "röraffär"
+    },
+    {
+      "number": 449
+    },
+    {
+      "number": 450,
+      "peg": "räls"
+    },
+    {
+      "number": 451,
+      "peg": "roulett"
+    },
+    {
+      "number": 452,
+      "peg": "rallyörn"
+    },
+    {
+      "number": 453
+    },
+    {
+      "number": 454,
+      "peg": "rullar"
+    },
+    {
+      "number": 455,
+      "peg": "rallylinje"
+    },
+    {
+      "number": 456
+    },
+    {
+      "number": 457,
+      "peg": "rörlig?"
+    },
+    {
+      "number": 458
+    },
+    {
+      "number": 459
+    },
+    {
+      "number": 460
+    },
+    {
+      "number": 461
+    },
+    {
+      "number": 462,
+      "peg": "råskinn"
+    },
+    {
+      "number": 463
+    },
+    {
+      "number": 464,
+      "peg": "rådjur"
+    },
+    {
+      "number": 465,
+      "peg": "orgel"
+    },
+    {
+      "number": 467
+    },
+    {
+      "number": 468
+    },
+    {
+      "number": 469
+    },
+    {
+      "number": 470
+    },
+    {
+      "number": 471,
+      "peg": "raket"
+    },
+    {
+      "number": 472,
+      "peg": "orkan"
+    },
+    {
+      "number": 473
+    },
+    {
+      "number": 474,
+      "peg": "raggare"
+    },
+    {
+      "number": 475
+    },
+    {
+      "number": 476
+    },
+    {
+      "number": 477,
+      "peg": "rökig"
+    },
+    {
+      "number": 478
+    },
+    {
+      "number": 479
+    },
+    {
+      "number": 480,
+      "peg": "rivas"
+    },
+    {
+      "number": 481
+    },
+    {
+      "number": 482,
+      "peg": "ravin"
+    },
+    {
+      "number": 483
+    },
+    {
+      "number": 484,
+      "peg": "rövare"
+    },
+    {
+      "number": 485,
+      "peg": "örfil"
+    },
+    {
+      "number": 486
+    },
+    {
+      "number": 487
+    },
+    {
+      "number": 488
+    },
+    {
+      "number": 489
+    },
+    {
+      "number": 490
+    },
+    {
+      "number": 491,
+      "peg": "robot"
+    },
+    {
+      "number": 492
+    },
+    {
+      "number": 493
+    },
+    {
+      "number": 494,
+      "peg": "rapar"
+    },
+    {
+      "number": 495,
+      "peg": "rebell?"
+    },
+    {
+      "number": 496
+    },
+    {
+      "number": 497,
+      "peg": "repig"
+    },
+    {
+      "number": 498
+    },
+    {
+      "number": 499
+    },
+    {
+      "number": 500,
+      "peg": "låsstopp"
+    },
+    {
+      "number": 501,
+      "peg": "lasta"
+    },
+    {
+      "number": 502,
+      "peg": "lasagne"
+    },
+    {
+      "number": 503
+    },
+    {
+      "number": 504,
+      "peg": "laser"
+    },
+    {
+      "number": 505
+    },
+    {
+      "number": 506
+    },
+    {
+      "number": 507,
+      "peg": "ilska"
+    },
+    {
+      "number": 508
+    },
+    {
+      "number": 509,
+      "peg": "läspa?"
+    },
+    {
+      "number": 510,
+      "peg": "låtsa"
+    },
+    {
+      "number": 511,
+      "peg": "laddad"
+    },
+    {
+      "number": 512,
+      "peg": "altan"
+    },
+    {
+      "number": 513,
+      "peg": "lärdom?"
+    },
+    {
+      "number": 514,
+      "peg": "lotteri"
+    },
+    {
+      "number": 515,
+      "peg": "lättöl"
+    },
+    {
+      "number": 516
+    },
+    {
+      "number": 517,
+      "peg": "olydig"
+    },
+    {
+      "number": 518
+    },
+    {
+      "number": 519
+    },
+    {
+      "number": 520,
+      "peg": "allians"
+    },
+    {
+      "number": 521,
+      "peg": "elände"
+    },
+    {
+      "number": 522,
+      "peg": "lingon"
+    },
+    {
+      "number": 523,
+      "peg": "lönnmord"
+    },
+    {
+      "number": 524,
+      "peg": "längre"
+    },
+    {
+      "number": 525
+    },
+    {
+      "number": 526,
+      "peg": "linje"
+    },
+    {
+      "number": 527,
+      "peg": "länk"
+    },
+    {
+      "number": 528
+    },
+    {
+      "number": 529
+    },
+    {
+      "number": 530
+    },
+    {
+      "number": 531
+    },
+    {
+      "number": 532,
+      "peg": "lämna?"
+    },
+    {
+      "number": 533,
+      "peg": "ullmumie"
+    },
+    {
+      "number": 534,
+      "peg": "limmar?"
+    },
+    {
+      "number": 535
+    },
+    {
+      "number": 536,
+      "peg": "lammkött"
+    },
+    {
+      "number": 537
+    },
+    {
+      "number": 538
+    },
+    {
+      "number": 539,
+      "peg": "lampa"
+    },
+    {
+      "number": 540
+    },
+    {
+      "number": 541
+    },
+    {
+      "number": 542
+    },
+    {
+      "number": 543,
+      "peg": "larm"
+    },
+    {
+      "number": 544,
+      "peg": "lärare?"
+    },
+    {
+      "number": 545
+    },
+    {
+      "number": 546
+    },
+    {
+      "number": 547,
+      "peg": "lurig?"
+    },
+    {
+      "number": 548,
+      "peg": "larv"
+    },
+    {
+      "number": 549
+    },
+    {
+      "number": 550,
+      "peg": "ullsäng"
+    },
+    {
+      "number": 551,
+      "peg": "ulllåda"
+    },
+    {
+      "number": 552,
+      "peg": "lillnagel"
+    },
+    {
+      "number": 553,
+      "peg": "lillmask"
+    },
+    {
+      "number": 554,
+      "peg": "lillråtta"
+    },
+    {
+      "number": 555,
+      "peg": "lilllakan"
+    },
+    {
+      "number": 556,
+      "peg": "lilja"
+    },
+    {
+      "number": 557,
+      "peg": "lälåga"
+    },
+    {
+      "number": 558,
+      "peg": ""
+    },
+    {
+      "number": 559
+    },
+    {
+      "number": 560,
+      "peg": "elljus"
+    },
+    {
+      "number": 561
+    },
+    {
+      "number": 562,
+      "peg": "illusion"
+    },
+    {
+      "number": 563,
+      "peg": "älgmjölk"
+    },
+    {
+      "number": 564,
+      "peg": "oljar"
+    },
+    {
+      "number": 565
+    },
+    {
+      "number": 566,
+      "peg": "älgjägare"
+    },
+    {
+      "number": 567
+    },
+    {
+      "number": 568
+    },
+    {
+      "number": 569
+    },
+    {
+      "number": 570,
+      "peg": "lax"
+    },
+    {
+      "number": 571,
+      "peg": "lykta"
+    },
+    {
+      "number": 572,
+      "peg": "lakan"
+    },
+    {
+      "number": 573,
+      "peg": "lagom?"
+    },
+    {
+      "number": 574,
+      "peg": "läger"
+    },
+    {
+      "number": 575
+    },
+    {
+      "number": 576
+    },
+    {
+      "number": 577,
+      "peg": "logik?"
+    },
+    {
+      "number": 578
+    },
+    {
+      "number": 579
+    },
+    {
+      "number": 580
+    },
+    {
+      "number": 581,
+      "peg": "luft"
+    },
+    {
+      "number": 582
+    },
+    {
+      "number": 583
+    },
+    {
+      "number": 584,
+      "peg": "luffare?"
+    },
+    {
+      "number": 585
+    },
+    {
+      "number": 586
+    },
+    {
+      "number": 587,
+      "peg": "livkrets"
+    },
+    {
+      "number": 588,
+      "peg": "lavafall"
+    },
+    {
+      "number": 589
+    },
+    {
+      "number": 590
+    },
+    {
+      "number": 591
+    },
+    {
+      "number": 592,
+      "peg": "alpin"
+    },
+    {
+      "number": 593,
+      "peg": "album?"
+    },
+    {
+      "number": 594,
+      "peg": "löpare"
+    },
+    {
+      "number": 595
+    },
+    {
+      "number": 596
+    },
+    {
+      "number": 597,
+      "peg": "läbbig?"
+    },
+    {
+      "number": 598
+    },
+    {
+      "number": 599
+    },
+    {
+      "number": 600,
+      "peg": "jössess?"
+    },
+    {
+      "number": 601,
+      "peg": "kista"
+    },
+    {
+      "number": 602
+    },
+    {
+      "number": 603
+    },
+    {
+      "number": 604,
+      "peg": "ljusår"
+    },
+    {
+      "number": 605,
+      "peg": "sjöslag"
+    },
+    {
+      "number": 606
+    },
+    {
+      "number": 607,
+      "peg": "kiosk"
+    },
+    {
+      "number": 608
+    },
+    {
+      "number": 609,
+      "peg": "gäspa"
+    },
+    {
+      "number": 610,
+      "peg": "aids?"
+    },
+    {
+      "number": 611,
+      "peg": "skjutit"
+    },
+    {
+      "number": 612,
+      "peg": "geting"
+    },
+    {
+      "number": 613
+    },
+    {
+      "number": 614,
+      "peg": "skördar?"
+    },
+    {
+      "number": 615
+    },
+    {
+      "number": 616,
+      "peg": "kedja"
+    },
+    {
+      "number": 617
+    },
+    {
+      "number": 618
+    },
+    {
+      "number": 619
+    },
+    {
+      "number": 620,
+      "peg": "jeans"
+    },
+    {
+      "number": 621,
+      "peg": "kind"
+    },
+    {
+      "number": 622,
+      "peg": "genuin?"
+    },
+    {
+      "number": 623,
+      "peg": "igenom"
+    },
+    {
+      "number": 624,
+      "peg": "tjänare?"
+    },
+    {
+      "number": 625,
+      "peg": "djungel"
+    },
+    {
+      "number": 626
+    },
+    {
+      "number": 627,
+      "peg": "sjunka"
+    },
+    {
+      "number": 628,
+      "peg": "jungfru"
+    },
+    {
+      "number": 629,
+      "peg": "örsnibb"
+    },
+    {
+      "number": 630,
+      "peg": "skämmas?"
+    },
+    {
+      "number": 631,
+      "peg": "skymta"
+    },
+    {
+      "number": 632,
+      "peg": "ojämn"
+    },
+    {
+      "number": 633,
+      "peg": "kemimapp"
+    },
+    {
+      "number": 634,
+      "peg": "skimra"
+    },
+    {
+      "number": 635,
+      "peg": "sjömil"
+    },
+    {
+      "number": 637,
+      "peg": "kemikalier?"
+    },
+    {
+      "number": 638,
+      "peg": "jämföra?"
+    },
+    {
+      "number": 639,
+      "peg": "schampo"
+    },
+    {
+      "number": 640,
+      "peg": "tjurcell"
+    },
+    {
+      "number": 641,
+      "peg": "charad?"
+    },
+    {
+      "number": 642,
+      "peg": "kärring"
+    },
+    {
+      "number": 643,
+      "peg": "skärm"
+    },
+    {
+      "number": 644,
+      "peg": "tjurar?"
+    },
+    {
+      "number": 645
+    },
+    {
+      "number": 646
+    },
+    {
+      "number": 647,
+      "peg": "kyrka"
+    },
+    {
+      "number": 648,
+      "peg": "sjörövare?"
+    },
+    {
+      "number": 649,
+      "peg": "skärp"
+    },
+    {
+      "number": 650,
+      "peg": "kylskåp?"
+    },
+    {
+      "number": 651,
+      "peg": "sköld"
+    },
+    {
+      "number": 652,
+      "peg": "gyllene"
+    },
+    {
+      "number": 653,
+      "peg": "hjälm"
+    },
+    {
+      "number": 654,
+      "peg": "källare"
+    },
+    {
+      "number": 655
+    },
+    {
+      "number": 656,
+      "peg": "skölja"
+    },
+    {
+      "number": 657,
+      "peg": "kälke"
+    },
+    {
+      "number": 658,
+      "peg": "julafton?"
+    },
+    {
+      "number": 659,
+      "peg": "kilobyte?"
+    },
+    {
+      "number": 660,
+      "peg": "kejsare?"
+    },
+    {
+      "number": 661
+    },
+    {
+      "number": 662,
+      "peg": "stjöstjärna"
+    },
+    {
+      "number": 663
+    },
+    {
+      "number": 664,
+      "peg": "tjejröst"
+    },
+    {
+      "number": 665
+    },
+    {
+      "number": 666,
+      "peg": "tjejjacka"
+    },
+    {
+      "number": 667,
+      "peg": "sjösjuk"
+    },
+    {
+      "number": 668
+    },
+    {
+      "number": 669,
+      "peg": "körsbär?"
+    },
+    {
+      "number": 670,
+      "peg": "tjockis"
+    },
+    {
+      "number": 671,
+      "peg": "jakt"
+    },
+    {
+      "number": 672,
+      "peg": "sjögång"
+    },
+    {
+      "number": 673,
+      "peg": "schackmatt"
+    },
+    {
+      "number": 674,
+      "peg": "joker"
+    },
+    {
+      "number": 675,
+      "peg": "jäkel"
+    },
+    {
+      "number": 676,
+      "peg": "sjukgymnast?"
+    },
+    {
+      "number": 677
+    },
+    {
+      "number": 678,
+      "peg": "sjukvård?"
+    },
+    {
+      "number": 679,
+      "peg": "jackpott"
+    },
+    {
+      "number": 680,
+      "peg": "gift?"
+    },
+    {
+      "number": 681
+    },
+    {
+      "number": 682,
+      "peg": "schvung?"
+    },
+    {
+      "number": 683
+    },
+    {
+      "number": 684,
+      "peg": "chaufför"
+    },
+    {
+      "number": 685,
+      "peg": "djävul"
+    },
+    {
+      "number": 686
+    },
+    {
+      "number": 687,
+      "peg": "givakt"
+    },
+    {
+      "number": 688,
+      "peg": "tjuvväsen"
+    },
+    {
+      "number": 689
+    },
+    {
+      "number": 690,
+      "peg": "chips"
+    },
+    {
+      "number": 691,
+      "peg": "djupt"
+    },
+    {
+      "number": 692,
+      "peg": "japan?"
+    },
+    {
+      "number": 693,
+      "peg": "köpman?"
+    },
+    {
+      "number": 694,
+      "peg": "jobbar?"
+    },
+    {
+      "number": 695,
+      "peg": "jubel"
+    },
+    {
+      "number": 696
+    },
+    {
+      "number": 697,
+      "peg": "årsbok?"
+    },
+    {
+      "number": 698
+    },
+    {
+      "number": 699
+    },
+    {
+      "number": 700
+    },
+    {
+      "number": 701,
+      "peg": "kostym"
+    },
+    {
+      "number": 702,
+      "peg": "kasino"
+    },
+    {
+      "number": 703,
+      "peg": "gasmask"
+    },
+    {
+      "number": 704,
+      "peg": "kassör"
+    },
+    {
+      "number": 705,
+      "peg": "axel"
+    },
+    {
+      "number": 706
+    },
+    {
+      "number": 707,
+      "peg": "gosig"
+    },
+    {
+      "number": 708
+    },
+    {
+      "number": 709,
+      "peg": "explodera"
+    },
+    {
+      "number": 710,
+      "peg": "godis"
+    },
+    {
+      "number": 711,
+      "peg": "katedral"
+    },
+    {
+      "number": 712,
+      "peg": "katten"
+    },
+    {
+      "number": 713,
+      "peg": "kardemumma (krydda)"
+    },
+    {
+      "number": 714,
+      "peg": "kodar"
+    },
+    {
+      "number": 715,
+      "peg": "kortlek"
+    },
+    {
+      "number": 716,
+      "peg": "ketchup"
+    },
+    {
+      "number": 717,
+      "peg": "gottegris?"
+    },
+    {
+      "number": 718,
+      "peg": "oktav?"
+    },
+    {
+      "number": 719,
+      "peg": "godbit"
+    },
+    {
+      "number": 720,
+      "peg": "konst"
+    },
+    {
+      "number": 721,
+      "peg": "knut"
+    },
+    {
+      "number": 722,
+      "peg": "kanon"
+    },
+    {
+      "number": 723,
+      "peg": "ekonom?"
+    },
+    {
+      "number": 724,
+      "peg": "gungar"
+    },
+    {
+      "number": 725,
+      "peg": "knöl"
+    },
+    {
+      "number": 726,
+      "peg": "gångjärn"
+    },
+    {
+      "number": 727,
+      "peg": "knaka"
+    },
+    {
+      "number": 728,
+      "peg": "kniv"
+    },
+    {
+      "number": 729,
+      "peg": "knapp"
+    },
+    {
+      "number": 730
+    },
+    {
+      "number": 731,
+      "peg": "komet"
+    },
+    {
+      "number": 732,
+      "peg": "kamin"
+    },
+    {
+      "number": 733
+    },
+    {
+      "number": 734,
+      "peg": "kamera"
+    },
+    {
+      "number": 735,
+      "peg": "kamel"
+    },
+    {
+      "number": 736
+    },
+    {
+      "number": 737,
+      "peg": "komiker?"
+    },
+    {
+      "number": 738,
+      "peg": "kamouflage?"
+    },
+    {
+      "number": 739,
+      "peg": "kompass"
+    },
+    {
+      "number": 740,
+      "peg": "gris"
+    },
+    {
+      "number": 741,
+      "peg": "krut"
+    },
+    {
+      "number": 742,
+      "peg": "kran"
+    },
+    {
+      "number": 743,
+      "peg": "kräm"
+    },
+    {
+      "number": 744,
+      "peg": "kurrar"
+    },
+    {
+      "number": 745,
+      "peg": "grill"
+    },
+    {
+      "number": 746,
+      "peg": "korg"
+    },
+    {
+      "number": 747,
+      "peg": "krok"
+    },
+    {
+      "number": 748,
+      "peg": "korv"
+    },
+    {
+      "number": 749,
+      "peg": "kropp"
+    },
+    {
+      "number": 750,
+      "peg": "glas"
+    },
+    {
+      "number": 751,
+      "peg": "klot"
+    },
+    {
+      "number": 752,
+      "peg": "clown"
+    },
+    {
+      "number": 753,
+      "peg": "klump"
+    },
+    {
+      "number": 754,
+      "peg": "galler"
+    },
+    {
+      "number": 755,
+      "peg": "colalåt"
+    },
+    {
+      "number": 756,
+      "peg": "galge"
+    },
+    {
+      "number": 757,
+      "peg": "kalk"
+    },
+    {
+      "number": 758,
+      "peg": "golf"
+    },
+    {
+      "number": 759,
+      "peg": "klubba"
+    },
+    {
+      "number": 760
+    },
+    {
+      "number": 761,
+      "peg": "korsett"
+    },
+    {
+      "number": 762,
+      "peg": "korsning"
+    },
+    {
+      "number": 763
+    },
+    {
+      "number": 764
+    },
+    {
+      "number": 765,
+      "peg": "åkgelé"
+    },
+    {
+      "number": 766
+    },
+    {
+      "number": 767,
+      "peg": "kajak"
+    },
+    {
+      "number": 768,
+      "peg": "korsfästa"
+    },
+    {
+      "number": 769
+    },
+    {
+      "number": 770,
+      "peg": "kex"
+    },
+    {
+      "number": 771,
+      "peg": "kaktus"
+    },
+    {
+      "number": 772,
+      "peg": "kokain"
+    },
+    {
+      "number": 773
+    },
+    {
+      "number": 774,
+      "peg": "kokar"
+    },
+    {
+      "number": 775,
+      "peg": "kakel"
+    },
+    {
+      "number": 776,
+      "peg": "kugghjul"
+    },
+    {
+      "number": 777,
+      "peg": "äggkaka"
+    },
+    {
+      "number": 778,
+      "peg": "kuggfråga?"
+    },
+    {
+      "number": 779,
+      "peg": "cockpit"
+    },
+    {
+      "number": 780,
+      "peg": "kvast"
+    },
+    {
+      "number": 781,
+      "peg": "kofot"
+    },
+    {
+      "number": 782,
+      "peg": "kvinna"
+    },
+    {
+      "number": 783,
+      "peg": "kaffemugg"
+    },
+    {
+      "number": 784,
+      "peg": "kuvert"
+    },
+    {
+      "number": 785,
+      "peg": "gaffel"
+    },
+    {
+      "number": 786,
+      "peg": "kavaj"
+    },
+    {
+      "number": 787,
+      "peg": "kvicksilver?"
+    },
+    {
+      "number": 788,
+      "peg": "kväve"
+    },
+    {
+      "number": 789,
+      "peg": "kaffebryggare"
+    },
+    {
+      "number": 790,
+      "peg": "keps"
+    },
+    {
+      "number": 791,
+      "peg": "kopiator"
+    },
+    {
+      "number": 792,
+      "peg": "kupong?"
+    },
+    {
+      "number": 793
+    },
+    {
+      "number": 794,
+      "peg": "gapar"
+    },
+    {
+      "number": 795,
+      "peg": "kabel"
+    },
+    {
+      "number": 796,
+      "peg": "cowboy"
+    },
+    {
+      "number": 797,
+      "peg": "kubikmeter?"
+    },
+    {
+      "number": 798
+    },
+    {
+      "number": 799
+    },
+    {
+      "number": 800
+    },
+    {
+      "number": 801,
+      "peg": "fast"
+    },
+    {
+      "number": 802,
+      "peg": "vissna"
+    },
+    {
+      "number": 803
+    },
+    {
+      "number": 804
+    },
+    {
+      "number": 805,
+      "peg": "fossil"
+    },
+    {
+      "number": 806
+    },
+    {
+      "number": 807,
+      "peg": "väska"
+    },
+    {
+      "number": 808
+    },
+    {
+      "number": 809,
+      "peg": "visp"
+    },
+    {
+      "number": 810,
+      "peg": "fotsteg"
+    },
+    {
+      "number": 811,
+      "peg": "vedträ"
+    },
+    {
+      "number": 812,
+      "peg": "vatten"
+    },
+    {
+      "number": 813,
+      "peg": "vitamin?"
+    },
+    {
+      "number": 814,
+      "peg": "fötter"
+    },
+    {
+      "number": 815,
+      "peg": "fåtölj"
+    },
+    {
+      "number": 816,
+      "peg": "världsmästare?"
+    },
+    {
+      "number": 817,
+      "peg": "fotograf?"
+    },
+    {
+      "number": 818
+    },
+    {
+      "number": 819,
+      "peg": "fotboll"
+    },
+    {
+      "number": 820,
+      "peg": "fönster"
+    },
+    {
+      "number": 821,
+      "peg": "fiende"
+    },
+    {
+      "number": 822,
+      "peg": "vagn"
+    },
+    {
+      "number": 823
+    },
+    {
+      "number": 824,
+      "peg": "fångar"
+    },
+    {
+      "number": 825,
+      "peg": "fängelse"
+    },
+    {
+      "number": 826
+    },
+    {
+      "number": 827,
+      "peg": "vinka"
+    },
+    {
+      "number": 828
+    },
+    {
+      "number": 829,
+      "peg": "vinbär"
+    },
+    {
+      "number": 830
+    },
+    {
+      "number": 831,
+      "peg": "femtioöring?"
+    },
+    {
+      "number": 832,
+      "peg": "famn"
+    },
+    {
+      "number": 833
+    },
+    {
+      "number": 834,
+      "peg": "frysa"
+    },
+    {
+      "number": 835
+    },
+    {
+      "number": 836
+    },
+    {
+      "number": 837
+    },
+    {
+      "number": 838
+    },
+    {
+      "number": 839
+    },
+    {
+      "number": 840
+    },
+    {
+      "number": 841,
+      "peg": "vriden"
+    },
+    {
+      "number": 842
+    },
+    {
+      "number": 843,
+      "peg": "form"
+    },
+    {
+      "number": 844,
+      "peg": "förare"
+    },
+    {
+      "number": 845,
+      "peg": "overall"
+    },
+    {
+      "number": 846,
+      "peg": "fräg"
+    },
+    {
+      "number": 847,
+      "peg": "vrak"
+    },
+    {
+      "number": 848,
+      "peg": "varv"
+    },
+    {
+      "number": 849,
+      "peg": "vurpa"
+    },
+    {
+      "number": 850,
+      "peg": "vilse"
+    },
+    {
+      "number": 851,
+      "peg": "flod"
+    },
+    {
+      "number": 852,
+      "peg": "violin"
+    },
+    {
+      "number": 853,
+      "peg": "film"
+    },
+    {
+      "number": 854,
+      "peg": "fyller?"
+    },
+    {
+      "number": 855
+    },
+    {
+      "number": 856,
+      "peg": "flöjt"
+    },
+    {
+      "number": 857,
+      "peg": "fluga"
+    },
+    {
+      "number": 858
+    },
+    {
+      "number": 859,
+      "peg": "valp"
+    },
+    {
+      "number": 860
+    },
+    {
+      "number": 861,
+      "peg": "fjäder"
+    },
+    {
+      "number": 862
+    },
+    {
+      "number": 863
+    },
+    {
+      "number": 864,
+      "peg": "vajer"
+    },
+    {
+      "number": 865
+    },
+    {
+      "number": 866
+    },
+    {
+      "number": 867,
+      "peg": "förskräckt"
+    },
+    {
+      "number": 868
+    },
+    {
+      "number": 869
+    },
+    {
+      "number": 870,
+      "peg": "vax"
+    },
+    {
+      "number": 871,
+      "peg": "vakt"
+    },
+    {
+      "number": 872,
+      "peg": "fikon?"
+    },
+    {
+      "number": 873,
+      "peg": "vakuum"
+    },
+    {
+      "number": 874,
+      "peg": "vågrät"
+    },
+    {
+      "number": 875,
+      "peg": "fågel"
+    },
+    {
+      "number": 876,
+      "peg": "ficktjuv?"
+    },
+    {
+      "number": 877,
+      "peg": "vågig?"
+    },
+    {
+      "number": 878,
+      "peg": "vägvisare?"
+    },
+    {
+      "number": 879,
+      "peg": "vågbrytare?"
+    },
+    {
+      "number": 880,
+      "peg": "vävstol"
+    },
+    {
+      "number": 881
+    },
+    {
+      "number": 882
+    },
+    {
+      "number": 883
+    },
+    {
+      "number": 884,
+      "peg": "avfyra?"
+    },
+    {
+      "number": 885,
+      "peg": "våffla"
+    },
+    {
+      "number": 886,
+      "peg": "webbsida?"
+    },
+    {
+      "number": 887,
+      "peg": "fiffig"
+    },
+    {
+      "number": 888
+    },
+    {
+      "number": 889
+    },
+    {
+      "number": 890
+    },
+    {
+      "number": 891,
+      "peg": "avbytare?"
+    },
+    {
+      "number": 892,
+      "peg": "vapen"
+    },
+    {
+      "number": 893
+    },
+    {
+      "number": 894,
+      "peg": "feber"
+    },
+    {
+      "number": 895
+    },
+    {
+      "number": 896
+    },
+    {
+      "number": 897
+    },
+    {
+      "number": 898
+    },
+    {
+      "number": 899
+    },
+    {
+      "number": 900
+    },
+    {
+      "number": 901,
+      "peg": "bastu"
+    },
+    {
+      "number": 902,
+      "peg": "bassäng"
+    },
+    {
+      "number": 903
+    },
+    {
+      "number": 904,
+      "peg": "pissoar"
+    },
+    {
+      "number": 905,
+      "peg": "pussel"
+    },
+    {
+      "number": 906
+    },
+    {
+      "number": 907,
+      "peg": "buske"
+    },
+    {
+      "number": 908
+    },
+    {
+      "number": 909
+    },
+    {
+      "number": 910,
+      "peg": "pizza"
+    },
+    {
+      "number": 911,
+      "peg": "potatis"
+    },
+    {
+      "number": 912,
+      "peg": "batong"
+    },
+    {
+      "number": 913,
+      "peg": "badminton?"
+    },
+    {
+      "number": 914,
+      "peg": "batteri"
+    },
+    {
+      "number": 915,
+      "peg": "paddel"
+    },
+    {
+      "number": 916,
+      "peg": "portion?"
+    },
+    {
+      "number": 917,
+      "peg": "badkar"
+    },
+    {
+      "number": 918
+    },
+    {
+      "number": 919,
+      "peg": "badbyxa?"
+    },
+    {
+      "number": 920,
+      "peg": "penis"
+    },
+    {
+      "number": 921,
+      "peg": "band"
+    },
+    {
+      "number": 922,
+      "peg": "banan"
+    },
+    {
+      "number": 923
+    },
+    {
+      "number": 924,
+      "peg": "pengar"
+    },
+    {
+      "number": 925,
+      "peg": "panel (solpanel)"
+    },
+    {
+      "number": 926,
+      "peg": "pensionär?"
+    },
+    {
+      "number": 927,
+      "peg": "bänk"
+    },
+    {
+      "number": 928,
+      "peg": "barnflicka?"
+    },
+    {
+      "number": 929
+    },
+    {
+      "number": 930
+    },
+    {
+      "number": 931
+    },
+    {
+      "number": 932
+    },
+    {
+      "number": 933
+    },
+    {
+      "number": 934,
+      "peg": "bommar"
+    },
+    {
+      "number": 935,
+      "peg": "bomull"
+    },
+    {
+      "number": 936
+    },
+    {
+      "number": 937
+    },
+    {
+      "number": 938
+    },
+    {
+      "number": 939,
+      "peg": "bomb"
+    },
+    {
+      "number": 940,
+      "peg": "brus"
+    },
+    {
+      "number": 941,
+      "peg": "bröd"
+    },
+    {
+      "number": 942,
+      "peg": "brunn"
+    },
+    {
+      "number": 943,
+      "peg": "pärm"
+    },
+    {
+      "number": 944,
+      "peg": "borrar"
+    },
+    {
+      "number": 945,
+      "peg": "paralysera?"
+    },
+    {
+      "number": 946,
+      "peg": "borg"
+    },
+    {
+      "number": 947,
+      "peg": "prick"
+    },
+    {
+      "number": 948,
+      "peg": "brev"
+    },
+    {
+      "number": 949,
+      "peg": "propp"
+    },
+    {
+      "number": 950,
+      "peg": "polis"
+    },
+    {
+      "number": 951,
+      "peg": "blod"
+    },
+    {
+      "number": 952,
+      "peg": "ballong"
+    },
+    {
+      "number": 953,
+      "peg": "blomma"
+    },
+    {
+      "number": 954,
+      "peg": "bilar"
+    },
+    {
+      "number": 955
+    },
+    {
+      "number": 956,
+      "peg": "blöja"
+    },
+    {
+      "number": 957,
+      "peg": "pulka"
+    },
+    {
+      "number": 958,
+      "peg": "pulver"
+    },
+    {
+      "number": 959,
+      "peg": "blåbär"
+    },
+    {
+      "number": 960,
+      "peg": "bajs"
+    },
+    {
+      "number": 961,
+      "peg": "borste"
+    },
+    {
+      "number": 962,
+      "peg": "björn"
+    },
+    {
+      "number": 963,
+      "peg": "pyjamas"
+    },
+    {
+      "number": 964,
+      "peg": "björk"
+    },
+    {
+      "number": 965,
+      "peg": "bjälke"
+    },
+    {
+      "number": 966
+    },
+    {
+      "number": 967,
+      "peg": "pojke"
+    },
+    {
+      "number": 968
+    },
+    {
+      "number": 969
+    },
+    {
+      "number": 970,
+      "peg": "box"
+    },
+    {
+      "number": 971,
+      "peg": "bagett"
+    },
+    {
+      "number": 972,
+      "peg": "bikini"
+    },
+    {
+      "number": 973,
+      "peg": "bokmärke"
+    },
+    {
+      "number": 974,
+      "peg": "poker"
+    },
+    {
+      "number": 975,
+      "peg": "buckla"
+    },
+    {
+      "number": 976,
+      "peg": "bagage"
+    },
+    {
+      "number": 977
+    },
+    {
+      "number": 978,
+      "peg": "bågfil?"
+    },
+    {
+      "number": 979,
+      "peg": "pekpinne?"
+    },
+    {
+      "number": 980
+    },
+    {
+      "number": 981
+    },
+    {
+      "number": 982
+    },
+    {
+      "number": 983
+    },
+    {
+      "number": 984
+    },
+    {
+      "number": 985,
+      "peg": "bowling"
+    },
+    {
+      "number": 986
+    },
+    {
+      "number": 987,
+      "peg": "påfågel"
+    },
+    {
+      "number": 988
+    },
+    {
+      "number": 989
+    },
+    {
+      "number": 990,
+      "peg": "bäbis"
+    },
+    {
+      "number": 991
+    },
+    {
+      "number": 992
+    },
+    {
+      "number": 993
+    },
+    {
+      "number": 994,
+      "peg": "papper"
+    },
+    {
+      "number": 995,
+      "peg": "bubbelpool"
+    },
+    {
+      "number": 996,
+      "peg": "papperskorg"
+    },
+    {
+      "number": 997,
+      "peg": "popcorn"
+    },
+    {
+      "number": 998
+    },
+    {
+      "number": 999
+    }
+  ]
+}

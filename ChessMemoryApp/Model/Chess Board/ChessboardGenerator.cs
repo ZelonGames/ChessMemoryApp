@@ -180,7 +180,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             char row = king.color == Piece.ColorType.White ? '1' : '8';
 
             // Short Castle
-            Piece rook = pieces["h" + row];
+            pieces.TryGetValue("h" + row, out Piece rook);
             if (rook != null && moveNotationCoordinates == $"e{row}g{row}" || moveNotationCoordinates == $"e{row}h{row}")
             {
                 toCoordinates = "g" + row;
@@ -196,7 +196,7 @@ namespace ChessMemoryApp.Model.Chess_Board
             }
 
             // Long Castle
-            rook = pieces["a" + row];
+            pieces.TryGetValue("a" + row, out rook);
             if (rook != null && moveNotationCoordinates == $"e{row}c{row}" || moveNotationCoordinates == $"e{row}a{row}")
             {
                 toCoordinates = "c" + row;

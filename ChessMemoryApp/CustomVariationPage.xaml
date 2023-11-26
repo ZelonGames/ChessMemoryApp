@@ -104,15 +104,36 @@
                         Text=">>"/>
         </Grid>
 
-        <Button x:Name="buttonCopyMoves"
-                Grid.Row="1"
-                Grid.Column="2"
-                Margin="10, 0, 10, 0"
-                Padding="3"
-                VerticalOptions="Start"
-                Clicked="OnCopyMovesClicked"
-                Text="Copy Moves"/>
+        <VerticalStackLayout Grid.Row="1"
+                             Grid.Column="2">
+            <Button x:Name="buttonCopyMoves"
+                    Margin="10, 0, 10, 0"
+                    Padding="3"
+                    VerticalOptions="Start"
+                    Clicked="OnCopyMovesClicked"
+                    Text="Copy Moves"/>
 
+            <Button x:Name="buttonCopyMovesCoordinates"
+                    Margin="10, 0, 10, 0"
+                    Padding="3"
+                    VerticalOptions="Start"
+                    Clicked="OnCopyMovesCoordinatesClicked"
+                    Text="Copy Moves Coordinates"/>
+            
+            <Button x:Name="buttonCopyMovesDigitCoordinates"
+                    Margin="10, 0, 10, 0"
+                    Padding="3"
+                    VerticalOptions="Start"
+                    Clicked="OnCopyMovesDigitCoordinatesClicked"
+                    Text="Copy Moves Digit Coordinates"/>
+
+            <Button x:Name="buttonCopyMovesDigitToCoordinates"
+                    Margin="10, 0, 10, 0"
+                    Padding="3"
+                    VerticalOptions="Start"
+                    Clicked="OnCopyMovesDigitToCoordinatesClicked"
+                    Text="Copy Moves Digit To Coordinates"/>
+        </VerticalStackLayout>
     </Grid>
 
 </ContentPage>

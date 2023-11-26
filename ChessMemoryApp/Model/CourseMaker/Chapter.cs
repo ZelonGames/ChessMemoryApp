@@ -99,6 +99,10 @@ namespace ChessMemoryApp.Model.CourseMaker
         /// <returns>returns the added variation</returns>
         private Variation AddVariation(string name)
         {
+            if (name == "5.Bd3 Bc5 6.Be3 d6")
+            {
+
+            }
             if (variations.ContainsKey(name))
             {
                 string[] nameComponents = name.Split(' ');

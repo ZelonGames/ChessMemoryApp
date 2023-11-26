@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.ChessMoveLogic;
+using ChessMemoryApp.Model.BoardState;
 
 namespace ChessMemoryApp.Model.Threat_Finder
 {

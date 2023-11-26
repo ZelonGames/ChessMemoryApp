@@ -1,4 +1,5 @@
-﻿using ChessMemoryApp.Model.Chess_Board;
+﻿using ChessMemoryApp.Model.BoardState;
+using ChessMemoryApp.Model.Chess_Board;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Model.Lichess.Lichess_API;

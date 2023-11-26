@@ -169,14 +169,14 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             foreach (var piece in chessBoard.pieces)
             {
-                if (piece.Value.color == color)
+                if (piece.Value.color != color || piece.Value is King)
+                    continue;
+
+                HashSet<string> coveredSquares = piece.Value.GetAvailableMoves();
+                foreach (var coveredSquare in coveredSquares)
                 {
-                    HashSet<string> coveredSquares = piece.Value.GetAvailableMoves();
-                    foreach (var coveredSquare in coveredSquares)
-                    {
-                        if (coveredSquare == squareCoordinates)
-                            return true;
-                    }
+                    if (coveredSquare == squareCoordinates)
+                        return true;
                 }
             }
 

@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.ApplicationModel;
 using ChessMemoryApp.Model.Chess_Board;
+using ChessMemoryApp.Model.BoardState;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.CourseMaker;
 using ChessMemoryApp.Model.ChessMoveLogic;
@@ -10,7 +11,6 @@ using ChessMemoryApp.Model.Lichess;
 using ChessMemoryApp.ViewModel;
 using ChessMemoryApp.Model.UI_Components;
 using ChessMemoryApp.Model.Lichess.Lichess_API;
-using ChessMemoryApp.Services;
 
 namespace ChessMemoryApp;
 

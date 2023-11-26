@@ -36,7 +36,8 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonData = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<OpeningExplorer>(jsonData);
+                    var openingExplorer = JsonConvert.DeserializeObject<OpeningExplorer>(jsonData);
+                    return openingExplorer;
                 }
             }
             catch

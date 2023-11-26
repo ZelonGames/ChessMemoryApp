@@ -111,13 +111,16 @@ namespace ChessMemoryApp.Model.CourseMaker
             fen = fen.Split(' ')[0];
 
             var variations = new Dictionary<string, Variation>();
-
-            foreach (var chapter in GetChapters())
+            var chapters = GetChapters();
+            foreach (var chapter in chapters)
             {
                 foreach (var variation in chapter.Value.GetVariations().Values)
                 {
                     if (fen != null)
                     {
+                        if (variation.name.Contains("Informational"))
+                            continue;
+
                         if (variation.AnyMoveContainsFen(fen))
                         {
                             variations.Add(variation.name, variation);

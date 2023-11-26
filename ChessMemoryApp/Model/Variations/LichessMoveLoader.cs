@@ -69,7 +69,7 @@ namespace ChessMemoryApp.Model.Variations
                 ClearLichessMoves();
         }
 
-        private async void OnMadeChessableMove(Move move)
+        private async void OnMadeChessableMove(string moveNotationCoordinates, Move move)
         {
             AddLoadingText();
             IsLoadingLichess = true;
