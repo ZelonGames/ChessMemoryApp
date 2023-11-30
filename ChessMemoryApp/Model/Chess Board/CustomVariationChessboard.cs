@@ -30,10 +30,10 @@ namespace ChessMemoryApp.Model.Chess_Board
             this.customVariation = customVariation;
             uiCustomVariationChessBoard = new UICustomVariationChessBoard(chessBoardListLayout, customVariation);
             uiTitleChessBoard.DisableTitle();
-
+            /*
             uiSortingButtonsChessBoard = new UISortingButtonsChessBoard(chessBoardListLayout);
             uiSortingButtonsChessBoard.AddGestureRecognizers(tapGestureRecognizer);
-            uiSortingButtonsChessBoard.PointerExited += ResetPosition;
+            uiSortingButtonsChessBoard.PointerExited += ResetPosition;*/
             
             uiCustomVariationChessBoard.EditClicked += UiCustomVariationChessBoard_EditClicked;
             uiCustomVariationChessBoard.DeleteClicked += UiCustomVariationChessBoard_DeleteClicked;

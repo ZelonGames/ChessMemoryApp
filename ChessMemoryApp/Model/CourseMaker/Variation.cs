@@ -33,7 +33,7 @@ namespace ChessMemoryApp.Model.CourseMaker
 
         public bool AnyMoveContainsFen(string fen)
         {
-            return moves.Any(y => y.Fen == fen);
+            return moves.Any(y => y.PositionFen == fen);
         }
 
         public void AddMove(string moveNotation)

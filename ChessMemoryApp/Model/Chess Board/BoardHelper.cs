@@ -277,12 +277,16 @@ namespace ChessMemoryApp.Model.Chess_Board
         {
             moveNotation = moveNotation.Replace("+", "").Replace("#", "");
             char pieceType = moveNotation.First();
+            string[] moveNotationComponents = moveNotation.Split('x');
+            bool isPawnMove = char.IsLower(moveNotation[0]);
+            if (isPawnMove)
+                pieceType = 'P';
+
             pieceType = pieceColor == Piece.ColorType.White ? char.ToUpper(pieceType) : char.ToLower(pieceType);
             string letterToCoordinates = moveNotation[^2..];
             char? file = null;
             char? row = null;
 
-            string[] moveNotationComponents = moveNotation.Split('x');
             if (moveNotationComponents.Length == 2 && moveNotationComponents[0].Length == 2)
             {
                 char specificPiece = moveNotationComponents[0][1];

@@ -51,8 +51,8 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
                 move.Color,
                 move.MoveNotation,
                 move.MoveNotation,
-                move.Fen));
-            historyFens.Add(move.Fen.Split(' ')[0]);
+                move.PositionFen));
+            historyFens.Add(move.PositionFen.Split(' ')[0]);
         }
 
         public void SubscribeToEvents(PieceMoverAuto pieceMover, Button buttonStart, Button buttonPrevious)

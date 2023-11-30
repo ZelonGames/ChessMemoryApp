@@ -8,6 +8,7 @@ using ChessMemoryApp.Model.Game_Analysing;
 using ChessMemoryApp.Model.Chess_Board.Pieces;
 using ChessMemoryApp.Model.Threat_Finder;
 using ChessMemoryApp.Model.PegList;
+using ChessMemoryApp.Model.Opening_Practice;
 
 namespace ChessMemoryApp;
 
@@ -45,7 +46,7 @@ public partial class CourseSelectorPage : ContentPage
 
                     foreach (var move in variation.Value.moves)
                     {
-                        positions.Add(move.Fen);
+                        positions.Add(move.PositionFen);
                     }
                 }
             }

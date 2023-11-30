@@ -72,7 +72,7 @@ namespace ChessMemoryApp.Model.CourseMaker
                 return null;
 
             Variation variation = variations.Values.First();
-            var moves = variation.moves.Where(x => x.Fen.Split(' ')[0] == fen);
+            var moves = variation.moves.Where(x => x.PositionFen.Split(' ')[0] == fen);
             if (moves == null)
                 return null;
 

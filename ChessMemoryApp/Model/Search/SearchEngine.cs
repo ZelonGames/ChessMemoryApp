@@ -60,7 +60,7 @@ namespace ChessMemoryApp.Model.Search
                     {
                         // A duplicate might be here so look at the first move notation next time
                         currentComparingMoveNotationIndex = 0;
-                        if (foundVariations.TryAdd(move.Fen, (variation.Value, move)))
+                        if (foundVariations.TryAdd(move.PositionFen, (variation.Value, move)))
                             break;
                     }
                 }

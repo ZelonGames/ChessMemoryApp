@@ -18,7 +18,7 @@ namespace ChessMemoryApp.Model.CourseMaker
         [JsonIgnore]
         private string fen;
         [JsonProperty("fen")]
-        public string Fen { get => fen.Split(' ')[0]; private set => fen = value; }
+        public string PositionFen { get => fen.Split(' ')[0]; private set => fen = value; }
 
         [JsonProperty("color")]
         public Piece.ColorType Color { get; private set; }
@@ -29,14 +29,14 @@ namespace ChessMemoryApp.Model.CourseMaker
         }
         public Move(string moveNotation, string fen, Piece.ColorType color)
         {
-            Fen = fen;
+            PositionFen = fen;
             MoveNotation = moveNotation;
             Color = color;
         }
 
         public void TempUpdateFEN(string fen)
         {
-            Fen = fen;
+            PositionFen = fen;
         }
     }
 }

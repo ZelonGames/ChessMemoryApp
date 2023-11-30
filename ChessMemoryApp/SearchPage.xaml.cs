@@ -74,7 +74,7 @@ public partial class SearchPage : ContentPage
 
             var chessBoard = new ChessboardGenerator(searchViewModel.Course.PlayAsBlack);
             var customVariationBoard = new ChessableChessboard(chessBoard, coursesLayout, boardSize);
-            customVariationBoard.fen = filteredVariations[i].lastSearchMove.Fen;
+            customVariationBoard.fen = filteredVariations[i].lastSearchMove.PositionFen;
             chessBoard.AddPiecesFromFen(customVariationBoard.fen);
             customVariationBoard.Render();
             customVariationBoard.Clicked += OnBoardClicked;

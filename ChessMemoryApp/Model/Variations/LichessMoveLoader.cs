@@ -84,7 +84,7 @@ namespace ChessMemoryApp.Model.Variations
             });
 
             OpeningExplorer openingExplorer = await task;
-            LoadLichessVariations(move.Fen, openingExplorer);
+            LoadLichessVariations(move.PositionFen, openingExplorer);
             IsLoadingLichess = false;
             FinishedLoadingLichess?.Invoke();
         }

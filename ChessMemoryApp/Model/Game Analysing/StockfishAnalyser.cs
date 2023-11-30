@@ -103,7 +103,6 @@ namespace ChessMemoryApp.Model.Game_Analysing
                 string.IsNullOrEmpty(latestCommand))
                 return;
 
-
             if (tasks.ContainsKey(latestCommand))
                 tasks[latestCommand].Invoke(e);
         }

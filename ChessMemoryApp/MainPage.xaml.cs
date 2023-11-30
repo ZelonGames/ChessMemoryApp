@@ -115,7 +115,7 @@ public partial class MainPage : ContentPage
 
         string fen = chessBoard.GetPositionFen();
 
-        var task = Task.Run(async () =>
+        OpeningExplorer openingExplorer = await Task.Run(async () =>
         {
             OpeningExplorer openingExplorer = await LichessRequestHelper.GetOpeningMoves(
                 chessBoard.fenSettings, fen);
@@ -123,7 +123,6 @@ public partial class MainPage : ContentPage
             return openingExplorer;
         });
 
-        OpeningExplorer openingExplorer = await task;
         lichessMovesLoader.LoadLichessVariations(fen, openingExplorer);
     }
 }

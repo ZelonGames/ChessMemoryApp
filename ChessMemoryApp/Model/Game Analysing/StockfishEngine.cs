@@ -1,22 +1,26 @@
-﻿using ChessMemoryApp.Model.CourseMaker;
+﻿using ChessMemoryApp.Model.Chess_Board.Pieces;
+using ChessMemoryApp.Model.CourseMaker;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.Game_Analysing
 {
-    internal class CommandTest
+    public class StockfishEngine
     {
         private readonly Process process;
         private readonly StreamWriter streamWriter;
         private List<string> responseLines = new List<string>();
-        private readonly string stockfishPath = Path.Combine("C:\\", @"Users\Jonas\Desktop\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe");
+        private readonly string stockfishPath = Path.Combine("C:\\", @"C:\Users\Jonas\OneDrive\Skrivbord\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe");
         private object responseLock = new();
 
-        public CommandTest()
+        public StockfishEngine()
         {
             process = new Process
             {
@@ -34,13 +38,14 @@ namespace ChessMemoryApp.Model.Game_Analysing
             streamWriter = process.StandardInput;
 
             Task.Run(ReadProcessOutput);
+        }
 
-            // Initialize the process and send initial commands
-            RunCommand("position fen " + FenHelper.STARTING_FEN + " moves e2e4 e7e5");
-            var a = GetOutputLines();
-            RunCommand("d");
-            var b = GetOutputLines();
-            var c = GetOutputLines();
+        public string GetBestMoveFromFen(string fen)
+        {
+            RunCommand("position fen " + fen);
+            RunCommand("go depth 25");
+            List<string> outputs = GetOutputLines();
+            return outputs.Last().Split(' ')[1];
         }
 
         private void ReadProcessOutput()
@@ -53,9 +58,7 @@ namespace ChessMemoryApp.Model.Game_Analysing
                     if (line != null)
                     {
                         lock (responseLock)
-                        {
                             responseLines.Add(line);
-                        }
                     }
                 }
             }
@@ -77,7 +80,7 @@ namespace ChessMemoryApp.Model.Game_Analysing
         {
             lock (responseLock)
             {
-                List<string> lines = new List<string>(responseLines);
+                var lines = new List<string>(responseLines);
                 responseLines.Clear();
                 return lines;
             }

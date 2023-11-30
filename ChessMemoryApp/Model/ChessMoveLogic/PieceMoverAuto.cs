@@ -54,7 +54,7 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
             chessBoard.MakeMove(moveNotationCoordinates);
             MadeChessableMove?.Invoke(moveNotationCoordinates, move);
-            MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, moveNotationCoordinates, move.Fen);
+            MadeMoveFen?.Invoke(MoveHistory.MoveSource.Chessable, move.Color, move.MoveNotation, moveNotationCoordinates, move.PositionFen);
         }
 
         private void OnNextLichessMove(string fen, ExplorerMove move)

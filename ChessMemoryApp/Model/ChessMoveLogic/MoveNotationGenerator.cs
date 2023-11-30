@@ -35,11 +35,11 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
         private void OnClickedSquare(Square clickedSquare)
         {
             // The first click has to be on a piece
-            if (!IsFirstClick)
-            {
-                SetSecondClick(BoardHelper.GetNumberCoordinates(clickedSquare.coordinates));
-                Square.HighlightedSquare?.LowlightSquare();
-            }
+            if (IsFirstClick)
+                return;
+         
+            SetSecondClick(BoardHelper.GetNumberCoordinates(clickedSquare.coordinates));
+            Square.HighlightedSquare?.LowlightSquare();
         }
 
         private void OnClickedPiece(PieceUI clickedPiece)
@@ -55,7 +55,6 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
                 Square.HighlightedSquare?.LowlightSquare();
             }
         }
-
 
         public void ResetClicks()
         {
@@ -90,6 +89,14 @@ namespace ChessMemoryApp.Model.ChessMoveLogic
 
             string letterCoordinate = BoardHelper.GetLetterCoordinates(coordinate);
             secondClick = letterCoordinate;
+
+            // To prevent bugs when accidentally double clicking
+            if (firstClick == secondClick)
+            {
+                secondClick = null;
+                return;
+            }
+
             MoveNotationCompleted?.Invoke(firstClick, secondClick);
             ResetClicks();
         }
