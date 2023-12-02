@@ -11,15 +11,27 @@ using System.Threading.Tasks;
 
 namespace ChessMemoryApp.Model.Opening_Practice
 {
-    public class ChessEngine
+    public class ChessBot
     {
+        public enum BotState
+        {
+            Chessable,
+            Lichess,
+            OutOfTheory,
+        }
+
+        public delegate void BotStateHandler(BotState state);
+        public event BotStateHandler BotStateChanged;
+
+        public BotState State { get; private set; }
         private Random rnd = new();
         private StockfishEngine stockfishEngine = new();
         public readonly List<Variation> variationsToPractice;
         public readonly ChessboardGenerator chessboardGenerator;
         private string currentFen;
+        public bool IsThinking => stockfishEngine.IsThinking;
 
-        public ChessEngine(Piece.ColorType boardOrientation, string fenPosition, List<Variation> variationsToPractice)
+        public ChessBot(Piece.ColorType boardOrientation, string fenPosition, List<Variation> variationsToPractice)
         {
             chessboardGenerator = new ChessboardGenerator(boardOrientation);
             chessboardGenerator.AddPiecesFromFen(fenPosition);
@@ -27,7 +39,7 @@ namespace ChessMemoryApp.Model.Opening_Practice
             currentFen = fenPosition;
         }
 
-        public ChessEngine(Piece.ColorType boardOrientation, string fenPosition)
+        public ChessBot(Piece.ColorType boardOrientation, string fenPosition)
         {
             chessboardGenerator = new ChessboardGenerator(boardOrientation);
             chessboardGenerator.AddPiecesFromFen(fenPosition);
@@ -57,12 +69,23 @@ namespace ChessMemoryApp.Model.Opening_Practice
             string positionFen = currentFen.Split(' ')[0];
 
             if (lichessMoves.Count == 0)
-                return GetStockFishMove(currentFen);
+            {
+                State = BotState.OutOfTheory;
+                BotStateChanged?.Invoke(State);
+                return await GetStockFishMove(currentFen);
+            }
 
             List<Move> chessableMoves = GetChessableMovesFromFEN(positionFen);
 
             if (chessableMoves.Count == 0)
+            {
+                State = BotState.Lichess;
+                BotStateChanged?.Invoke(State);
                 return lichessMoves[rnd.Next(0, Math.Min(lichessMoves.Count, 5))].MoveNotationCoordinates;
+            }
+
+            State = BotState.Chessable;
+            BotStateChanged?.Invoke(State);
 
             Move randomizedMove = chessableMoves[rnd.Next(0, chessableMoves.Count)];
             string fenColorToPlay = chessboardGenerator.fenSettings.GetColorToPlaySetting();
@@ -70,9 +93,9 @@ namespace ChessMemoryApp.Model.Opening_Practice
             return BoardHelper.ConvertToMoveNotationCoordinates(chessboardGenerator, colorToPlay, randomizedMove.MoveNotation);
         }
 
-        private string GetStockFishMove(string fen)
+        private async Task<string> GetStockFishMove(string fen)
         {
-            return stockfishEngine.GetBestMoveFromFen(fen);
+            return await stockfishEngine.GetBestMoveFromFen(fen);
         }
 
         private async Task<List<ExplorerMove>> GetLichessMovesFromFEN(string fen)

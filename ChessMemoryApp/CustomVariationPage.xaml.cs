@@ -17,8 +17,7 @@ public partial class CustomVariationPage : ContentPage
     public CustomVariationPage(CustomVariationViewModel customVariationViewModel)
 	{
 		InitializeComponent();
-        BindingContext = customVariationViewModel;
-        this.customVariationViewModel = customVariationViewModel;
+        BindingContext = customVariationViewModel = this.customVariationViewModel = customVariationViewModel;
         Appearing += CustomVariationPage_Appearing;
 	}
 

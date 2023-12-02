@@ -11,6 +11,19 @@ namespace ChessMemoryApp.Model.Chess_Board
     {
         public static Piece.ColorType piecesToMove = Piece.ColorType.White;
 
+        public static HashSet<string> GetCoveredSquaresByColor(ChessboardGenerator chessBoard, Piece.ColorType pieceColor)
+        {
+            var squares = new HashSet<string>();
+
+            foreach (var piece in chessBoard.GetPiecesByColor(pieceColor))
+            {
+                foreach (var square in piece.GetAvailableMoves())
+                    squares.Add(square);
+            }
+
+            return squares;
+        }
+
         /// <summary>
         /// replaces the x coordinate with the corresponding letter
         /// </summary>
@@ -154,12 +167,12 @@ namespace ChessMemoryApp.Model.Chess_Board
 
             foreach (var piece in chessBoard.pieces)
             {
-                if (piece.Value.color == color)
-                {
-                    HashSet<string> coveredSquares = piece.Value.GetAvailableMoves();
-                    foreach (var coveredSquare in coveredSquares)
-                        squares.Add(coveredSquare);
-                }
+                if (piece.Value.color != color)
+                    continue;
+             
+                HashSet<string> coveredSquares = piece.Value.GetAvailableMoves();
+                foreach (var coveredSquare in coveredSquares)
+                    squares.Add(coveredSquare);
             }
 
             return squares;
@@ -167,12 +180,12 @@ namespace ChessMemoryApp.Model.Chess_Board
 
         public static bool IsSquareControlledByColor(ChessboardGenerator chessBoard, Piece.ColorType color, string squareCoordinates)
         {
-            foreach (var piece in chessBoard.pieces)
+            foreach (var piece in chessBoard.GetPiecesByColor(color))
             {
-                if (piece.Value.color != color || piece.Value is King)
+                if (piece is King)
                     continue;
 
-                HashSet<string> coveredSquares = piece.Value.GetAvailableMoves();
+                HashSet<string> coveredSquares = piece.GetAvailableMoves();
                 foreach (var coveredSquare in coveredSquares)
                 {
                     if (coveredSquare == squareCoordinates)

@@ -10,22 +10,24 @@ namespace ChessMemoryApp.Model.Opening_Practice
 {
     public class OpeningPracticeInputController
     {
-        private ChessEngine chessEngine;
+        private ChessBot chessBot;
 
-        public OpeningPracticeInputController(ChessEngine chessEngine, UIChessBoard chessBoardUI) 
+        public OpeningPracticeInputController(ChessBot chessBot, UIChessBoard chessBoardUI)
         {
-            this.chessEngine = chessEngine;
-            var moveNotationGenerator = new MoveNotationGenerator(chessBoardUI);
-            moveNotationGenerator.MoveNotationCompleted += OnMoveNotationCompleted;
+            this.chessBot = chessBot;
+            var moveNotationValidator = new MoveNotationValidator(chessBoardUI);
+            moveNotationValidator.AcceptedMoveNotation += OnAcceptedMoveNotation;
         }
 
-        private async void OnMoveNotationCompleted(string firstClick, string secondClick)
+        private async void OnAcceptedMoveNotation(string fromCoordinates, string toCoordinates)
         {
+            if (chessBot.IsThinking)
+                return;
 
-            chessEngine.MakeMove(firstClick + secondClick);
+            chessBot.MakeMove(fromCoordinates + toCoordinates);
 
-            string engineMove = await chessEngine.GetNextEngineMoveFromCurrentFEN();
-            chessEngine.MakeMove(engineMove);
+            string engineMove = await chessBot.GetNextEngineMoveFromCurrentFEN();
+            chessBot.MakeMove(engineMove);
         }
     }
 }

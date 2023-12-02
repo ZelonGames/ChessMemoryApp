@@ -19,6 +19,8 @@ namespace ChessMemoryApp.Model.Game_Analysing
         private List<string> responseLines = new List<string>();
         private readonly string stockfishPath = Path.Combine("C:\\", @"C:\Users\Jonas\OneDrive\Skrivbord\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe");
         private object responseLock = new();
+        private TaskCompletionSource<bool> commandCompletion;
+        public bool IsThinking { get; private set; }
 
         public StockfishEngine()
         {
@@ -30,7 +32,7 @@ namespace ChessMemoryApp.Model.Game_Analysing
                     UseShellExecute = false,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
                 },
             };
 
@@ -38,52 +40,64 @@ namespace ChessMemoryApp.Model.Game_Analysing
             streamWriter = process.StandardInput;
 
             Task.Run(ReadProcessOutput);
+            GetOutputLines();
         }
 
-        public string GetBestMoveFromFen(string fen)
+        public async Task<string> GetBestMoveFromFen(string fen)
         {
+            var outputs = new List<string>();
             RunCommand("position fen " + fen);
             RunCommand("go depth 25");
-            List<string> outputs = GetOutputLines();
+
+            IsThinking = true;
+            IsThinking = await commandCompletion.Task;
+
+            outputs = GetOutputLines();
+            commandCompletion = null;
+
             return outputs.Last().Split(' ')[1];
         }
 
         private void ReadProcessOutput()
         {
-            using (StreamReader streamReader = process.StandardOutput)
+            using StreamReader streamReader = process.StandardOutput;
+
+            while (!process.HasExited)
             {
-                while (!process.HasExited)
+                string line = streamReader.ReadLine();
+                if (line == null)
+                    continue;
+
+                lock (responseLock)
                 {
-                    string line = streamReader.ReadLine();
-                    if (line != null)
-                    {
-                        lock (responseLock)
-                            responseLines.Add(line);
-                    }
+                    responseLines.Add(line);
+                    if (line.Contains("bestmove"))
+                        commandCompletion.SetResult(false);
                 }
             }
         }
 
         public void RunCommand(string command)
         {
-            lock (responseLock)
+            if (IsThinking)
+                return;
+
+            if (streamWriter.BaseStream.CanWrite)
             {
-                if (streamWriter.BaseStream.CanWrite)
-                {
-                    streamWriter.WriteLine(command);
-                    streamWriter.Flush();
-                }
+                commandCompletion = new();
+                streamWriter.WriteLine(command);
+                streamWriter.Flush();
             }
         }
 
         public List<string> GetOutputLines()
         {
-            lock (responseLock)
-            {
-                var lines = new List<string>(responseLines);
+            var lines = new List<string>(responseLines);
+
+            if (!IsThinking)
                 responseLines.Clear();
-                return lines;
-            }
+
+            return lines;
         }
     }
 }

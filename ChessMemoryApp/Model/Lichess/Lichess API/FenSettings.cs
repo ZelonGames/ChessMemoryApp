@@ -33,7 +33,7 @@ namespace ChessMemoryApp.Model.Lichess.Lichess_API
                 return color == WHITE ? BLACK : WHITE;
             }
 
-            public static Piece.ColorType GetPieceColor(string fenColor)
+            public static Piece.ColorType ConvertToPieceColor(string fenColor)
             {
                 return fenColor == WHITE ? Piece.ColorType.White : Piece.ColorType.Black;
             }

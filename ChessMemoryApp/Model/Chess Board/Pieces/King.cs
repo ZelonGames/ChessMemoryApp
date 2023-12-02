@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using ChessMemoryApp.Model.CourseMaker;
+using ChessMemoryApp.Model.Lichess.Lichess_API;
 
 namespace ChessMemoryApp.Model.Chess_Board.Pieces
 {
@@ -23,22 +24,29 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
             var availableMoves = new HashSet<string>();
             Coordinates<int> pieceCoordinates = BoardHelper.GetNumberCoordinates(coordinates);
 
-            bool isInCheck = IsInCheck();
+            // This is helpful when getting the squares controlled by the opponent
+            // Because we do not want to check if the opponents king is in check while it's your turn
+            bool isEnemyPiece = FenSettings.FenColor.ConvertToPieceColor(chessBoard.fenSettings.GetColorToPlaySetting()) != color;
 
-            if (!isInCheck)
+            if (!isEnemyPiece)
             {
-                string row = color == ColorType.White ? "1" : "8";
-                bool canCastleKingSide = color == ColorType.White ? chessBoard.fenSettings.CanWhiteCastleKingSide : chessBoard.fenSettings.CanBlackCastleKingSide;
-                bool canCastleQueenSide = color == ColorType.White ? chessBoard.fenSettings.CanWhiteCastleQueenSide : chessBoard.fenSettings.CanBlackCastleQueenSide;
+                bool isInCheck = IsInCheck();
 
-                if (canCastleKingSide &&
-                    !IsKingSideCoveredByEnemy() &&
-                    !IsAnyPieceOnKingSide())
-                    availableMoves.Add("g" + row);
-                if (canCastleQueenSide &&
-                    !IsQueenSideCoveredByEnemy() &&
-                    !IsAnyPieceOnQueenSide())
-                    availableMoves.Add("c" + row);
+                if (!isInCheck)
+                {
+                    string row = color == ColorType.White ? "1" : "8";
+                    bool canCastleKingSide = color == ColorType.White ? chessBoard.fenSettings.CanWhiteCastleKingSide : chessBoard.fenSettings.CanBlackCastleKingSide;
+                    bool canCastleQueenSide = color == ColorType.White ? chessBoard.fenSettings.CanWhiteCastleQueenSide : chessBoard.fenSettings.CanBlackCastleQueenSide;
+
+                    if (canCastleKingSide &&
+                        !IsKingSideCoveredByEnemy() &&
+                        !IsAnyPieceOnKingSide())
+                        availableMoves.Add("g" + row);
+                    if (canCastleQueenSide &&
+                        !IsQueenSideCoveredByEnemy() &&
+                        !IsAnyPieceOnQueenSide())
+                        availableMoves.Add("c" + row);
+                }
             }
 
             ColorType enemyColor = GetOppositeColor(color);
@@ -90,20 +98,16 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
         {
             string row = color == ColorType.White ? "1" : "8";
             ColorType enemyColor = GetOppositeColor(color);
-            List<Piece> enemyPieces = chessBoard.GetPiecesByColor(enemyColor);
+            HashSet<string> coveredSquares = BoardHelper.GetControlledSquaresByColor(chessBoard, enemyColor);
+            return coveredSquares.Contains("f" + row) || coveredSquares.Contains("g" + row);
+        }
 
-            foreach (var piece in enemyPieces)
-            {
-                if (piece is King)
-                    continue;
-
-                HashSet<string> availableMoves = GetAvailableMoves();
-                if (availableMoves.Contains("f" + row) ||
-                    availableMoves.Contains("g" + row))
-                    return true;
-            }
-
-            return false;
+        public bool IsQueenSideCoveredByEnemy()
+        {
+            string row = color == ColorType.White ? "1" : "8";
+            ColorType enemyColor = GetOppositeColor(color);
+            HashSet<string> coveredSquares = BoardHelper.GetControlledSquaresByColor(chessBoard, enemyColor);
+            return coveredSquares.Contains("d" + row) || coveredSquares.Contains("c" + row);
         }
 
         public bool IsAnyPieceOnKingSide()
@@ -123,26 +127,6 @@ namespace ChessMemoryApp.Model.Chess_Board.Pieces
                 chessBoard.GetPiece("d" + row) != null ||
                 chessBoard.GetPiece("c" + row) != null ||
                 chessBoard.GetPiece("b" + row) != null;
-        }
-
-        public bool IsQueenSideCoveredByEnemy()
-        {
-            ColorType enemyColor = GetOppositeColor(color);
-            List<Piece> enemyPieces = chessBoard.GetPiecesByColor(enemyColor);
-            string row = color == ColorType.White ? "1" : "8";
-
-            foreach (var piece in enemyPieces)
-            {
-                if (piece is King)
-                    continue;
-
-                HashSet<string> availableMoves = piece.GetAvailableMoves();
-                if (availableMoves.Contains("d" + row) ||
-                    availableMoves.Contains("c" + row))
-                    return true;
-            }
-
-            return false;
         }
 
         public bool IsInCheck()
