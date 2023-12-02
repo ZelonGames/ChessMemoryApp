@@ -19,10 +19,11 @@ public partial class OpeningPracticePage : ContentPage
         InitializeComponent();
         BindingContext = this.viewModel = viewModel;
         viewModel.State = "State: ";
-        Appearing += OpeningPracticePage_Appearing;
+        Appearing += OnAppearing;
+        
     }
 
-    private async void OpeningPracticePage_Appearing(object sender, EventArgs e)
+    private async void OnAppearing(object sender, EventArgs e)
     {
         var courseLoader = new CourseLoader();
         await courseLoader.LoadCoursesFromDatabase();
@@ -51,6 +52,7 @@ public partial class OpeningPracticePage : ContentPage
 
         var chessBoardUI = new UIChessBoard(chessBot.chessboardGenerator, mainChessBoard, columnChessBoard);
         chessBoardUI.Render();
+        chessBoardUI.UpdateSquaresViewSize(null, e);
         SizeChanged += chessBoardUI.UpdateSquaresViewSize;
 
         var openingPracticeInputController = new OpeningPracticeInputController(chessBot, chessBoardUI);
