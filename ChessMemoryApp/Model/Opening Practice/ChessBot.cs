@@ -67,15 +67,14 @@ namespace ChessMemoryApp.Model.Opening_Practice
         {
             List<ExplorerMove> lichessMoves = await GetLichessMovesFromFEN(currentFen);
             string positionFen = currentFen.Split(' ')[0];
+            List<Move> chessableMoves = GetChessableMovesFromFEN(positionFen);
 
-            if (lichessMoves.Count == 0)
+            if (lichessMoves.Count == 0 && chessableMoves.Count == 0)
             {
                 State = BotState.OutOfTheory;
                 BotStateChanged?.Invoke(State);
-                return await GetStockFishMove(currentFen);
+                return await stockfishEngine.GetBestMoveFromFen(positionFen);
             }
-
-            List<Move> chessableMoves = GetChessableMovesFromFEN(positionFen);
 
             if (chessableMoves.Count == 0)
             {
@@ -91,11 +90,6 @@ namespace ChessMemoryApp.Model.Opening_Practice
             string fenColorToPlay = chessboardGenerator.fenSettings.GetColorToPlaySetting();
             Piece.ColorType colorToPlay = fenColorToPlay == "w" ? Piece.ColorType.White : Piece.ColorType.Black;
             return BoardHelper.ConvertToMoveNotationCoordinates(chessboardGenerator, colorToPlay, randomizedMove.MoveNotation);
-        }
-
-        private async Task<string> GetStockFishMove(string fen)
-        {
-            return await stockfishEngine.GetBestMoveFromFen(fen);
         }
 
         private async Task<List<ExplorerMove>> GetLichessMovesFromFEN(string fen)
